@@ -1,0 +1,122 @@
+a:link    { color: black; }
+a:visited { color: black; }
+a:hover   { color: blue; font-size: 115%; }
+a:active  { color: blue; font-size: 115%; }
+
+button {
+  cursor: pointer;
+}
+.opciones_usuario {
+  text-align:left;
+}
+
+.header {
+  background-color: #d2d2d2;
+  font-size: 14px;
+  color: black;
+  height: 90px;
+  border: 1px solid black;
+  clear: left;
+}
+
+.body {
+  clear: left;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.footer {
+  clear: left;
+  margin-top: 10px;
+  background-color: #d2d2d2;
+  font-size: 14px;
+  color: black;
+  height: 50px;
+  border: 1px solid black;
+}
+
+#panelInformativo {
+  position: absolute; 
+  left: 50%;
+}
+
+#panelInformativo p {
+  position: relative; 
+  left: -50%; 
+  border: dotted orange 1px;
+  background-color:#ded7a0;
+  padding:9px;
+  margin:9px;
+  color: blue;
+  width:500px;
+}
+
+#panelMenuIzquierda {
+  clear: left;
+  float: left;
+  width: 10%;
+}
+
+#panelMenuIzquierda a {
+  list-style-type: none;
+  cursor: pointer;
+  margin-top: 10px;
+  margin-left:10px;
+  clear: right;
+}
+
+#panelCuerpo {
+  float: left;
+  width: 50%;
+  padding-left: 10px;
+  margin-bottom: 10px;
+  border: 0px solid red;
+  border-left-width: 2px;
+}
+
+#opciones_usuario {
+  position: absolute;
+  right: 20px;
+  top: 15px;
+  font-size: 12px;
+}
+
+#opciones_usuario p {
+  float: right;
+  margin-right: 30px;
+  margin-top: 0px;
+}
+
+#opciones_usuario li {
+  float: left;
+  margin-left: 30px;
+  margin-top: 55px;
+  font-size: 16px;
+  list-style-type: none;
+}
+
+footer {
+  display: block;
+  bottom:0px;
+  background-color: #d2d2d2;
+  font-size: 14px;
+  color: black;
+  height: 45px;
+}
+
+.centrado {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.derecha {
+  text-align: right;
+}
+
+.izquierda {
+  text-align: left;
+}
+
+.medio {
+  text-align: absmiddel;
+}

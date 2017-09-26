@@ -1,0 +1,20 @@
+<?php
+
+class modeloConfiguracion {
+   private $host = 'mysql.hostinger.es';
+   private $user = 'u164639268_econo';
+   private $pass = 'C0nt4d0r';
+   private $apli = 'u164639268_conta';
+   
+   private $home = '/home/u164639268/public_html/';   
+   /*  BASE DE DATOS */
+   public function getHost() { return $this->host; }
+   public function getUser() { return $this->user; }
+   public function getPass() { return $this->pass; }
+   public function getApli() { return $this->apli; }
+   /*  RUTA FISICA   */
+   public function getHome() { return $this->home; }
+   
+}
+$modeloConfiguracion = new modeloConfiguracion();
+?>
