@@ -31,6 +31,12 @@
 		 			 "usuario"=>$Usuario->getId(), "usuario_id"=>$Usuario->getId(), "sistema"=>"S",
 		 			 "recordatorio"=>"",
  	);
+ 	if ($dat["mascara"]!="dd/mm/yyyy") {
+ 		$cadenaFecha = substr($regCSV['fecha'],strpos($dat["mascara"],'dd'),2).'/';
+ 		$cadenaFecha.= substr($regCSV['fecha'],strpos($dat["mascara"],'mm'),2).'/';
+ 		$cadenaFecha.= substr($regCSV['fecha'],strpos($dat["mascara"],'yy'),4).'/';
+ 		$regCSV['fecha'] = $cadenaFecha;
+ 	}
  	if ($Movimiento->guardar($regCSV)) {
  		$newFecha = $Visa->fechaRecordatorio($regCSV['fecha']);
  		if ($newFecha != null) {

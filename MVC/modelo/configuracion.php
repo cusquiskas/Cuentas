@@ -6,7 +6,7 @@ class configuracion {
    private $pass = 'FhbqsXsGqfqLcSRW';
    private $apli = 'cuentas';
    
-   private $home = '/opt/lampp/htdocs/cuentas/';
+   private $home = '/opt/lampp/htdocs/Cuentas/';
    
    public function getHost() { return $this->host; }
    public function getUser() { return $this->user; }
