@@ -34,6 +34,7 @@
     			break;
     		case 'GestionaEtiqueta':
     		case 'GestionaTarjetas':
+    		case 'EliminaMovimiento':
     			$this->menu = 'Maestro';
     			break;
     		case 'VerEstadistica':

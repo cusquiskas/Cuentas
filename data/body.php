@@ -3,7 +3,8 @@
 	switch ($Enlace->getEnlace()) {
 	case 'GestionaEtiqueta': 
 	case 'GestionaTarjetas':
-	  require_once('menu/maestros.php');
+	case 'EliminaMovimiento':
+		require_once('menu/maestros.php');
 	break;
 	case 'GestionaMovimiento':
 	case 'CreaRecordatorio':
@@ -29,7 +30,9 @@
        case 'GestionaEtiqueta': require_once('pantallas/etiquetas.php');
         break;
        case 'GestionaTarjetas': require_once('pantallas/tarjetas.php');
-        break;
+       	break;
+       case 'EliminaMovimiento': require_once('pantallas/registro.php');
+       	break;
        case 'GestionaMovimiento':
        case 'CreaRecordatorio':
        case 'CargaMovimento':

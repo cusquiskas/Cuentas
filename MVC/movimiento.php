@@ -62,6 +62,30 @@ class servicioMovimiento {
 		return $data[0];
 	}
 	
+	public function listaRegistros($usuario) {
+		$filtro = array(array("tipo"=>"s", "dato"=>$usuario));
+		$query  = "select id,
+				         DATE_FORMAT(FECHA, '%d/%m/%Y') AS fecha,
+				         importe,
+						 descripcion,
+						 visa,
+						 concepto1,
+						 concepto2,
+						 concepto3,
+						 concepto4,
+						 concepto5,
+						 concepto6,
+						 usuario
+				    from movimiento
+			       where usuario = ?
+					order by id desc
+					limit 50";
+		$link = new Conexion();
+		$data = $link->consulta($query, $filtro);
+		$link->close();
+		return $data;
+	}
+	
 	public function listaMovimiento($user, $mes, $año) {
 		$filtro = array (
 					0=>array("tipo"=>"s", "dato"=>$user),
@@ -148,6 +172,44 @@ class servicioMovimiento {
                    WHERE USUARIO = ?
                      AND ID = ?';
 		$link = new Conexion();
+		$link->ejecuta($query, $filtro);
+		$link->close();
+		return (!$link->hayError());
+	}
+	
+	private function delete($movimiento) {
+		$link = new Conexion();
+		$filtro = array (
+				array("tipo"=>"s", "dato"=>$movimiento["usuario"]),
+				array("tipo"=>"s", "dato"=>$movimiento["usuario"]),
+				array("tipo"=>"i", "dato"=>$movimiento["id"]),
+		);
+		$query = "delete split_etiqueta
+           		   where usuario = ?
+                     and eti_id in (select id
+                                      from split
+								     where usuario = ?
+				                       and mov_id = ? )";
+		$link->ejecuta($query, $filtro);
+		$filtro = array (
+				array("tipo"=>"s", "dato"=>$movimiento["usuario"]),
+				array("tipo"=>"i", "dato"=>$movimiento["id"]),
+		);
+		$query = "delete movimiento_etiqueta
+				   where usuario = ?
+                     and mov_id = ?";
+		$link->ejecuta($query, $filtro);
+		$filtro = array (
+				array("tipo"=>"s", "dato"=>$movimiento["usuario"]),
+				array("tipo"=>"i", "dato"=>$movimiento["id"]),
+		);
+		$query = "delete split
+				   where usuario = ?
+                     and mov_id = ?";
+		$link->ejecuta($query, $filtro);
+		$query = "delete movimiento
+				   where usuario = ?
+                     and id = ?";
 		$link->ejecuta($query, $filtro);
 		$link->close();
 		return (!$link->hayError());
