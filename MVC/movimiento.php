@@ -177,25 +177,27 @@ class servicioMovimiento {
 		return (!$link->hayError());
 	}
 	
-	private function delete($movimiento) {
+	public function delete($movimiento) {
 		$link = new Conexion();
 		$filtro = array (
 				array("tipo"=>"s", "dato"=>$movimiento["usuario"]),
 				array("tipo"=>"s", "dato"=>$movimiento["usuario"]),
 				array("tipo"=>"i", "dato"=>$movimiento["id"]),
 		);
-		$query = "delete split_etiqueta
+		$query = "delete 
+                    from split_etiqueta
            		   where usuario = ?
                      and eti_id in (select id
                                       from split
 								     where usuario = ?
-				                       and mov_id = ? )";
+				                       and mov_id = ?)";
 		$link->ejecuta($query, $filtro);
 		$filtro = array (
 				array("tipo"=>"s", "dato"=>$movimiento["usuario"]),
 				array("tipo"=>"i", "dato"=>$movimiento["id"]),
 		);
-		$query = "delete movimiento_etiqueta
+		$query = "delete 
+                    from movimiento_etiqueta
 				   where usuario = ?
                      and mov_id = ?";
 		$link->ejecuta($query, $filtro);
@@ -203,11 +205,13 @@ class servicioMovimiento {
 				array("tipo"=>"s", "dato"=>$movimiento["usuario"]),
 				array("tipo"=>"i", "dato"=>$movimiento["id"]),
 		);
-		$query = "delete split
+		$query = "delete 
+                    from split
 				   where usuario = ?
                      and mov_id = ?";
 		$link->ejecuta($query, $filtro);
-		$query = "delete movimiento
+		$query = "delete 
+                    from movimiento
 				   where usuario = ?
                      and id = ?";
 		$link->ejecuta($query, $filtro);

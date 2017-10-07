@@ -7,3 +7,5 @@ function validacion(obj) {
   if (err.length>0) { alert(err); }
   return (err.length==0);
 } 
+
+function submita(id) {var frm=getForm('frmBorraMovimiento');frm.id.value=id;frm.submit();}

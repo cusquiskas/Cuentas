@@ -19,9 +19,8 @@
  	$subcad = "";
  	$Visa->setId($reg["visa"]);
  	$vis = $Visa->listado();
- 	echo '<tr id="'.$reg["ID"].'">
- 			<td><button type="button" onClick="confirmacion();"><span class="glyphicon glyphicon-trash"></span></button>
-            </td>
+ 	echo '<tr>
+ 			<td><button type="button" onClick="submita('.$reg["id"].')"><span class="glyphicon glyphicon-trash"></span></button></td>
  			<td>'.$vis[0]['descripcion'].'</td>
 			<td>'.$reg["fecha"].'</td>
             <td>'.$reg["descripcion"].'</td>
@@ -35,5 +34,5 @@
 </div>
     
 <div style="display: none">
-<form name='frmBorraSplit' method='post'><input name='mov_id'><input name='accion' value='BorrarSplit'></form>
+<form name='frmBorraMovimiento' method='post'><input name='id'><input name='accion' value='EliminaRegistro'></form>
 </div>

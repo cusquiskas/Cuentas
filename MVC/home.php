@@ -18,14 +18,6 @@ require_once 'MVC/split.php';
 /* restos de la antigua estructura */
 require_once('MVC/servicio/estructura.php');
 
-/**************************
- * 
- * 
- * http://github.com/PHPOffice
- * class PHPExcel
- * 
- */
-
 
  if (isset($_POST['irA'])) { $Enlace->setEnlace($_POST['irA'],$_POST["scroll"],$_POST["extra"]); }
  
@@ -53,6 +45,10 @@ require_once('MVC/servicio/estructura.php');
    case 'identificacion':
     $Usuario->valida(["clave"=>$_POST["password"]]);
     break;
+   case 'EliminaRegistro':
+   	$Movimiento->delete(array('usuario'=>$Usuario->getId(), 'id'=>(int)$_POST['id']));
+   	$Enlace->setEnlace('EliminaMovimiento');
+   	break;
    
    case 'GuardarRecordatorio':
     $Recordatorio->guardar(array('id'=>$_POST['id'],

@@ -24,6 +24,7 @@
   <script><?php echo "var PHPSESSION='".session_id()."';"; ?></script>
   <?php 
    if ($Enlace->getEnlace()=='NuevoRegistro')       echo '<script src="js/registro.js" type="text/javascript"></script>';
+   if ($Enlace->getEnlace()=='EliminaMovimiento')   echo '<script src="js/registro.js" type="text/javascript"></script>';
    if ($Enlace->getEnlace()=='GestionaEtiqueta')    echo '<script src="js/etiquetas.js" type="text/javascript"></script>';
    if ($Enlace->getEnlace()=='GestionaTarjetas')    echo '<script src="js/tarjeta.js" type="text/javascript"></script>';
    if ($Enlace->getEnlace()=='AsignaEtiqueta')      echo '<script src="js/etiquetado.js" type="text/javascript"></script>';
