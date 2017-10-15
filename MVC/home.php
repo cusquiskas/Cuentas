@@ -169,11 +169,15 @@ require_once('MVC/servicio/estructura.php');
      #if (strtolower(substr($_FILES['userfile']['name'],-4)) != '.csv') new Excepcion('La extensión del archivo no es CSV', 1);
      	$fileExtension = strtolower(substr($_FILES['userfile']['name'], strrpos($_FILES['userfile']['name'],".")));
      	$fileName = $modeloConfiguracion->getHome().session_id().$fileExtension;
-     	if ($fileExtension!='.xls' && $fileExtension!='.xlsx') new Excepcion('No tiene extensión Excel', 1);
+     	if ($fileExtension!='.xls' && $fileExtension!='.xlsx' && $fileExtension!='.pdf') new Excepcion('No tiene extensión válida [Excel, PDF]', 1);
     }
     if ($controlError->hayError() == 0) {
      if (move_uploaded_file($_FILES['userfile']['tmp_name'], $fileName)) {
-      require_once('MVC/procesos/carga_csv.php');
+         echo "<li>fileExtension: $fileExtension</li>";
+         if ($fileExtension!='.pdf')
+            require_once('MVC/procesos/carga_csv.php');
+         else
+            require_once('MVC/procesos/carga_pdf.php');
       
       unlink($fileName);
       $Enlace->setEnlace('ListadoMovimiento');
