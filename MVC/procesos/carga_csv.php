@@ -23,7 +23,7 @@
 		 			 "descripcion"=>$XLSheet->getCell(strtoupper($dat["c_descripcion"].$sheetRow))->getValue(),
 		 			 "importe"=>    $importe,
 		 			 "visa"=>       $dat["id"],
-		 			 "concepto1"=>  $XLSheet->getCell(strtoupper($dat["c_concepto1"].$sheetRow))->getValue(),
+ 	                 "concepto1"=>  ($dat["c_concepto1"]=="")?"":$XLSheet->getCell(strtoupper($dat["c_concepto1"].$sheetRow))->getValue(),
 		 			 "concepto2"=>  ($dat["c_concepto2"]=="")?"":$XLSheet->getCell(strtoupper($dat["c_concepto2"].$sheetRow))->getValue(),
 		 			 "concepto3"=>  ($dat["c_concepto3"]=="")?"":$XLSheet->getCell(strtoupper($dat["c_concepto3"].$sheetRow))->getValue(),
 		 			 "concepto4"=>  ($dat["c_concepto4"]=="")?"":$XLSheet->getCell(strtoupper($dat["c_concepto4"].$sheetRow))->getValue(),
@@ -31,11 +31,16 @@
 		 			 "usuario"=>$Usuario->getId(), "usuario_id"=>$Usuario->getId(), "sistema"=>"S",
 		 			 "recordatorio"=>"",
  	);
- 	if ($dat["mascara"]!="dd/mm/yyyy") {
- 		$cadenaFecha = substr($regCSV['fecha'],strpos($dat["mascara"],'dd'),2).'/';
- 		$cadenaFecha.= substr($regCSV['fecha'],strpos($dat["mascara"],'mm'),2).'/';
- 		$cadenaFecha.= substr($regCSV['fecha'],strpos($dat["mascara"],'yy'),4).'/';
- 		$regCSV['fecha'] = $cadenaFecha;
+ 	if ($dat["mascara"]=="numero") {
+ 	    $cadenaFecha = date("d/m/Y", ((int)$regCSV['fecha']-25569)*24*60*60);
+ 	    $regCSV['fecha'] = $cadenaFecha;
+ 	} else {
+ 	    if ($dat["mascara"]!="dd/mm/yyyy") {
+ 	        $cadenaFecha = substr($regCSV['fecha'],strpos($dat["mascara"],'dd'),2).'/';
+ 	        $cadenaFecha.= substr($regCSV['fecha'],strpos($dat["mascara"],'mm'),2).'/';
+ 	        $cadenaFecha.= substr($regCSV['fecha'],strpos($dat["mascara"],'yy'),4).'/';
+ 	        $regCSV['fecha'] = $cadenaFecha;
+ 	    }
  	}
  	if ($Movimiento->guardar($regCSV)) {
  		$newFecha = $Visa->fechaRecordatorio($regCSV['fecha']);
