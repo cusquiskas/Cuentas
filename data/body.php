@@ -4,6 +4,8 @@
 	case 'GestionaEtiqueta': 
 	case 'GestionaTarjetas':
 	case 'EliminaMovimiento':
+	case 'GestionaPiso':
+	case 'GestionaPropietario':
 		require_once('menu/maestros.php');
 	break;
 	case 'GestionaMovimiento':

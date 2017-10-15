@@ -31,6 +31,7 @@
 		 			 "usuario"=>$Usuario->getId(), "usuario_id"=>$Usuario->getId(), "sistema"=>"S",
 		 			 "recordatorio"=>"",
  	);
+ 	if (@gettype((int)$regCSV['fecha']) == 'integer') $dat["mascara"]="numero";
  	if ($dat["mascara"]=="numero") {
  	    $cadenaFecha = date("d/m/Y", ((int)$regCSV['fecha']-25569)*24*60*60);
  	    $regCSV['fecha'] = $cadenaFecha;
