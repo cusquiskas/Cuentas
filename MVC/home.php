@@ -12,8 +12,12 @@ require_once 'MVC/etiqueta.php';
 require_once 'MVC/visa.php';
 require_once 'MVC/movimiento.php';
 require_once 'MVC/movimiento_etiqueta.php';
-require_once 'MVC/split_etiqueta.php';
+require_once 'MVC/movimiento_piso.php';
 require_once 'MVC/split.php';
+require_once 'MVC/split_etiqueta.php';
+require_once 'MVC/split_piso.php';
+require_once 'MVC/propietario.php';
+require_once 'MVC/piso.php';
 
 /* restos de la antigua estructura */
 require_once('MVC/servicio/estructura.php');
@@ -67,35 +71,62 @@ require_once('MVC/servicio/estructura.php');
     }
     break;
    case 'GuardarEtiquetado':
-    $MovEti = new MovimientoEtiqueta();
-    $MovEti->setUsuario($Usuario->getId());
-    $MovEti->setMov($_POST["movimiento"]);
+   	$MovEti = new MovimientoEtiqueta();
+   	$MovEti->setUsuario($Usuario->getId());
+   	$MovEti->setMov($_POST["movimiento"]);
    	if ($MovEti->limpiaMovimiento()) {
-    	if (isset($_POST["EtqSel"])) { 
-    		foreach ($_POST["EtqSel"] as $etq) {
-    			$MovEti->setEti($etq);
-    			$MovEti->guardaAsignacion(); 
-    		}
-    	}
-    	$Enlace->setEnlace('ListadoMovimiento', $Enlace->getScroll());
-    } else new Excepcion("No se ha podido realizar la operación",1);
-    unset($MovEti);
+   		if (isset($_POST["EtqSel"])) {
+   			foreach ($_POST["EtqSel"] as $etq) {
+   				$MovEti->setEti($etq);
+   				$MovEti->guardaAsignacion();
+   			}
+   		}
+   		$Enlace->setEnlace('ListadoMovimiento', $Enlace->getScroll());
+   	} else new Excepcion("No se ha podido realizar la operación (Etiqueta)",1);
+   	unset($MovEti);
+   	$MovPiso = new MovimientoPiso();
+   	$MovPiso->setUsuario($Usuario->getId());
+   	$MovPiso->setMovId($_POST["movimiento"]);
+   	if ($MovPiso->limpiaMovimiento()) {
+   		if (isset($_POST["PisoSel"])) {
+   			foreach ($_POST["PisoSel"] as $piso) {
+   				$MovPiso->setPisoId($piso);
+   				$MovPiso->guardaAsignacion();
+   			}
+   		}
+   		$Enlace->setEnlace('ListadoMovimiento', $Enlace->getScroll());
+   	} else new Excepcion("No se ha podido realizar la operación (Propiedad)",1);
+   	unset($MovPiso);
+   	
     break;
    case 'GuardarEtiquetadoSplit':
-    $SplEti = new SplitEtiqueta();
-    $SplEti->setUsuario($Usuario->getId());
-    $SplEti->setSpl($_POST["movimiento"]);
+   	$SplEti = new SplitEtiqueta();
+   	$SplEti->setUsuario($Usuario->getId());
+   	$SplEti->setSpl($_POST["movimiento"]);
    	if ($SplEti->limpiaSplit()) {
-    	if (isset($_POST["EtqSel"])) { 
-    		foreach ($_POST["EtqSel"] as $etq) {
-    			$SplEti->setEti($etq);
-    			$SplEti->guardaAsignacion(); 
-    		}
-    	}
-    	$Enlace->setEnlace('ListadoMovimiento', $Enlace->getScroll());
-    } else new Excepcion("No se ha podido realizar la operación",1);
-    unset($SplEti);
-    break;
+   		if (isset($_POST["EtqSel"])) {
+   			foreach ($_POST["EtqSel"] as $etq) {
+   				$SplEti->setEti($etq);
+   				$SplEti->guardaAsignacion();
+   			}
+   		}
+   		$Enlace->setEnlace('ListadoMovimiento', $Enlace->getScroll());
+   	} else new Excepcion("No se ha podido realizar la operación (Etiqueta)",1);
+   	unset($SplEti);
+   	$SplPiso = new SplitPiso();
+   	$SplPiso->setUsuario($Usuario->getId());
+   	$SplPiso->setSplId($_POST["movimiento"]);
+   	if ($SplPiso->limpiaSplit()) {
+   		if (isset($_POST["PisoSel"])) {
+   			foreach ($_POST["PisoSel"] as $piso) {
+   				$SplPiso->setPisoId($piso);
+   				$SplPiso->guardaAsignacion();
+   			}
+   		}
+   		$Enlace->setEnlace('ListadoMovimiento', $Enlace->getScroll());
+   	} else new Excepcion("No se ha podido realizar la operación (Propiedad)",1);
+   	unset($SplPiso);
+   	break;
    case 'GuardarEtiqueta':
     $Eti = new Etiqueta();
    	$Eti->setUsuario($Usuario->getId());
@@ -105,6 +136,20 @@ require_once('MVC/servicio/estructura.php');
    	$Eti->guardaEtiqueta();
    	unset($Eti);
     break;
+   case 'GuardarPropietario':
+   	$Propi = new Propietario();
+   	$Propi->setDatos($_POST);
+   	$Propi->setUsuario($Usuario->getId());
+   	$Propi->guarda();
+   	unset($Propi);
+   	break;
+   case 'GuardarPiso':
+   	$Piso = new Piso();
+   	$Piso->setDatos($_POST);
+   	$Piso->setUsuario($Usuario->getId());
+   	$Piso->guarda();
+   	unset($Piso);
+   	break;
    case 'DesactivaEtiqueta':
     $Eti = new Etiqueta();
    	$Eti->setUsuario($Usuario->getId());

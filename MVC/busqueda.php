@@ -44,16 +44,26 @@ class modeloEstadistica {
 	
 	function listaEtiquetas() {
 		$datos = array(
-					0=>array("tipo"=>"s", "dato"=>$_SESSION['data']['user']['id']),
-					1=>array("tipo"=>"s", "dato"=>$this->getAño()),
-					2=>array("tipo"=>"i", "dato"=>$this->getEtiqueta1()),
-					3=>array("tipo"=>"i", "dato"=>$this->getEtiqueta2()),
-					4=>array("tipo"=>"i", "dato"=>$this->getEtiqueta3()),
-					5=>array("tipo"=>"s", "dato"=>$_SESSION['data']['user']['id']),
-					6=>array("tipo"=>"s", "dato"=>$this->getAño()),
-					7=>array("tipo"=>"i", "dato"=>$this->getEtiqueta1()),
-					8=>array("tipo"=>"i", "dato"=>$this->getEtiqueta2()),
-					9=>array("tipo"=>"i", "dato"=>$this->getEtiqueta3())
+					array("tipo"=>"s", "dato"=>$_SESSION['data']['user']['id']),
+					array("tipo"=>"s", "dato"=>$this->getAño()),
+					array("tipo"=>"i", "dato"=>$this->getEtiqueta1()),
+					array("tipo"=>"i", "dato"=>$this->getEtiqueta2()),
+					array("tipo"=>"i", "dato"=>$this->getEtiqueta3()),
+					array("tipo"=>"s", "dato"=>$_SESSION['data']['user']['id']),
+					array("tipo"=>"s", "dato"=>$this->getAño()),
+					array("tipo"=>"i", "dato"=>$this->getEtiqueta1()),
+					array("tipo"=>"i", "dato"=>$this->getEtiqueta2()),
+					array("tipo"=>"i", "dato"=>$this->getEtiqueta3()),
+					array("tipo"=>"s", "dato"=>$_SESSION['data']['user']['id']),
+					array("tipo"=>"s", "dato"=>$this->getAño()),
+					array("tipo"=>"i", "dato"=>$this->getEtiqueta1()),
+					array("tipo"=>"i", "dato"=>$this->getEtiqueta2()),
+					array("tipo"=>"i", "dato"=>$this->getEtiqueta3()),
+					array("tipo"=>"s", "dato"=>$_SESSION['data']['user']['id']),
+					array("tipo"=>"s", "dato"=>$this->getAño()),
+					array("tipo"=>"i", "dato"=>$this->getEtiqueta1()),
+					array("tipo"=>"i", "dato"=>$this->getEtiqueta2()),
+					array("tipo"=>"i", "dato"=>$this->getEtiqueta3())
 		);
 		$query = "SELECT
 					  etiqueta,
@@ -101,6 +111,46 @@ class modeloEstadistica {
 				      spl.id IN(SELECT spl_id FROM split_etiqueta WHERE eti_id = IFNULL(?,eti_id)) AND 
 				      spl.id IN(SELECT spl_id FROM split_etiqueta WHERE eti_id = IFNULL(?,eti_id)) AND 
 				      spl.id IN(SELECT spl_id FROM split_etiqueta WHERE eti_id = IFNULL(?,eti_id))
+				    UNION
+					 SELECT
+					    piso.id etiqueta,
+					    piso.nombre descripcion,
+					    DATE_FORMAT(mov.fecha,'%m') mes,
+					    mov.importe importe
+					  FROM
+					    movimiento mov,
+					    (select piso.usuario usuario, piso.id id, CONCAT(piso.nombre,' - ',pro.nombre) nombre from piso,propietario pro where piso.propietario = pro.id and pro.usuario = piso.usuario) piso,
+					    movimiento_piso mpi
+					  WHERE
+					    mpi.mov_id = mov.id AND 
+				        mpi.piso_id = piso.id AND 
+				        mpi.usuario = mov.usuario AND 
+				        mpi.usuario = piso.usuario AND 
+				        mpi.usuario = ? AND 
+				        DATE_FORMAT(mov.fecha,'%Y') = ? AND 
+				        mov.id IN(SELECT mov_id FROM movimiento_piso WHERE piso_id = IFNULL(?,piso_id)) AND 
+				        mov.id IN(SELECT mov_id FROM movimiento_piso WHERE piso_id = IFNULL(?,piso_id)) AND 
+				        mov.id IN(SELECT mov_id FROM movimiento_piso WHERE piso_id = IFNULL(?,piso_id))
+					 UNION
+					SELECT
+					  piso.id etiqueta,
+					  piso.nombre descripcion,
+					  DATE_FORMAT(spl.fecha,'%m') mes,
+					  spl.importe importe
+					FROM
+					  split spl,
+					  (select piso.usuario usuario, piso.id id, CONCAT(piso.nombre,' - ',pro.nombre) nombre from piso,propietario pro where piso.propietario = pro.id and pro.usuario = piso.usuario) piso,
+					  split_piso spi
+					WHERE
+					  spi.spl_id = spl.id AND 
+				      spi.piso_id = piso.id AND 
+				      spi.usuario = spl.usuario AND 
+				      spi.usuario = piso.usuario AND 
+				      spi.usuario = ? AND 
+				      DATE_FORMAT(spl.fecha,'%Y') = ? AND 
+				      spl.id IN(SELECT spl_id FROM split_piso WHERE piso_id = IFNULL(?,piso_id)) AND 
+				      spl.id IN(SELECT spl_id FROM split_piso WHERE piso_id = IFNULL(?,piso_id)) AND 
+				      spl.id IN(SELECT spl_id FROM split_piso WHERE piso_id = IFNULL(?,piso_id))
 					) alias
 					GROUP BY
 					  etiqueta,

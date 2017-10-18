@@ -30,7 +30,7 @@
             $datos = array(
                         array("tipo"=>"s", "dato"=>$this->getNombre()),
                         array("tipo"=>"s", "dato"=>$this->getUsuario()),
-                        array("tipo"=>"i", "dato"=>$this->getPropietario())
+                        array("tipo"=>"i", "dato"=>$this->getPropietario()),
                         array("tipo"=>"d", "dato"=>$this->getPorcentaje())
                      );
             $query = "insert
@@ -80,13 +80,64 @@
         
         public function guarda() {
             if ($this->getId() != null) {
-                if ($this->update()) new Excepcion("Se ha actualizado el propietario", 0);
+                if ($this->update()) new Excepcion("Se ha actualizado el piso", 0);
             } else {
-                if ($this->insert()) new Excepcion("Se ha creado el propietario", 0);
+                if ($this->insert()) new Excepcion("Se ha creado el piso", 0);
             }
         }
         
         public function listado() { return $this->recupera(); }
+        
+        public function BuscaId($piso) {
+        	$filtro = array(
+        			array("tipo"=>"s", "dato"=>$piso['usuario']),
+        			array("tipo"=>"i", "dato"=>$piso['id'])
+        	);
+        	$query = "select piso.id piso_id, 
+						 piso.nombre piso_nombre, 
+                         propietario.id pro_id, 
+                         propietario.nombre pro_nombre,
+                         movimiento_piso.mov_id
+				    from movimiento_piso,
+				         piso,
+						 propietario
+			       where movimiento_piso.piso_id = piso.id
+				     and movimiento_piso.usuario = piso.usuario
+                     and piso.propietario = propietario.id
+                     and piso.usuario = propietario.usuario
+                     and movimiento_piso.usuario = ?
+					 and movimiento_piso.mov_id  = ?";
+        	$link = new Conexion();
+        	$reg = $link->consulta($query,$filtro);
+        	$link->close();
+        	return $reg;
+        }
+        
+        public function BuscaIdSplit($piso) {
+        	$filtro = array(
+        			0=>array("tipo"=>"s", "dato"=>$piso['usuario']),
+        			1=>array("tipo"=>"i", "dato"=>$piso['id'])
+        	);
+        	$query = "select piso.id piso_id, 
+						 piso.nombre piso_nombre, 
+                         propietario.id pro_id, 
+                         propietario.nombre pro_nombre,
+                         split_piso.spl_id
+				    from split_piso,
+				         piso,
+						 propietario
+			       where split_piso.piso_id = piso.id
+				     and split_piso.usuario = piso.usuario
+                     and piso.propietario = propietario.id
+                     and piso.usuario = propietario.usuario
+				     and split_piso.usuario = ?
+		             and split_piso.spl_id  = ?";
+        	$link = new Conexion();
+        	$reg = $link->consulta($query,$filtro);
+        	$link->close();
+        	return $reg;
+        }
+        
         
     }
 ?>

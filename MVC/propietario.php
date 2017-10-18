@@ -57,7 +57,8 @@
             $query = "select *
                         from propietario
 				       where id = IFNULL(?, id)
-				         and usuario = ?";
+				         and usuario = ?
+					   order by nombre";
             $link = new Conexion();
             $data = $link->consulta($query, $datos);
             $link->close();

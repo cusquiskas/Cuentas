@@ -13,6 +13,7 @@
  <?php 
  $data = $Movimiento->listaMovimiento($Usuario->getId(), $Buscar->getMes(), $Buscar->getAño());
  $Eti = new Etiqueta();
+ $Piso = new Piso();
  $Visa = new Visa();
  $Visa->setUsuario($Usuario->getId());
  foreach ($data as $reg) {
@@ -24,9 +25,11 @@
  			$color = 'warning'; 
  			$subcad = "<button type='button' onClick='irA(\"AsignaEtiquetaSplit\",".$reg["split"].");'><span class='glyphicon glyphicon-tags'></span></button>";
  		    $subcad.= "<button type='button' onClick='borrarSplit(\"".$reg["ID"]."\");'><span class='glyphicon glyphicon-resize-small'></span></button>";
- 			$rug = $Eti->BuscaIdSplit(array("usuario"=>$Usuario->getId(), "id"=>$reg["split"]));
- 			for ($b=0;$b<count($rug);$b++) $etiqt.= '<label class="badge">'.$rug[$b]["descripcion"].'</label>';
- 			break;
+ 		    $rug = $Piso->BuscaIdSplit(array("usuario"=>$Usuario->getId(), "id"=>$reg["split"]));
+ 		    for ($b=0;$b<count($rug);$b++) $etiqt.= '<label class="badge">'.$rug[$b]["piso_nombre"].' - '.$rug[$b]["pro_nombre"].'</label>';
+ 		    $rug = $Eti->BuscaIdSplit(array("usuario"=>$Usuario->getId(), "id"=>$reg["split"]));
+ 		    for ($b=0;$b<count($rug);$b++) $etiqt.= '<label class="badge">'.$rug[$b]["descripcion"].'</label>';
+ 		    break;
  		case  0:  #es un recordatorio
  			$color = 'info'; 
  			$subcad = "<button type='button' onClick='irA(\"CreaRecordatorio\",".$reg["ID"].");'><span class='glyphicon glyphicon-pencil'></span></button>";
@@ -35,6 +38,8 @@
  			$subcad = "<button type='button' onClick='irA(\"AsignaEtiqueta\",".$reg["ID"].");'><span class='glyphicon glyphicon-tags'></span></button>";
  			$subcad.= "<button type='button' onClick='irA(\"Split\",".$reg["ID"].");'><span class='glyphicon glyphicon-resize-full'></span></button>";
  			$subcad.= "<button type='button' onClick='irA(\"CambiaNombre\",".$reg["ID"].");'><span class='glyphicon glyphicon-text-size'></span></button>";
+ 			$rug = $Piso->BuscaId(array("usuario"=>$Usuario->getId(), "id"=>$reg["ID"]));
+ 			for ($b=0;$b<count($rug);$b++) $etiqt.= '<label class="badge">'.$rug[$b]["piso_nombre"].' - '.$rug[$b]["pro_nombre"].'</label>';
  			$rug = $Eti->BuscaId(array("usuario"=>$Usuario->getId(), "id"=>$reg["ID"]));
  			for ($b=0;$b<count($rug);$b++) $etiqt.= '<label class="badge">'.$rug[$b]["descripcion"].'</label>';
  			$Visa->setId($reg["VISA"]);
