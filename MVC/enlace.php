@@ -27,6 +27,7 @@
     		case 'AsignaEtiquetaSplit':
     		case 'CambiaNombre':
     		case 'Split':
+    		case 'CargaObligaciones':
     			$this->menu = 'Movimiento';
     			break;
     		case 'GestionaMovimiento':
@@ -35,6 +36,8 @@
     		case 'GestionaEtiqueta':
     		case 'GestionaTarjetas':
     		case 'EliminaMovimiento':
+    		case 'GestionaPiso':
+    		case 'GestionaPropietario':
     			$this->menu = 'Maestro';
     			break;
     		case 'VerEstadistica':

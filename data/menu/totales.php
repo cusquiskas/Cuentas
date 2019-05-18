@@ -36,11 +36,21 @@
         </select>
 
 </p>
-<br><br>
+<br>
 <h4>Acciones:</h4>
 <p><button class="btn btn-default" type="button" onClick="navegarA('CreaRecordatorio'  ,0)">Nuevo Recordatorio</button></p>
 <p><button class="btn btn-default" type="button" onClick="navegarA('GestionaMovimiento',0)">Inserta Movimiento</button></p>
 <p><button class="btn btn-default" type="button" onClick="navegarA('CargaMovimento'    ,0)">Carga Automática  </button></p>
+<?php 
+    $Piso = new Piso();
+    $Piso->setUsuario($Usuario->getId());
+    $datPis = $Piso->listado();
+    unset($Piso);
+    if (count($datPis)>0) {
+        echo "<p><button class=\"btn btn-default\" type=\"button\" onClick=\"navegarA('CargaObligaciones' ,0)\">Asignar Obligaciones</button></p>";
+    }
+?>
+
 </form>
 
 <script>

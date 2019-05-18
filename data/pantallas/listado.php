@@ -71,4 +71,5 @@ if ($Enlace->getEnlace() == "CargaMovimento")     { require('carga.php');       
 if ($Enlace->getEnlace() == "GestionaMovimiento") { require('movimiento.php');   }
 if ($Enlace->getEnlace() == "CambiaNombre")       { require('renombra.php');     }
 if ($Enlace->getEnlace() == "Split")              { require('split.php');        }
+if ($Enlace->getEnlace() == "CargaObligaciones")  { require('obligaciones.php'); }
 ?>

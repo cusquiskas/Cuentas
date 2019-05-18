@@ -34,6 +34,7 @@
    if ($Enlace->getEnlace()=='CambiaNombre')        echo '<script src="js/renombra.js" type="text/javascript"></script>';
    if ($Enlace->getEnlace()=='VerEstadistica')      echo '<script src="js/estadistica.js" type="text/javascript"></script>';
    if ($Enlace->getEnlace()=='Split')               echo '<script src="js/split.js" type="text/javascript"></script>';
+   if ($Enlace->getEnlace()=='CargaObligaciones')   echo '<script src="js/obligacion.js" type="text/javascript"></script>';
    if ($Usuario->getId() == "")                     echo '<script src="js/login.js" type="text/javascript"></script>';
   ?>
  </head>

@@ -16,6 +16,7 @@
 	case 'CambiaNombre':
     case 'Split':
     case 'ListadoMovimiento':
+    case 'CargaObligaciones':
 	  require_once('menu/totales.php');
 	break;
 	case 'VerEstadistica':
@@ -51,6 +52,7 @@
        case 'AsignaEtiquetaSplit':
        case 'CambiaNombre':
        case 'Split':
+       case 'CargaObligaciones':
        case 'ListadoMovimiento': 
        	require_once('pantallas/listado.php');
         break;
