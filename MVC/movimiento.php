@@ -153,6 +153,17 @@ class servicioMovimiento
         return $data;
     }
 
+    public function recuperaID()
+    {
+        $query = 'SELECT max(id) as id FROM movimiento';
+        $filtro = array();
+        $link = new Conexion();
+        $data = $link->consulta($query, $filtro);
+        $link->close();
+
+        return $data[0]['id'];
+    }
+
     private function update($movimiento)
     {
         $filtro = array(
@@ -300,7 +311,7 @@ class servicioMovimiento
                 new Excepcion('Registro de fecha '.$movimiento['fecha'].' e importe '.$movimiento['importe'].' duplicado', 1);
             } else {
                 if ($this->insert($movimiento)) {
-                    $movimiento['id'] = mysql_insert_id();
+                    $movimiento['id'] = $this->recuperaID();
                     new Excepcion('Se ha guardado el movimiento con fecha '.$movimiento['fecha'].' e importe '.$movimiento['importe'], 0);
                 } else {
                     $resultado = false;
