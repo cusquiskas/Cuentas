@@ -54,10 +54,13 @@
              $regCSV['descripcion'] = 'Pendiente tarjeta '.$dat['descripcion'];
              $Recordatorio->guardar($regCSV);
          }
+         // vamos a comprobar si la descripción del movimiento coincide con alguno de los datos maestros
+         // si hay coincidencia, le tendremos que asignar la etiqueta
+         $descripcion = '.'.mb_strtolower($XLSheet->getCell(strtoupper($dat['c_descripcion'].$sheetRow))->getValue(), 'UTF-8');
+         if ((int) strpos($descripcion, 'mercadona') > 0) {
+             echo 'Mercadona'.' '.$regCSV['id'];
+         }
      }
-     // vamos a comprobar si la descripción del movimiento coincide con alguno de los datos maestros
-     // si hay coincidencia, le tendremos que asignar la etiqueta
-     $descripcion = $XLSheet->getCell(strtoupper($dat['c_descripcion'].$sheetRow))->getValue();
      ++$sheetRow;
  }
 
