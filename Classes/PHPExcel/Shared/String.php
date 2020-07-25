@@ -1,9 +1,8 @@
 <?php
-
 /**
- * PHPExcel_Shared_String
+ * PHPExcel
  *
- * Copyright (c) 2006 - 2015 PHPExcel
+ * Copyright (c) 2006 - 2013 PHPExcel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,12 +19,23 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category   PHPExcel
- * @package    PHPExcel_Shared
- * @copyright  Copyright (c) 2006 - 2015 PHPExcel (http://www.codeplex.com/PHPExcel)
+ * @package    PHPExcel\Shared
+ * @copyright  Copyright (c) 2006 - 2013 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  * @version    ##VERSION##, ##DATE##
  */
-class PHPExcel_Shared_String
+
+
+namespace PHPExcel;
+
+/**
+ * PHPExcel\Shared_String
+ *
+ * @category   PHPExcel
+ * @package    PHPExcel\Shared
+ * @copyright  Copyright (c) 2006 - 2013 PHPExcel (http://www.codeplex.com/PHPExcel)
+ */
+class Shared_String
 {
     /**    Constants                */
     /**    Regular Expressions        */
@@ -38,60 +48,59 @@ class PHPExcel_Shared_String
      *
      * @var string[]
      */
-    private static $controlCharacters = array();
+    private static $_controlCharacters = array();
 
     /**
      * SYLK Characters array
      *
      * $var array
      */
-    private static $SYLKCharacters = array();
+    private static $_SYLKCharacters = array();
 
     /**
      * Decimal separator
      *
      * @var string
      */
-    private static $decimalSeparator;
+    private static $_decimalSeparator;
 
     /**
      * Thousands separator
      *
      * @var string
      */
-    private static $thousandsSeparator;
+    private static $_thousandsSeparator;
 
     /**
      * Currency code
      *
      * @var string
      */
-    private static $currencyCode;
+    private static $_currencyCode;
 
     /**
      * Is mbstring extension avalable?
      *
      * @var boolean
      */
-    private static $isMbstringEnabled;
+    private static $_isMbstringEnabled;
 
     /**
      * Is iconv extension avalable?
      *
      * @var boolean
      */
-    private static $isIconvEnabled;
+    private static $_isIconvEnabled;
 
     /**
      * Build control characters array
      */
-    private static function buildControlCharacters()
-    {
+    private static function _buildControlCharacters() {
         for ($i = 0; $i <= 31; ++$i) {
             if ($i != 9 && $i != 10 && $i != 13) {
-                $find = '_x' . sprintf('%04s', strtoupper(dechex($i))) . '_';
+                $find = '_x' . sprintf('%04s' , strtoupper(dechex($i))) . '_';
                 $replace = chr($i);
-                self::$controlCharacters[$find] = $replace;
+                self::$_controlCharacters[$find] = $replace;
             }
         }
     }
@@ -99,9 +108,9 @@ class PHPExcel_Shared_String
     /**
      * Build SYLK characters array
      */
-    private static function buildSYLKCharacters()
+    private static function _buildSYLKCharacters()
     {
-        self::$SYLKCharacters = array(
+        self::$_SYLKCharacters = array(
             "\x1B 0"  => chr(0),
             "\x1B 1"  => chr(1),
             "\x1B 2"  => chr(2),
@@ -268,14 +277,14 @@ class PHPExcel_Shared_String
      */
     public static function getIsMbstringEnabled()
     {
-        if (isset(self::$isMbstringEnabled)) {
-            return self::$isMbstringEnabled;
+        if (isset(self::$_isMbstringEnabled)) {
+            return self::$_isMbstringEnabled;
         }
 
-        self::$isMbstringEnabled = function_exists('mb_convert_encoding') ?
+        self::$_isMbstringEnabled = function_exists('mb_convert_encoding') ?
             true : false;
 
-        return self::$isMbstringEnabled;
+        return self::$_isMbstringEnabled;
     }
 
     /**
@@ -285,47 +294,49 @@ class PHPExcel_Shared_String
      */
     public static function getIsIconvEnabled()
     {
-        if (isset(self::$isIconvEnabled)) {
-            return self::$isIconvEnabled;
+        if (isset(self::$_isIconvEnabled)) {
+            return self::$_isIconvEnabled;
         }
 
         // Fail if iconv doesn't exist
         if (!function_exists('iconv')) {
-            self::$isIconvEnabled = false;
+            self::$_isIconvEnabled = false;
             return false;
         }
 
         // Sometimes iconv is not working, and e.g. iconv('UTF-8', 'UTF-16LE', 'x') just returns false,
         if (!@iconv('UTF-8', 'UTF-16LE', 'x')) {
-            self::$isIconvEnabled = false;
+            self::$_isIconvEnabled = false;
             return false;
         }
 
         // Sometimes iconv_substr('A', 0, 1, 'UTF-8') just returns false in PHP 5.2.0
         // we cannot use iconv in that case either (http://bugs.php.net/bug.php?id=37773)
         if (!@iconv_substr('A', 0, 1, 'UTF-8')) {
-            self::$isIconvEnabled = false;
+            self::$_isIconvEnabled = false;
             return false;
         }
 
         // CUSTOM: IBM AIX iconv() does not work
-        if (defined('PHP_OS') && @stristr(PHP_OS, 'AIX') && defined('ICONV_IMPL') && (@strcasecmp(ICONV_IMPL, 'unknown') == 0) && defined('ICONV_VERSION') && (@strcasecmp(ICONV_VERSION, 'unknown') == 0)) {
-            self::$isIconvEnabled = false;
+        if ( defined('PHP_OS') && @stristr(PHP_OS, 'AIX')
+                && defined('ICONV_IMPL') && (@strcasecmp(ICONV_IMPL, 'unknown') == 0)
+                && defined('ICONV_VERSION') && (@strcasecmp(ICONV_VERSION, 'unknown') == 0) )
+        {
+            self::$_isIconvEnabled = false;
             return false;
         }
 
         // If we reach here no problems were detected with iconv
-        self::$isIconvEnabled = true;
+        self::$_isIconvEnabled = true;
         return true;
     }
 
-    public static function buildCharacterSets()
-    {
-        if (empty(self::$controlCharacters)) {
-            self::buildControlCharacters();
+    public static function buildCharacterSets() {
+        if(empty(self::$_controlCharacters)) {
+            self::_buildControlCharacters();
         }
-        if (empty(self::$SYLKCharacters)) {
-            self::buildSYLKCharacters();
+        if(empty(self::$_SYLKCharacters)) {
+            self::_buildSYLKCharacters();
         }
     }
 
@@ -343,9 +354,8 @@ class PHPExcel_Shared_String
      * @param     string    $value    Value to unescape
      * @return     string
      */
-    public static function ControlCharacterOOXML2PHP($value = '')
-    {
-        return str_replace(array_keys(self::$controlCharacters), array_values(self::$controlCharacters), $value);
+    public static function ControlCharacterOOXML2PHP($value = '') {
+        return str_replace( array_keys(self::$_controlCharacters), array_values(self::$_controlCharacters), $value );
     }
 
     /**
@@ -362,9 +372,8 @@ class PHPExcel_Shared_String
      * @param     string    $value    Value to escape
      * @return     string
      */
-    public static function ControlCharacterPHP2OOXML($value = '')
-    {
-        return str_replace(array_values(self::$controlCharacters), array_keys(self::$controlCharacters), $value);
+    public static function ControlCharacterPHP2OOXML($value = '') {
+        return str_replace( array_values(self::$_controlCharacters), array_keys(self::$_controlCharacters), $value );
     }
 
     /**
@@ -395,9 +404,8 @@ class PHPExcel_Shared_String
      * @param string $value
      * @return boolean
      */
-    public static function IsUTF8($value = '')
-    {
-        return $value === '' || preg_match('/^./su', $value) === 1;
+    public static function IsUTF8($value = '') {
+        return utf8_encode(utf8_decode($value)) === $value;
     }
 
     /**
@@ -407,8 +415,7 @@ class PHPExcel_Shared_String
      * @param mixed $value
      * @return string
      */
-    public static function FormatNumber($value)
-    {
+    public static function FormatNumber($value) {
         if (is_float($value)) {
             return str_replace(',', '.', $value);
         }
@@ -431,18 +438,19 @@ class PHPExcel_Shared_String
         // character count
         $ln = self::CountCharacters($value, 'UTF-8');
         // option flags
-        if (empty($arrcRuns)) {
+        if(empty($arrcRuns)){
             $opt = (self::getIsIconvEnabled() || self::getIsMbstringEnabled()) ?
                 0x0001 : 0x0000;
             $data = pack('CC', $ln, $opt);
             // characters
             $data .= self::ConvertEncoding($value, 'UTF-16LE', 'UTF-8');
-        } else {
+        }
+        else {
             $data = pack('vC', $ln, 0x09);
             $data .= pack('v', count($arrcRuns));
             // characters
             $data .= self::ConvertEncoding($value, 'UTF-16LE', 'UTF-8');
-            foreach ($arrcRuns as $cRun) {
+            foreach ($arrcRuns as $cRun){
                 $data .= pack('v', $cRun['strlen']);
                 $data .= pack('v', $cRun['fontidx']);
             }
@@ -494,9 +502,9 @@ class PHPExcel_Shared_String
             return mb_convert_encoding($value, $to, $from);
         }
 
-        if ($from == 'UTF-16LE') {
+        if($from == 'UTF-16LE'){
             return self::utf16_decode($value, false);
-        } elseif ($from == 'UTF-16BE') {
+        }else if($from == 'UTF-16BE'){
             return self::utf16_decode($value);
         }
         // else, no conversion
@@ -518,29 +526,17 @@ class PHPExcel_Shared_String
      * @author  Rasmus Andersson {@link http://rasmusandersson.se/}
      * @author vadik56
      */
-    public static function utf16_decode($str, $bom_be = true)
-    {
-        if (strlen($str) < 2) {
-            return $str;
-        }
+    public static function utf16_decode($str, $bom_be = TRUE) {
+        if( strlen($str) < 2 ) return $str;
         $c0 = ord($str{0});
         $c1 = ord($str{1});
-        if ($c0 == 0xfe && $c1 == 0xff) {
-            $str = substr($str, 2);
-        } elseif ($c0 == 0xff && $c1 == 0xfe) {
-            $str = substr($str, 2);
-            $bom_be = false;
-        }
+        if( $c0 == 0xfe && $c1 == 0xff ) { $str = substr($str,2); }
+        elseif( $c0 == 0xff && $c1 == 0xfe ) { $str = substr($str,2); $bom_be = false; }
         $len = strlen($str);
         $newstr = '';
-        for ($i=0; $i<$len; $i+=2) {
-            if ($bom_be) {
-                $val = ord($str{$i})   << 4;
-                $val += ord($str{$i+1});
-            } else {
-                $val = ord($str{$i+1}) << 4;
-                $val += ord($str{$i});
-            }
+        for($i=0;$i<$len;$i+=2) {
+            if( $bom_be ) { $val = ord($str{$i})   << 4; $val += ord($str{$i+1}); }
+            else {        $val = ord($str{$i+1}) << 4; $val += ord($str{$i}); }
             $newstr .= ($val == 0x228) ? "\n" : chr($val);
         }
         return $newstr;
@@ -632,41 +628,6 @@ class PHPExcel_Shared_String
         return ucwords($pValue);
     }
 
-    public static function mb_is_upper($char)
-    {
-        return mb_strtolower($char, "UTF-8") != $char;
-    }
-
-    public static function mb_str_split($string)
-    {
-        # Split at all position not after the start: ^
-        # and not before the end: $
-        return preg_split('/(?<!^)(?!$)/u', $string);
-    }
-
-    /**
-     * Reverse the case of a string, so that all uppercase characters become lowercase
-     *    and all lowercase characters become uppercase
-     *
-     * @param string $pValue UTF-8 encoded string
-     * @return string
-     */
-    public static function StrCaseReverse($pValue = '')
-    {
-        if (self::getIsMbstringEnabled()) {
-            $characters = self::mb_str_split($pValue);
-            foreach ($characters as &$character) {
-                if (self::mb_is_upper($character)) {
-                    $character = mb_strtolower($character, 'UTF-8');
-                } else {
-                    $character = mb_strtoupper($character, 'UTF-8');
-                }
-            }
-            return implode('', $characters);
-        }
-        return strtolower($pValue) ^ strtoupper($pValue) ^ $pValue;
-    }
-
     /**
      * Identify whether a string contains a fractional numeric value,
      *    and convert it to a numeric if it is
@@ -674,12 +635,11 @@ class PHPExcel_Shared_String
      * @param string &$operand string value to test
      * @return boolean
      */
-    public static function convertToNumberIfFraction(&$operand)
-    {
+    public static function convertToNumberIfFraction(&$operand) {
         if (preg_match('/^'.self::STRING_REGEXP_FRACTION.'$/i', $operand, $match)) {
             $sign = ($match[1] == '-') ? '-' : '+';
             $fractionFormula = '='.$sign.$match[2].$sign.$match[3];
-            $operand = PHPExcel_Calculation::getInstance()->_calculateFormulaValue($fractionFormula);
+            $operand = Calculation::getInstance()->_calculateFormulaValue($fractionFormula);
             return true;
         }
         return false;
@@ -693,28 +653,28 @@ class PHPExcel_Shared_String
      */
     public static function getDecimalSeparator()
     {
-        if (!isset(self::$decimalSeparator)) {
+        if (!isset(self::$_decimalSeparator)) {
             $localeconv = localeconv();
-            self::$decimalSeparator = ($localeconv['decimal_point'] != '')
+            self::$_decimalSeparator = ($localeconv['decimal_point'] != '')
                 ? $localeconv['decimal_point'] : $localeconv['mon_decimal_point'];
 
-            if (self::$decimalSeparator == '') {
+            if (self::$_decimalSeparator == '') {
                 // Default to .
-                self::$decimalSeparator = '.';
+                self::$_decimalSeparator = '.';
             }
         }
-        return self::$decimalSeparator;
+        return self::$_decimalSeparator;
     }
 
     /**
-     * Set the decimal separator. Only used by PHPExcel_Style_NumberFormat::toFormattedString()
-     * to format output by PHPExcel_Writer_HTML and PHPExcel_Writer_PDF
+     * Set the decimal separator. Only used by PHPExcel\Style_NumberFormat::toFormattedString()
+     * to format output by PHPExcel\Writer_HTML and PHPExcel\Writer_PDF
      *
      * @param string $pValue Character for decimal separator
      */
     public static function setDecimalSeparator($pValue = '.')
     {
-        self::$decimalSeparator = $pValue;
+        self::$_decimalSeparator = $pValue;
     }
 
     /**
@@ -725,28 +685,28 @@ class PHPExcel_Shared_String
      */
     public static function getThousandsSeparator()
     {
-        if (!isset(self::$thousandsSeparator)) {
+        if (!isset(self::$_thousandsSeparator)) {
             $localeconv = localeconv();
-            self::$thousandsSeparator = ($localeconv['thousands_sep'] != '')
+            self::$_thousandsSeparator = ($localeconv['thousands_sep'] != '')
                 ? $localeconv['thousands_sep'] : $localeconv['mon_thousands_sep'];
 
-            if (self::$thousandsSeparator == '') {
+            if (self::$_thousandsSeparator == '') {
                 // Default to .
-                self::$thousandsSeparator = ',';
+                self::$_thousandsSeparator = ',';
             }
         }
-        return self::$thousandsSeparator;
+        return self::$_thousandsSeparator;
     }
 
     /**
-     * Set the thousands separator. Only used by PHPExcel_Style_NumberFormat::toFormattedString()
-     * to format output by PHPExcel_Writer_HTML and PHPExcel_Writer_PDF
+     * Set the thousands separator. Only used by PHPExcel\Style_NumberFormat::toFormattedString()
+     * to format output by PHPExcel\Writer_HTML and PHPExcel\Writer_PDF
      *
      * @param string $pValue Character for thousands separator
      */
     public static function setThousandsSeparator($pValue = ',')
     {
-        self::$thousandsSeparator = $pValue;
+        self::$_thousandsSeparator = $pValue;
     }
 
     /**
@@ -757,28 +717,28 @@ class PHPExcel_Shared_String
      */
     public static function getCurrencyCode()
     {
-        if (!isset(self::$currencyCode)) {
+        if (!isset(self::$_currencyCode)) {
             $localeconv = localeconv();
-            self::$currencyCode = ($localeconv['currency_symbol'] != '')
+            self::$_currencyCode = ($localeconv['currency_symbol'] != '')
                 ? $localeconv['currency_symbol'] : $localeconv['int_curr_symbol'];
 
-            if (self::$currencyCode == '') {
+            if (self::$_currencyCode == '') {
                 // Default to $
-                self::$currencyCode = '$';
+                self::$_currencyCode = '$';
             }
         }
-        return self::$currencyCode;
+        return self::$_currencyCode;
     }
 
     /**
-     * Set the currency code. Only used by PHPExcel_Style_NumberFormat::toFormattedString()
-     *        to format output by PHPExcel_Writer_HTML and PHPExcel_Writer_PDF
+     * Set the currency code. Only used by PHPExcel\Style_NumberFormat::toFormattedString()
+     *        to format output by PHPExcel\Writer_HTML and PHPExcel\Writer_PDF
      *
      * @param string $pValue Character for currency code
      */
     public static function setCurrencyCode($pValue = '$')
     {
-        self::$currencyCode = $pValue;
+        self::$_currencyCode = $pValue;
     }
 
     /**
@@ -794,7 +754,7 @@ class PHPExcel_Shared_String
             return $pValue;
         }
 
-        foreach (self::$SYLKCharacters as $k => $v) {
+        foreach (self::$_SYLKCharacters as $k => $v) {
             $pValue = str_replace($k, $v, $pValue);
         }
 
@@ -810,10 +770,9 @@ class PHPExcel_Shared_String
      */
     public static function testStringAsNumeric($value)
     {
-        if (is_numeric($value)) {
+        if (is_numeric($value))
             return $value;
-        }
         $v = floatval($value);
-        return (is_numeric(substr($value, 0, strlen($v)))) ? $v : $value;
+        return (is_numeric(substr($value,0,strlen($v)))) ? $v : $value;
     }
 }

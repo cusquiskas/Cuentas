@@ -1,9 +1,8 @@
 <?php
-
 /**
- *  PHPExcel_Writer_IWriter
+ *  PHPExcel
  *
- *  Copyright (c) 2006 - 2015 PHPExcel
+ *  Copyright (c) 2006 - 2013 PHPExcel
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Lesser General Public
@@ -20,18 +19,29 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  *  @category   PHPExcel
- *  @package    PHPExcel_Writer
- *  @copyright  Copyright (c) 2006 - 2015 PHPExcel (http://www.codeplex.com/PHPExcel)
+ *  @package    PHPExcel\Writer
+ *  @copyright  Copyright (c) 2006 - 2013 PHPExcel (http://www.codeplex.com/PHPExcel)
  *  @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  *  @version    ##VERSION##, ##DATE##
  */
-interface PHPExcel_Writer_IWriter
+
+
+namespace PHPExcel;
+
+/**
+ *  PHPExcel\Writer_IWriter
+ *
+ *  @category   PHPExcel
+ *  @package    PHPExcel\Writer
+ *  @copyright  Copyright (c) 2006 - 2013 PHPExcel (http://www.codeplex.com/PHPExcel)
+ */
+interface Writer_IWriter
 {
     /**
      *  Save PHPExcel to file
      *
      *  @param   string       $pFilename  Name of the file to save
-     *  @throws  PHPExcel_Writer_Exception
+     *  @throws  PHPExcel\Writer_Exception
      */
     public function save($pFilename = null);
 }

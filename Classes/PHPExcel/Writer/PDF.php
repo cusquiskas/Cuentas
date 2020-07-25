@@ -1,9 +1,8 @@
 <?php
-
 /**
- *  PHPExcel_Writer_PDF
+ *  PHPExcel
  *
- *  Copyright (c) 2006 - 2015 PHPExcel
+ *  Copyright (c) 2006 - 2013 PHPExcel
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Lesser General Public
@@ -20,37 +19,48 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  *  @category    PHPExcel
- *  @package     PHPExcel_Writer_PDF
- *  @copyright   Copyright (c) 2006 - 2015 PHPExcel (http://www.codeplex.com/PHPExcel)
+ *  @package     PHPExcel\Writer_PDF
+ *  @copyright   Copyright (c) 2006 - 2013 PHPExcel (http://www.codeplex.com/PHPExcel)
  *  @license     http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  *  @version     ##VERSION##, ##DATE##
  */
-class PHPExcel_Writer_PDF implements PHPExcel_Writer_IWriter
+
+
+namespace PHPExcel;
+
+/**
+ *  PHPExcel\Writer_PDF
+ *
+ *  @category    PHPExcel
+ *  @package     PHPExcel\Writer_PDF
+ *  @copyright   Copyright (c) 2006 - 2013 PHPExcel (http://www.codeplex.com/PHPExcel)
+ */
+class Writer_PDF
 {
 
     /**
      * The wrapper for the requested PDF rendering engine
      *
-     * @var PHPExcel_Writer_PDF_Core
+     * @var PHPExcel\Writer_PDF_Core
      */
     private $renderer = null;
 
     /**
      *  Instantiate a new renderer of the configured type within this container class
      *
-     *  @param  PHPExcel   $phpExcel         PHPExcel object
-     *  @throws PHPExcel_Writer_Exception    when PDF library is not configured
+     *  @param  PHPExcel\Workbook   $phpExcel         PHPExcel object
+     *  @throws PHPExcel\Writer_Exception    when PDF library is not configured
      */
-    public function __construct(PHPExcel $phpExcel)
+    public function __construct(Workbook $phpExcel)
     {
-        $pdfLibraryName = PHPExcel_Settings::getPdfRendererName();
+        $pdfLibraryName = Settings::getPdfRendererName();
         if (is_null($pdfLibraryName)) {
-            throw new PHPExcel_Writer_Exception("PDF Rendering library has not been defined.");
+            throw new Writer_Exception("PDF Rendering library has not been defined.");
         }
 
-        $pdfLibraryPath = PHPExcel_Settings::getPdfRendererPath();
+        $pdfLibraryPath = Settings::getPdfRendererPath();
         if (is_null($pdfLibraryName)) {
-            throw new PHPExcel_Writer_Exception("PDF Rendering library path has not been defined.");
+            throw new Writer_Exception("PDF Rendering library path has not been defined.");
         }
         $includePath = str_replace('\\', '/', get_include_path());
         $rendererPath = str_replace('\\', '/', $pdfLibraryPath);
@@ -58,7 +68,7 @@ class PHPExcel_Writer_PDF implements PHPExcel_Writer_IWriter
             set_include_path(get_include_path() . PATH_SEPARATOR . $pdfLibraryPath);
         }
 
-        $rendererName = 'PHPExcel_Writer_PDF_' . $pdfLibraryName;
+        $rendererName = __NAMESPACE__ . '\Writer_PDF_' . $pdfLibraryName;
         $this->renderer = new $rendererName($phpExcel);
     }
 
@@ -73,17 +83,9 @@ class PHPExcel_Writer_PDF implements PHPExcel_Writer_IWriter
     public function __call($name, $arguments)
     {
         if ($this->renderer === null) {
-            throw new PHPExcel_Writer_Exception("PDF Rendering library has not been defined.");
+            throw new Writer_Exception("PDF Rendering library has not been defined.");
         }
 
         return call_user_func_array(array($this->renderer, $name), $arguments);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function save($pFilename = null)
-    {
-        $this->renderer->save($pFilename);
     }
 }

@@ -1,9 +1,8 @@
 <?php
-
 /**
- * PHPExcel_Writer_Excel2007_Comments
+ * PHPExcel
  *
- * Copyright (c) 2006 - 2015 PHPExcel
+ * Copyright (c) 2006 - 2013 PHPExcel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,32 +19,43 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category   PHPExcel
- * @package    PHPExcel_Writer_Excel2007
- * @copyright  Copyright (c) 2006 - 2015 PHPExcel (http://www.codeplex.com/PHPExcel)
+ * @package    PHPExcel\Writer_Excel2007
+ * @copyright  Copyright (c) 2006 - 2013 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  * @version    ##VERSION##, ##DATE##
  */
-class PHPExcel_Writer_Excel2007_Comments extends PHPExcel_Writer_Excel2007_WriterPart
+
+
+namespace PHPExcel;
+
+/**
+ * PHPExcel\Writer_Excel2007_Comments
+ *
+ * @category   PHPExcel
+ * @package    PHPExcel\Writer_Excel2007
+ * @copyright  Copyright (c) 2006 - 2013 PHPExcel (http://www.codeplex.com/PHPExcel)
+ */
+class Writer_Excel2007_Comments extends Writer_Excel2007_WriterPart
 {
     /**
      * Write comments to XML format
      *
-     * @param     PHPExcel_Worksheet                $pWorksheet
+     * @param     PHPExcel\Worksheet                $pWorksheet
      * @return     string                                 XML Output
-     * @throws     PHPExcel_Writer_Exception
+     * @throws     PHPExcel\Writer_Exception
      */
-    public function writeComments(PHPExcel_Worksheet $pWorksheet = null)
+    public function writeComments(Worksheet $pWorksheet = null)
     {
         // Create XML writer
         $objWriter = null;
         if ($this->getParentWriter()->getUseDiskCaching()) {
-            $objWriter = new PHPExcel_Shared_XMLWriter(PHPExcel_Shared_XMLWriter::STORAGE_DISK, $this->getParentWriter()->getDiskCachingDirectory());
+            $objWriter = new Shared_XMLWriter(Shared_XMLWriter::STORAGE_DISK, $this->getParentWriter()->getDiskCachingDirectory());
         } else {
-            $objWriter = new PHPExcel_Shared_XMLWriter(PHPExcel_Shared_XMLWriter::STORAGE_MEMORY);
+            $objWriter = new Shared_XMLWriter(Shared_XMLWriter::STORAGE_MEMORY);
         }
 
         // XML header
-        $objWriter->startDocument('1.0', 'UTF-8', 'yes');
+        $objWriter->startDocument('1.0','UTF-8','yes');
 
           // Comments cache
           $comments    = $pWorksheet->getComments();
@@ -63,19 +73,19 @@ class PHPExcel_Writer_Excel2007_Comments extends PHPExcel_Writer_Excel2007_Write
         $objWriter->startElement('comments');
         $objWriter->writeAttribute('xmlns', 'http://schemas.openxmlformats.org/spreadsheetml/2006/main');
 
-        // Loop through authors
-        $objWriter->startElement('authors');
-        foreach ($authors as $author => $index) {
-            $objWriter->writeElement('author', $author);
-        }
-        $objWriter->endElement();
+            // Loop through authors
+            $objWriter->startElement('authors');
+            foreach ($authors as $author => $index) {
+                $objWriter->writeElement('author', $author);
+            }
+            $objWriter->endElement();
 
-        // Loop through comments
-        $objWriter->startElement('commentList');
-        foreach ($comments as $key => $value) {
-            $this->writeComment($objWriter, $key, $value, $authors);
-        }
-        $objWriter->endElement();
+            // Loop through comments
+            $objWriter->startElement('commentList');
+            foreach ($comments as $key => $value) {
+                $this->_writeComment($objWriter, $key, $value, $authors);
+            }
+            $objWriter->endElement();
 
         $objWriter->endElement();
 
@@ -86,23 +96,23 @@ class PHPExcel_Writer_Excel2007_Comments extends PHPExcel_Writer_Excel2007_Write
     /**
      * Write comment to XML format
      *
-     * @param     PHPExcel_Shared_XMLWriter        $objWriter             XML Writer
+     * @param     PHPExcel\Shared_XMLWriter        $objWriter             XML Writer
      * @param    string                            $pCellReference        Cell reference
-     * @param     PHPExcel_Comment                $pComment            Comment
+     * @param     PHPExcel\Comment                $pComment            Comment
      * @param    array                            $pAuthors            Array of authors
-     * @throws     PHPExcel_Writer_Exception
+     * @throws     PHPExcel\Writer_Exception
      */
-    private function writeComment(PHPExcel_Shared_XMLWriter $objWriter = null, $pCellReference = 'A1', PHPExcel_Comment $pComment = null, $pAuthors = null)
+    public function _writeComment(Shared_XMLWriter $objWriter = null, $pCellReference = 'A1', Comment $pComment = null, $pAuthors = null)
     {
         // comment
         $objWriter->startElement('comment');
-        $objWriter->writeAttribute('ref', $pCellReference);
-        $objWriter->writeAttribute('authorId', $pAuthors[$pComment->getAuthor()]);
+        $objWriter->writeAttribute('ref',         $pCellReference);
+        $objWriter->writeAttribute('authorId',     $pAuthors[$pComment->getAuthor()]);
 
-        // text
-        $objWriter->startElement('text');
-        $this->getParentWriter()->getWriterPart('stringtable')->writeRichText($objWriter, $pComment->getText());
-        $objWriter->endElement();
+            // text
+            $objWriter->startElement('text');
+            $this->getParentWriter()->getWriterPart('stringtable')->writeRichText($objWriter, $pComment->getText());
+            $objWriter->endElement();
 
         $objWriter->endElement();
     }
@@ -110,22 +120,22 @@ class PHPExcel_Writer_Excel2007_Comments extends PHPExcel_Writer_Excel2007_Write
     /**
      * Write VML comments to XML format
      *
-     * @param     PHPExcel_Worksheet                $pWorksheet
+     * @param     PHPExcel\Worksheet                $pWorksheet
      * @return     string                                 XML Output
-     * @throws     PHPExcel_Writer_Exception
+     * @throws     PHPExcel\Writer_Exception
      */
-    public function writeVMLComments(PHPExcel_Worksheet $pWorksheet = null)
+    public function writeVMLComments(Worksheet $pWorksheet = null)
     {
         // Create XML writer
         $objWriter = null;
         if ($this->getParentWriter()->getUseDiskCaching()) {
-            $objWriter = new PHPExcel_Shared_XMLWriter(PHPExcel_Shared_XMLWriter::STORAGE_DISK, $this->getParentWriter()->getDiskCachingDirectory());
+            $objWriter = new Shared_XMLWriter(Shared_XMLWriter::STORAGE_DISK, $this->getParentWriter()->getDiskCachingDirectory());
         } else {
-            $objWriter = new PHPExcel_Shared_XMLWriter(PHPExcel_Shared_XMLWriter::STORAGE_MEMORY);
+            $objWriter = new Shared_XMLWriter(Shared_XMLWriter::STORAGE_MEMORY);
         }
 
         // XML header
-        $objWriter->startDocument('1.0', 'UTF-8', 'yes');
+        $objWriter->startDocument('1.0','UTF-8','yes');
 
           // Comments cache
           $comments    = $pWorksheet->getComments();
@@ -136,42 +146,42 @@ class PHPExcel_Writer_Excel2007_Comments extends PHPExcel_Writer_Excel2007_Write
         $objWriter->writeAttribute('xmlns:o', 'urn:schemas-microsoft-com:office:office');
         $objWriter->writeAttribute('xmlns:x', 'urn:schemas-microsoft-com:office:excel');
 
-        // o:shapelayout
-        $objWriter->startElement('o:shapelayout');
-        $objWriter->writeAttribute('v:ext', 'edit');
+            // o:shapelayout
+            $objWriter->startElement('o:shapelayout');
+            $objWriter->writeAttribute('v:ext',         'edit');
 
-            // o:idmap
-            $objWriter->startElement('o:idmap');
-            $objWriter->writeAttribute('v:ext', 'edit');
-            $objWriter->writeAttribute('data', '1');
+                // o:idmap
+                $objWriter->startElement('o:idmap');
+                $objWriter->writeAttribute('v:ext',     'edit');
+                $objWriter->writeAttribute('data',         '1');
+                $objWriter->endElement();
+
             $objWriter->endElement();
 
-        $objWriter->endElement();
+            // v:shapetype
+            $objWriter->startElement('v:shapetype');
+            $objWriter->writeAttribute('id',         '_x0000_t202');
+            $objWriter->writeAttribute('coordsize', '21600,21600');
+            $objWriter->writeAttribute('o:spt',     '202');
+            $objWriter->writeAttribute('path',         'm,l,21600r21600,l21600,xe');
 
-        // v:shapetype
-        $objWriter->startElement('v:shapetype');
-        $objWriter->writeAttribute('id', '_x0000_t202');
-        $objWriter->writeAttribute('coordsize', '21600,21600');
-        $objWriter->writeAttribute('o:spt', '202');
-        $objWriter->writeAttribute('path', 'm,l,21600r21600,l21600,xe');
+                // v:stroke
+                $objWriter->startElement('v:stroke');
+                $objWriter->writeAttribute('joinstyle',     'miter');
+                $objWriter->endElement();
 
-            // v:stroke
-            $objWriter->startElement('v:stroke');
-            $objWriter->writeAttribute('joinstyle', 'miter');
+                // v:path
+                $objWriter->startElement('v:path');
+                $objWriter->writeAttribute('gradientshapeok',     't');
+                $objWriter->writeAttribute('o:connecttype',     'rect');
+                $objWriter->endElement();
+
             $objWriter->endElement();
 
-            // v:path
-            $objWriter->startElement('v:path');
-            $objWriter->writeAttribute('gradientshapeok', 't');
-            $objWriter->writeAttribute('o:connecttype', 'rect');
-            $objWriter->endElement();
-
-        $objWriter->endElement();
-
-        // Loop through comments
-        foreach ($comments as $key => $value) {
-            $this->writeVMLComment($objWriter, $key, $value);
-        }
+            // Loop through comments
+            foreach ($comments as $key => $value) {
+                $this->_writeVMLComment($objWriter, $key, $value);
+            }
 
         $objWriter->endElement();
 
@@ -182,37 +192,37 @@ class PHPExcel_Writer_Excel2007_Comments extends PHPExcel_Writer_Excel2007_Write
     /**
      * Write VML comment to XML format
      *
-     * @param     PHPExcel_Shared_XMLWriter        $objWriter             XML Writer
+     * @param     PHPExcel\Shared_XMLWriter        $objWriter             XML Writer
      * @param    string                            $pCellReference        Cell reference
-     * @param     PHPExcel_Comment                $pComment            Comment
-     * @throws     PHPExcel_Writer_Exception
+     * @param     PHPExcel\Comment                $pComment            Comment
+     * @throws     PHPExcel\Writer_Exception
      */
-    private function writeVMLComment(PHPExcel_Shared_XMLWriter $objWriter = null, $pCellReference = 'A1', PHPExcel_Comment $pComment = null)
+    public function _writeVMLComment(Shared_XMLWriter $objWriter = null, $pCellReference = 'A1', Comment $pComment = null)
     {
          // Metadata
-         list($column, $row) = PHPExcel_Cell::coordinateFromString($pCellReference);
-         $column = PHPExcel_Cell::columnIndexFromString($column);
+         list($column, $row) = Cell::coordinateFromString($pCellReference);
+         $column = Cell::columnIndexFromString($column);
          $id = 1024 + $column + $row;
          $id = substr($id, 0, 4);
 
         // v:shape
         $objWriter->startElement('v:shape');
-        $objWriter->writeAttribute('id', '_x0000_s' . $id);
-        $objWriter->writeAttribute('type', '#_x0000_t202');
-        $objWriter->writeAttribute('style', 'position:absolute;margin-left:' . $pComment->getMarginLeft() . ';margin-top:' . $pComment->getMarginTop() . ';width:' . $pComment->getWidth() . ';height:' . $pComment->getHeight() . ';z-index:1;visibility:' . ($pComment->getVisible() ? 'visible' : 'hidden'));
-        $objWriter->writeAttribute('fillcolor', '#' . $pComment->getFillColor()->getRGB());
-        $objWriter->writeAttribute('o:insetmode', 'auto');
+        $objWriter->writeAttribute('id',             '_x0000_s' . $id);
+        $objWriter->writeAttribute('type',             '#_x0000_t202');
+        $objWriter->writeAttribute('style',         'position:absolute;margin-left:' . $pComment->getMarginLeft() . ';margin-top:' . $pComment->getMarginTop() . ';width:' . $pComment->getWidth() . ';height:' . $pComment->getHeight() . ';z-index:1;visibility:' . ($pComment->getVisible() ? 'visible' : 'hidden'));
+        $objWriter->writeAttribute('fillcolor',     '#' . $pComment->getFillColor()->getRGB());
+        $objWriter->writeAttribute('o:insetmode',     'auto');
 
             // v:fill
             $objWriter->startElement('v:fill');
-            $objWriter->writeAttribute('color2', '#' . $pComment->getFillColor()->getRGB());
+            $objWriter->writeAttribute('color2',         '#' . $pComment->getFillColor()->getRGB());
             $objWriter->endElement();
 
             // v:shadow
             $objWriter->startElement('v:shadow');
-            $objWriter->writeAttribute('on', 't');
-            $objWriter->writeAttribute('color', 'black');
-            $objWriter->writeAttribute('obscured', 't');
+            $objWriter->writeAttribute('on',             't');
+            $objWriter->writeAttribute('color',         'black');
+            $objWriter->writeAttribute('obscured',         't');
             $objWriter->endElement();
 
             // v:path

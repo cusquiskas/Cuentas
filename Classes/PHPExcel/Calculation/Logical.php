@@ -1,18 +1,8 @@
 <?php
-
-/** PHPExcel root directory */
-if (!defined('PHPEXCEL_ROOT')) {
-    /**
-     * @ignore
-     */
-    define('PHPEXCEL_ROOT', dirname(__FILE__) . '/../../');
-    require(PHPEXCEL_ROOT . 'PHPExcel/Autoloader.php');
-}
-
 /**
- * PHPExcel_Calculation_Logical
+ * PHPExcel
  *
- * Copyright (c) 2006 - 2015 PHPExcel
+ * Copyright (c) 2006 - 2013 PHPExcel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -29,13 +19,24 @@ if (!defined('PHPEXCEL_ROOT')) {
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * @category    PHPExcel
- * @package        PHPExcel_Calculation
- * @copyright    Copyright (c) 2006 - 2015 PHPExcel (http://www.codeplex.com/PHPExcel)
+ * @package        PHPExcel\Calculation
+ * @copyright    Copyright (c) 2006 - 2013 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license        http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  * @version        ##VERSION##, ##DATE##
  */
-class PHPExcel_Calculation_Logical
-{
+
+
+namespace PHPExcel;
+
+/**
+ * PHPExcel\Calculation_Logical
+ *
+ * @category    PHPExcel
+ * @package        PHPExcel\Calculation
+ * @copyright    Copyright (c) 2006 - 2013 PHPExcel (http://www.codeplex.com/PHPExcel)
+ */
+class Calculation_Logical {
+
     /**
      * TRUE
      *
@@ -48,10 +49,9 @@ class PHPExcel_Calculation_Logical
      * @category Logical Functions
      * @return    boolean        True
      */
-    public static function TRUE()
-    {
+    public static function TRUE() {
         return true;
-    }
+    }    //    function TRUE()
 
 
     /**
@@ -66,10 +66,9 @@ class PHPExcel_Calculation_Logical
      * @category Logical Functions
      * @return    boolean        False
      */
-    public static function FALSE()
-    {
+    public static function FALSE() {
         return false;
-    }
+    }    //    function FALSE()
 
 
     /**
@@ -93,13 +92,12 @@ class PHPExcel_Calculation_Logical
      * @param    mixed        $arg,...        Data values
      * @return    boolean        The logical AND of the arguments.
      */
-    public static function LOGICAL_AND()
-    {
+    public static function LOGICAL_AND() {
         // Return value
-        $returnValue = true;
+        $returnValue = TRUE;
 
         // Loop through the arguments
-        $aArgs = PHPExcel_Calculation_Functions::flattenArray(func_get_args());
+        $aArgs = Calculation_Functions::flattenArray(func_get_args());
         $argCount = -1;
         foreach ($aArgs as $argCount => $arg) {
             // Is it a boolean value?
@@ -109,12 +107,12 @@ class PHPExcel_Calculation_Logical
                 $returnValue = $returnValue && ($arg != 0);
             } elseif (is_string($arg)) {
                 $arg = strtoupper($arg);
-                if (($arg == 'TRUE') || ($arg == PHPExcel_Calculation::getTRUE())) {
+                if (($arg == 'TRUE') || ($arg == Calculation::getTRUE())) {
                     $arg = true;
-                } elseif (($arg == 'FALSE') || ($arg == PHPExcel_Calculation::getFALSE())) {
+                } elseif (($arg == 'FALSE') || ($arg == Calculation::getFALSE())) {
                     $arg = false;
                 } else {
-                    return PHPExcel_Calculation_Functions::VALUE();
+                    return Calculation_Functions::VALUE();
                 }
                 $returnValue = $returnValue && ($arg != 0);
             }
@@ -122,10 +120,10 @@ class PHPExcel_Calculation_Logical
 
         // Return
         if ($argCount < 0) {
-            return PHPExcel_Calculation_Functions::VALUE();
+            return Calculation_Functions::VALUE();
         }
         return $returnValue;
-    }
+    }    //    function LOGICAL_AND()
 
 
     /**
@@ -149,13 +147,12 @@ class PHPExcel_Calculation_Logical
      * @param    mixed        $arg,...        Data values
      * @return    boolean        The logical OR of the arguments.
      */
-    public static function LOGICAL_OR()
-    {
+    public static function LOGICAL_OR() {
         // Return value
         $returnValue = false;
 
         // Loop through the arguments
-        $aArgs = PHPExcel_Calculation_Functions::flattenArray(func_get_args());
+        $aArgs = Calculation_Functions::flattenArray(func_get_args());
         $argCount = -1;
         foreach ($aArgs as $argCount => $arg) {
             // Is it a boolean value?
@@ -165,12 +162,12 @@ class PHPExcel_Calculation_Logical
                 $returnValue = $returnValue || ($arg != 0);
             } elseif (is_string($arg)) {
                 $arg = strtoupper($arg);
-                if (($arg == 'TRUE') || ($arg == PHPExcel_Calculation::getTRUE())) {
+                if (($arg == 'TRUE') || ($arg == Calculation::getTRUE())) {
                     $arg = true;
-                } elseif (($arg == 'FALSE') || ($arg == PHPExcel_Calculation::getFALSE())) {
+                } elseif (($arg == 'FALSE') || ($arg == Calculation::getFALSE())) {
                     $arg = false;
                 } else {
-                    return PHPExcel_Calculation_Functions::VALUE();
+                    return Calculation_Functions::VALUE();
                 }
                 $returnValue = $returnValue || ($arg != 0);
             }
@@ -178,10 +175,10 @@ class PHPExcel_Calculation_Logical
 
         // Return
         if ($argCount < 0) {
-            return PHPExcel_Calculation_Functions::VALUE();
+            return Calculation_Functions::VALUE();
         }
         return $returnValue;
-    }
+    }    //    function LOGICAL_OR()
 
 
     /**
@@ -204,22 +201,21 @@ class PHPExcel_Calculation_Logical
      * @param    mixed        $logical    A value or expression that can be evaluated to TRUE or FALSE
      * @return    boolean        The boolean inverse of the argument.
      */
-    public static function NOT($logical = false)
-    {
-        $logical = PHPExcel_Calculation_Functions::flattenSingleValue($logical);
+    public static function NOT($logical=false) {
+        $logical = Calculation_Functions::flattenSingleValue($logical);
         if (is_string($logical)) {
             $logical = strtoupper($logical);
-            if (($logical == 'TRUE') || ($logical == PHPExcel_Calculation::getTRUE())) {
+            if (($logical == 'TRUE') || ($logical == Calculation::getTRUE())) {
                 return false;
-            } elseif (($logical == 'FALSE') || ($logical == PHPExcel_Calculation::getFALSE())) {
+            } elseif (($logical == 'FALSE') || ($logical == Calculation::getFALSE())) {
                 return true;
             } else {
-                return PHPExcel_Calculation_Functions::VALUE();
+                return Calculation_Functions::VALUE();
             }
         }
 
         return !$logical;
-    }
+    }    //    function NOT()
 
     /**
      * STATEMENT_IF
@@ -253,14 +249,13 @@ class PHPExcel_Calculation_Logical
      * @param    mixed    $returnIfFalse    Optional value to return when condition is false
      * @return    mixed    The value of returnIfTrue or returnIfFalse determined by condition
      */
-    public static function STATEMENT_IF($condition = true, $returnIfTrue = 0, $returnIfFalse = false)
-    {
-        $condition     = (is_null($condition))     ? true :  (boolean) PHPExcel_Calculation_Functions::flattenSingleValue($condition);
-        $returnIfTrue  = (is_null($returnIfTrue))  ? 0 :     PHPExcel_Calculation_Functions::flattenSingleValue($returnIfTrue);
-        $returnIfFalse = (is_null($returnIfFalse)) ? false : PHPExcel_Calculation_Functions::flattenSingleValue($returnIfFalse);
+    public static function STATEMENT_IF($condition = true, $returnIfTrue = 0, $returnIfFalse = false) {
+        $condition        = (is_null($condition))        ? true :    (boolean) Calculation_Functions::flattenSingleValue($condition);
+        $returnIfTrue    = (is_null($returnIfTrue))    ? 0 :        Calculation_Functions::flattenSingleValue($returnIfTrue);
+        $returnIfFalse    = (is_null($returnIfFalse))    ? false :    Calculation_Functions::flattenSingleValue($returnIfFalse);
 
         return ($condition) ? $returnIfTrue : $returnIfFalse;
-    }
+    }    //    function STATEMENT_IF()
 
 
     /**
@@ -275,11 +270,10 @@ class PHPExcel_Calculation_Logical
      * @param    mixed    $errorpart    Value to return when testValue is an error condition
      * @return    mixed    The value of errorpart or testValue determined by error condition
      */
-    public static function IFERROR($testValue = '', $errorpart = '')
-    {
-        $testValue = (is_null($testValue)) ? '' : PHPExcel_Calculation_Functions::flattenSingleValue($testValue);
-        $errorpart = (is_null($errorpart)) ? '' : PHPExcel_Calculation_Functions::flattenSingleValue($errorpart);
+    public static function IFERROR($testValue = '', $errorpart = '') {
+        $testValue    = (is_null($testValue))    ? '' :    Calculation_Functions::flattenSingleValue($testValue);
+        $errorpart    = (is_null($errorpart))    ? '' :    Calculation_Functions::flattenSingleValue($errorpart);
 
-        return self::STATEMENT_IF(PHPExcel_Calculation_Functions::IS_ERROR($testValue), $errorpart, $testValue);
-    }
+        return self::STATEMENT_IF(Calculation_Functions::IS_ERROR($testValue), $errorpart, $testValue);
+    }    //    function IFERROR()
 }

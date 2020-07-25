@@ -1,9 +1,8 @@
 <?php
-
 /**
- * PHPExcel_CachedObjectStorage_CacheBase
+ * PHPExcel
  *
- * Copyright (c) 2006 - 2015 PHPExcel
+ * Copyright (c) 2006 - 2013 PHPExcel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,24 +19,35 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category   PHPExcel
- * @package    PHPExcel_CachedObjectStorage
- * @copyright  Copyright (c) 2006 - 2015 PHPExcel (http://www.codeplex.com/PHPExcel)
+ * @package    PHPExcel\CachedObjectStorage
+ * @copyright  Copyright (c) 2006 - 2013 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  * @version    ##VERSION##, ##DATE##
  */
-abstract class PHPExcel_CachedObjectStorage_CacheBase
+
+
+namespace PHPExcel;
+ 
+/**
+ * PHPExcel\CachedObjectStorage_CacheBase
+ *
+ * @category   PHPExcel
+ * @package    PHPExcel\CachedObjectStorage
+ * @copyright  Copyright (c) 2006 - 2013 PHPExcel (http://www.codeplex.com/PHPExcel)
+ */
+abstract class CachedObjectStorage_CacheBase
 {
     /**
      * Parent worksheet
      *
-     * @var PHPExcel_Worksheet
+     * @var PHPExcel\Worksheet
      */
     protected $parent;
 
     /**
      * The currently active Cell
      *
-     * @var PHPExcel_Cell
+     * @var PHPExcel\Cell
      */
     protected $currentObject = null;
 
@@ -63,15 +73,16 @@ abstract class PHPExcel_CachedObjectStorage_CacheBase
      */
     protected $cellCache = array();
 
+
     /**
      * Initialise this new cell collection
      *
-     * @param    PHPExcel_Worksheet    $parent        The worksheet for this cell collection
+     * @param    PHPExcel\Worksheet    $parent        The worksheet for this cell collection
      */
-    public function __construct(PHPExcel_Worksheet $parent)
+    public function __construct(Worksheet $parent)
     {
         //    Set our parent worksheet.
-        //    This is maintained within the cache controller to facilitate re-attaching it to PHPExcel_Cell objects when
+        //    This is maintained within the cache controller to facilitate re-attaching it to PHPExcel\Cell objects when
         //        they are woken from a serialized state
         $this->parent = $parent;
     }
@@ -79,7 +90,7 @@ abstract class PHPExcel_CachedObjectStorage_CacheBase
     /**
      * Return the parent worksheet for this cell collection
      *
-     * @return    PHPExcel_Worksheet
+     * @return    PHPExcel\Worksheet
      */
     public function getParent()
     {
@@ -87,7 +98,7 @@ abstract class PHPExcel_CachedObjectStorage_CacheBase
     }
 
     /**
-     * Is a value set in the current PHPExcel_CachedObjectStorage_ICache for an indexed cell?
+     * Is a value set in the current PHPExcel\CachedObjectStorage_ICache for an indexed cell?
      *
      * @param    string        $pCoord        Coordinate address of the cell to check
      * @return    boolean
@@ -125,11 +136,11 @@ abstract class PHPExcel_CachedObjectStorage_CacheBase
     /**
      * Add or Update a cell in cache
      *
-     * @param    PHPExcel_Cell    $cell        Cell to update
-     * @return    PHPExcel_Cell
-     * @throws    PHPExcel_Exception
+     * @param    PHPExcel\Cell    $cell        Cell to update
+     * @return    void
+     * @throws    PHPExcel\Exception
      */
-    public function updateCacheData(PHPExcel_Cell $cell)
+    public function updateCacheData(Cell $cell)
     {
         return $this->addCacheData($cell->getCoordinate(), $cell);
     }
@@ -138,11 +149,11 @@ abstract class PHPExcel_CachedObjectStorage_CacheBase
      * Delete a cell in cache identified by coordinate address
      *
      * @param    string            $pCoord        Coordinate address of the cell to delete
-     * @throws    PHPExcel_Exception
+     * @throws    PHPExcel\Exception
      */
     public function deleteCacheData($pCoord)
     {
-        if ($pCoord === $this->currentObjectID && !is_null($this->currentObject)) {
+        if ($pCoord === $this->currentObjectID) {
             $this->currentObject->detach();
             $this->currentObjectID = $this->currentObject = null;
         }
@@ -157,7 +168,7 @@ abstract class PHPExcel_CachedObjectStorage_CacheBase
     /**
      * Get a list of all cell addresses currently held in cache
      *
-     * @return    string[]
+     * @return    array of string
      */
     public function getCellList()
     {
@@ -167,7 +178,7 @@ abstract class PHPExcel_CachedObjectStorage_CacheBase
     /**
      * Sort the list of all cell addresses currently held in cache by row and column
      *
-     * @return    string[]
+     * @return    void
      */
     public function getSortedCellList()
     {
@@ -232,63 +243,34 @@ abstract class PHPExcel_CachedObjectStorage_CacheBase
     /**
      * Return the row address of the currently active cell object
      *
-     * @return    integer
+     * @return    string
      */
     public function getCurrentRow()
     {
         sscanf($this->currentObjectID, '%[A-Z]%d', $column, $row);
-        return (integer) $row;
+        return $row;
     }
 
     /**
      * Get highest worksheet column
      *
-     * @param   string     $row        Return the highest column for the specified row,
-     *                                     or the highest column of any row if no row number is passed
-     * @return  string     Highest column name
+     * @return string Highest column name
      */
-    public function getHighestColumn($row = null)
+    public function getHighestColumn()
     {
-        if ($row == null) {
-            $colRow = $this->getHighestRowAndColumn();
-            return $colRow['column'];
-        }
-
-        $columnList = array(1);
-        foreach ($this->getCellList() as $coord) {
-            sscanf($coord, '%[A-Z]%d', $c, $r);
-            if ($r != $row) {
-                continue;
-            }
-            $columnList[] = PHPExcel_Cell::columnIndexFromString($c);
-        }
-        return PHPExcel_Cell::stringFromColumnIndex(max($columnList) - 1);
+        $colRow = $this->getHighestRowAndColumn();
+        return $colRow['column'];
     }
 
     /**
      * Get highest worksheet row
      *
-     * @param   string     $column     Return the highest row for the specified column,
-     *                                     or the highest row of any column if no column letter is passed
-     * @return  int        Highest row number
+     * @return int Highest row number
      */
-    public function getHighestRow($column = null)
+    public function getHighestRow()
     {
-        if ($column == null) {
-            $colRow = $this->getHighestRowAndColumn();
-            return $colRow['row'];
-        }
-
-        $rowList = array(0);
-        foreach ($this->getCellList() as $coord) {
-            sscanf($coord, '%[A-Z]%d', $c, $r);
-            if ($c != $column) {
-                continue;
-            }
-            $rowList[] = $r;
-        }
-
-        return max($rowList);
+        $colRow = $this->getHighestRowAndColumn();
+        return $colRow['row'];
     }
 
     /**
@@ -309,10 +291,10 @@ abstract class PHPExcel_CachedObjectStorage_CacheBase
     /**
      * Clone the cell collection
      *
-     * @param    PHPExcel_Worksheet    $parent        The new worksheet
+     * @param    PHPExcel\Worksheet    $parent        The new worksheet
      * @return    void
      */
-    public function copyCellCollection(PHPExcel_Worksheet $parent)
+    public function copyCellCollection(Worksheet $parent)
     {
         $this->currentCellIsDirty;
         $this->storeData();
@@ -320,38 +302,6 @@ abstract class PHPExcel_CachedObjectStorage_CacheBase
         $this->parent = $parent;
         if (($this->currentObject !== null) && (is_object($this->currentObject))) {
             $this->currentObject->attach($this);
-        }
-    }    //    function copyCellCollection()
-
-    /**
-     * Remove a row, deleting all cells in that row
-     *
-     * @param string    $row    Row number to remove
-     * @return void
-     */
-    public function removeRow($row)
-    {
-        foreach ($this->getCellList() as $coord) {
-            sscanf($coord, '%[A-Z]%d', $c, $r);
-            if ($r == $row) {
-                $this->deleteCacheData($coord);
-            }
-        }
-    }
-
-    /**
-     * Remove a column, deleting all cells in that column
-     *
-     * @param string    $column    Column ID to remove
-     * @return void
-     */
-    public function removeColumn($column)
-    {
-        foreach ($this->getCellList() as $coord) {
-            sscanf($coord, '%[A-Z]%d', $c, $r);
-            if ($c == $column) {
-                $this->deleteCacheData($coord);
-            }
         }
     }
 

@@ -1,9 +1,8 @@
 <?php
-
 /**
- * PHPExcel_CalcEngine_CyclicReferenceStack
+ * PHPExcel
  *
- * Copyright (c) 2006 - 2015 PHPExcel
+ * Copyright (c) 2006 - 2013 PHPExcel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,19 +19,32 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category   PHPExcel
- * @package    PHPExcel_Calculation
- * @copyright  Copyright (c) 2006 - 2015 PHPExcel (http://www.codeplex.com/PHPExcel)
+ * @package    PHPExcel\Calculation
+ * @copyright  Copyright (c) 2006 - 2013 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  * @version    ##VERSION##, ##DATE##
  */
-class PHPExcel_CalcEngine_CyclicReferenceStack
+
+
+namespace PHPExcel;
+
+/**
+ * PHPExcel\CalcEngine_CyclicReferenceStack
+ *
+ * @category    PHPExcel\CalcEngine_CyclicReferenceStack
+ * @package        PHPExcel\Calculation
+ * @copyright    Copyright (c) 2006 - 2013 PHPExcel (http://www.codeplex.com/PHPExcel)
+ */
+class CalcEngine_CyclicReferenceStack
 {
+
     /**
      *  The call stack for calculated cells
      *
      *  @var mixed[]
      */
     private $stack = array();
+
 
     /**
      * Return the number of entries on the stack
@@ -51,8 +63,8 @@ class PHPExcel_CalcEngine_CyclicReferenceStack
      */
     public function push($value)
     {
-        $this->stack[$value] = $value;
-    }
+        $this->stack[] = $value;
+    }    //    function push()
 
     /**
      * Pop the last entry from the stack
@@ -62,7 +74,7 @@ class PHPExcel_CalcEngine_CyclicReferenceStack
     public function pop()
     {
         return array_pop($this->stack);
-    }
+    }    //    function pop()
 
     /**
      * Test to see if a specified entry exists on the stack
@@ -71,7 +83,7 @@ class PHPExcel_CalcEngine_CyclicReferenceStack
      */
     public function onStack($value)
     {
-        return isset($this->stack[$value]);
+        return in_array($value, $this->stack);
     }
 
     /**
@@ -80,7 +92,7 @@ class PHPExcel_CalcEngine_CyclicReferenceStack
     public function clear()
     {
         $this->stack = array();
-    }
+    }    //    function push()
 
     /**
      * Return an array of all entries on the stack

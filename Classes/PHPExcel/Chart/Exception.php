@@ -1,9 +1,8 @@
 <?php
-
 /**
- * PHPExcel_Chart_Exception
+ * PHPExcel
  *
- * Copyright (c) 2006 - 2015 PHPExcel
+ * Copyright (c) 2006 - 2013 PHPExcel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,13 +19,23 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category   PHPExcel
- * @package    PHPExcel_Chart
- * @copyright  Copyright (c) 2006 - 2015 PHPExcel (http://www.codeplex.com/PHPExcel)
+ * @package    PHPExcel\Chart
+ * @copyright  Copyright (c) 2006 - 2013 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  * @version    ##VERSION##, ##DATE##
  */
-class PHPExcel_Chart_Exception extends PHPExcel_Exception
-{
+
+
+namespace PHPExcel;
+
+/**
+ * PHPExcel\Chart_Exception
+ *
+ * @category   PHPExcel
+ * @package    PHPExcel\Chart
+ * @copyright  Copyright (c) 2006 - 2013 PHPExcel (http://www.codeplex.com/PHPExcel)
+ */
+class Chart_Exception extends Exception {
     /**
      * Error handler callback
      *
@@ -36,8 +45,7 @@ class PHPExcel_Chart_Exception extends PHPExcel_Exception
      * @param mixed $line
      * @param mixed $context
      */
-    public static function errorHandlerCallback($code, $string, $file, $line, $context)
-    {
+    public static function errorHandlerCallback($code, $string, $file, $line, $context) {
         $e = new self($string, $code);
         $e->line = $line;
         $e->file = $file;

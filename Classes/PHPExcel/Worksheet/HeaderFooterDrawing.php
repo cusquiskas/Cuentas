@@ -1,9 +1,8 @@
 <?php
-
 /**
- * PHPExcel_Worksheet_HeaderFooterDrawing
+ * PHPExcel
  *
- * Copyright (c) 2006 - 2015 PHPExcel
+ * Copyright (c) 2006 - 2013 PHPExcel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,75 +19,78 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category   PHPExcel
- * @package    PHPExcel_Worksheet
- * @copyright  Copyright (c) 2006 - 2015 PHPExcel (http://www.codeplex.com/PHPExcel)
+ * @package    PHPExcel\Worksheet
+ * @copyright  Copyright (c) 2006 - 2013 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  * @version    ##VERSION##, ##DATE##
  */
-class PHPExcel_Worksheet_HeaderFooterDrawing extends PHPExcel_Worksheet_Drawing implements PHPExcel_IComparable
+
+
+namespace PHPExcel;
+
+/**
+ * PHPExcel\Worksheet_HeaderFooterDrawing
+ *
+ * @category   PHPExcel
+ * @package    PHPExcel\Worksheet
+ * @copyright  Copyright (c) 2006 - 2013 PHPExcel (http://www.codeplex.com/PHPExcel)
+ */
+class Worksheet_HeaderFooterDrawing extends Worksheet_Drawing implements IComparable
 {
     /**
      * Path
      *
      * @var string
      */
-    private $path;
+    protected $_path = '';
 
     /**
      * Name
      *
      * @var string
      */
-    protected $name;
+    protected $_name = '';
 
     /**
      * Offset X
      *
      * @var int
      */
-    protected $offsetX;
+    protected $_offsetX = 0;
 
     /**
      * Offset Y
      *
      * @var int
      */
-    protected $offsetY;
+    protected $_offsetY = 0;
 
     /**
      * Width
      *
      * @var int
      */
-    protected $width;
+    protected $_width = 0;
 
     /**
      * Height
      *
      * @var int
      */
-    protected $height;
+    protected $_height = 0;
 
     /**
      * Proportional resize
      *
      * @var boolean
      */
-    protected $resizeProportional;
+    protected $_resizeProportional = true;
 
     /**
-     * Create a new PHPExcel_Worksheet_HeaderFooterDrawing
+     * Create a new PHPExcel\Worksheet_HeaderFooterDrawing
      */
     public function __construct()
     {
-        // Initialise values
-        $this->path                = '';
-        $this->name                = '';
-        $this->offsetX             = 0;
-        $this->offsetY             = 0;
-        $this->width               = 0;
-        $this->height              = 0;
-        $this->resizeProportional  = true;
     }
 
     /**
@@ -96,20 +98,18 @@ class PHPExcel_Worksheet_HeaderFooterDrawing extends PHPExcel_Worksheet_Drawing 
      *
      * @return string
      */
-    public function getName()
-    {
-        return $this->name;
+    public function getName() {
+        return $this->_name;
     }
 
     /**
      * Set Name
      *
      * @param string $pValue
-     * @return PHPExcel_Worksheet_HeaderFooterDrawing
+     * @return PHPExcel\Worksheet_HeaderFooterDrawing
      */
-    public function setName($pValue = '')
-    {
-        $this->name = $pValue;
+    public function setName($pValue = '') {
+        $this->_name = $pValue;
         return $this;
     }
 
@@ -118,20 +118,18 @@ class PHPExcel_Worksheet_HeaderFooterDrawing extends PHPExcel_Worksheet_Drawing 
      *
      * @return int
      */
-    public function getOffsetX()
-    {
-        return $this->offsetX;
+    public function getOffsetX() {
+        return $this->_offsetX;
     }
 
     /**
      * Set OffsetX
      *
      * @param int $pValue
-     * @return PHPExcel_Worksheet_HeaderFooterDrawing
+     * @return PHPExcel\Worksheet_HeaderFooterDrawing
      */
-    public function setOffsetX($pValue = 0)
-    {
-        $this->offsetX = $pValue;
+    public function setOffsetX($pValue = 0) {
+        $this->_offsetX = $pValue;
         return $this;
     }
 
@@ -140,20 +138,18 @@ class PHPExcel_Worksheet_HeaderFooterDrawing extends PHPExcel_Worksheet_Drawing 
      *
      * @return int
      */
-    public function getOffsetY()
-    {
-        return $this->offsetY;
+    public function getOffsetY() {
+        return $this->_offsetY;
     }
 
     /**
      * Set OffsetY
      *
      * @param int $pValue
-     * @return PHPExcel_Worksheet_HeaderFooterDrawing
+     * @return PHPExcel\Worksheet_HeaderFooterDrawing
      */
-    public function setOffsetY($pValue = 0)
-    {
-        $this->offsetY = $pValue;
+    public function setOffsetY($pValue = 0) {
+        $this->_offsetY = $pValue;
         return $this;
     }
 
@@ -162,27 +158,25 @@ class PHPExcel_Worksheet_HeaderFooterDrawing extends PHPExcel_Worksheet_Drawing 
      *
      * @return int
      */
-    public function getWidth()
-    {
-        return $this->width;
+    public function getWidth() {
+        return $this->_width;
     }
 
     /**
      * Set Width
      *
      * @param int $pValue
-     * @return PHPExcel_Worksheet_HeaderFooterDrawing
+     * @return PHPExcel\Worksheet_HeaderFooterDrawing
      */
-    public function setWidth($pValue = 0)
-    {
+    public function setWidth($pValue = 0) {
         // Resize proportional?
-        if ($this->resizeProportional && $pValue != 0) {
-            $ratio = $this->width / $this->height;
-            $this->height = round($ratio * $pValue);
+        if ($this->_resizeProportional && $pValue != 0) {
+            $ratio = $this->_width / $this->_height;
+            $this->_height = round($ratio * $pValue);
         }
 
         // Set width
-        $this->width = $pValue;
+        $this->_width = $pValue;
 
         return $this;
     }
@@ -192,27 +186,25 @@ class PHPExcel_Worksheet_HeaderFooterDrawing extends PHPExcel_Worksheet_Drawing 
      *
      * @return int
      */
-    public function getHeight()
-    {
-        return $this->height;
+    public function getHeight() {
+        return $this->_height;
     }
 
     /**
      * Set Height
      *
      * @param int $pValue
-     * @return PHPExcel_Worksheet_HeaderFooterDrawing
+     * @return PHPExcel\Worksheet_HeaderFooterDrawing
      */
-    public function setHeight($pValue = 0)
-    {
+    public function setHeight($pValue = 0) {
         // Resize proportional?
-        if ($this->resizeProportional && $pValue != 0) {
-            $ratio = $this->width / $this->height;
-            $this->width = round($ratio * $pValue);
+        if ($this->_resizeProportional && $pValue != 0) {
+            $ratio = $this->_width / $this->_height;
+            $this->_width = round($ratio * $pValue);
         }
 
         // Set height
-        $this->height = $pValue;
+        $this->_height = $pValue;
 
         return $this;
     }
@@ -228,19 +220,18 @@ class PHPExcel_Worksheet_HeaderFooterDrawing extends PHPExcel_Worksheet_Drawing 
      * @author Vincent@luo MSN:kele_100@hotmail.com
      * @param int $width
      * @param int $height
-     * @return PHPExcel_Worksheet_HeaderFooterDrawing
+     * @return PHPExcel\Worksheet_HeaderFooterDrawing
      */
-    public function setWidthAndHeight($width = 0, $height = 0)
-    {
-        $xratio = $width / $this->width;
-        $yratio = $height / $this->height;
-        if ($this->resizeProportional && !($width == 0 || $height == 0)) {
-            if (($xratio * $this->height) < $height) {
-                $this->height = ceil($xratio * $this->height);
-                $this->width  = $width;
+    public function setWidthAndHeight($width = 0, $height = 0) {
+        $xratio = $width / $this->_width;
+        $yratio = $height / $this->_height;
+        if ($this->_resizeProportional && !($width == 0 || $height == 0)) {
+            if (($xratio * $this->_height) < $height) {
+                $this->_height = ceil($xratio * $this->_height);
+                $this->_width  = $width;
             } else {
-                $this->width    = ceil($yratio * $this->width);
-                $this->height    = $height;
+                $this->_width    = ceil($yratio * $this->_width);
+                $this->_height    = $height;
             }
         }
         return $this;
@@ -251,20 +242,18 @@ class PHPExcel_Worksheet_HeaderFooterDrawing extends PHPExcel_Worksheet_Drawing 
      *
      * @return boolean
      */
-    public function getResizeProportional()
-    {
-        return $this->resizeProportional;
+    public function getResizeProportional() {
+        return $this->_resizeProportional;
     }
 
     /**
      * Set ResizeProportional
      *
      * @param boolean $pValue
-     * @return PHPExcel_Worksheet_HeaderFooterDrawing
+     * @return PHPExcel\Worksheet_HeaderFooterDrawing
      */
-    public function setResizeProportional($pValue = true)
-    {
-        $this->resizeProportional = $pValue;
+    public function setResizeProportional($pValue = true) {
+        $this->_resizeProportional = $pValue;
         return $this;
     }
 
@@ -273,9 +262,8 @@ class PHPExcel_Worksheet_HeaderFooterDrawing extends PHPExcel_Worksheet_Drawing 
      *
      * @return string
      */
-    public function getFilename()
-    {
-        return basename($this->path);
+    public function getFilename() {
+        return basename($this->_path);
     }
 
     /**
@@ -283,9 +271,8 @@ class PHPExcel_Worksheet_HeaderFooterDrawing extends PHPExcel_Worksheet_Drawing 
      *
      * @return string
      */
-    public function getExtension()
-    {
-        $parts = explode(".", basename($this->path));
+    public function getExtension() {
+        $parts = explode(".", basename($this->_path));
         return end($parts);
     }
 
@@ -294,9 +281,8 @@ class PHPExcel_Worksheet_HeaderFooterDrawing extends PHPExcel_Worksheet_Drawing 
      *
      * @return string
      */
-    public function getPath()
-    {
-        return $this->path;
+    public function getPath() {
+        return $this->_path;
     }
 
     /**
@@ -304,24 +290,23 @@ class PHPExcel_Worksheet_HeaderFooterDrawing extends PHPExcel_Worksheet_Drawing 
      *
      * @param     string         $pValue            File path
      * @param     boolean        $pVerifyFile    Verify file
-     * @throws     PHPExcel_Exception
-     * @return PHPExcel_Worksheet_HeaderFooterDrawing
+     * @throws     PHPExcel\Exception
+     * @return PHPExcel\Worksheet_HeaderFooterDrawing
      */
-    public function setPath($pValue = '', $pVerifyFile = true)
-    {
+    public function setPath($pValue = '', $pVerifyFile = true) {
         if ($pVerifyFile) {
             if (file_exists($pValue)) {
-                $this->path = $pValue;
+                $this->_path = $pValue;
 
-                if ($this->width == 0 && $this->height == 0) {
+                if ($this->_width == 0 && $this->_height == 0) {
                     // Get width/height
-                    list($this->width, $this->height) = getimagesize($pValue);
+                    list($this->_width, $this->_height) = getimagesize($pValue);
                 }
             } else {
-                throw new PHPExcel_Exception("File $pValue not found!");
+                throw new Exception("File $pValue not found!");
             }
         } else {
-            $this->path = $pValue;
+            $this->_path = $pValue;
         }
         return $this;
     }
@@ -331,24 +316,22 @@ class PHPExcel_Worksheet_HeaderFooterDrawing extends PHPExcel_Worksheet_Drawing 
      *
      * @return string    Hash code
      */
-    public function getHashCode()
-    {
+    public function getHashCode() {
         return md5(
-            $this->path .
-            $this->name .
-            $this->offsetX .
-            $this->offsetY .
-            $this->width .
-            $this->height .
-            __CLASS__
+              $this->_path
+            . $this->_name
+            . $this->_offsetX
+            . $this->_offsetY
+            . $this->_width
+            . $this->_height
+            . __CLASS__
         );
     }
 
     /**
      * Implement PHP __clone to create a deep clone, not just a shallow copy.
      */
-    public function __clone()
-    {
+    public function __clone() {
         $vars = get_object_vars($this);
         foreach ($vars as $key => $value) {
             if (is_object($value)) {

@@ -1,9 +1,8 @@
 <?php
-
 /**
- * PHPExcel_Cell_DataType
+ * PHPExcel
  *
- * Copyright (c) 2006 - 2015 PHPExcel
+ * Copyright (c) 2006 - 2013 PHPExcel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,12 +19,23 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category   PHPExcel
- * @package    PHPExcel_Cell
- * @copyright  Copyright (c) 2006 - 2015 PHPExcel (http://www.codeplex.com/PHPExcel)
+ * @package    PHPExcel\Cell
+ * @copyright  Copyright (c) 2006 - 2013 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  * @version    ##VERSION##, ##DATE##
  */
-class PHPExcel_Cell_DataType
+
+
+namespace PHPExcel;
+
+/**
+ * PHPExcel\Cell_DataType
+ *
+ * @category   PHPExcel
+ * @package    PHPExcel\Cell
+ * @copyright  Copyright (c) 2006 - 2013 PHPExcel (http://www.codeplex.com/PHPExcel)
+ */
+class Cell_DataType
 {
     /* Data types */
     const TYPE_STRING2  = 'str';
@@ -42,7 +52,7 @@ class PHPExcel_Cell_DataType
      *
      * @var array
      */
-    private static $errorCodes = array(
+    protected static $_errorCodes = array(
         '#NULL!'  => 0,
         '#DIV/0!' => 1,
         '#VALUE!' => 2,
@@ -57,21 +67,19 @@ class PHPExcel_Cell_DataType
      *
      * @return array
      */
-    public static function getErrorCodes()
-    {
-        return self::$errorCodes;
+    public static function getErrorCodes() {
+        return self::$_errorCodes;
     }
 
     /**
      * DataType for value
      *
-     * @deprecated  Replaced by PHPExcel_Cell_IValueBinder infrastructure, will be removed in version 1.8.0
+     * @deprecated  Replaced by PHPExcel\Cell_IValueBinder infrastructure, will be removed in version 1.8.0
      * @param       mixed  $pValue
      * @return      string
      */
-    public static function dataTypeForValue($pValue = null)
-    {
-        return PHPExcel_Cell_DefaultValueBinder::dataTypeForValue($pValue);
+    public static function dataTypeForValue($pValue = null) {
+        return Cell_DefaultValueBinder::dataTypeForValue($pValue);
     }
 
     /**
@@ -82,13 +90,13 @@ class PHPExcel_Cell_DataType
      */
     public static function checkString($pValue = null)
     {
-        if ($pValue instanceof PHPExcel_RichText) {
+        if ($pValue instanceof RichText) {
             // TODO: Sanitize Rich-Text string (max. character count is 32,767)
             return $pValue;
         }
 
         // string must never be longer than 32,767 characters, truncate if necessary
-        $pValue = PHPExcel_Shared_String::Substring($pValue, 0, 32767);
+        $pValue = Shared_String::Substring($pValue, 0, 32767);
 
         // we require that newline is represented as "\n" in core, not as "\r\n" or "\r"
         $pValue = str_replace(array("\r\n", "\r"), "\n", $pValue);
@@ -106,10 +114,11 @@ class PHPExcel_Cell_DataType
     {
         $pValue = (string) $pValue;
 
-        if (!array_key_exists($pValue, self::$errorCodes)) {
+        if ( !array_key_exists($pValue, self::$_errorCodes) ) {
             $pValue = '#NULL!';
         }
 
         return $pValue;
     }
+
 }

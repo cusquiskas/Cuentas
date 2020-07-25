@@ -20,6 +20,8 @@
 // $Id: OLE.php,v 1.13 2007/03/07 14:38:25 schmidt Exp $
 
 
+namespace PHPExcel;
+
 /**
 * Array for storing OLE instances that are accessed from
 * OLE_ChainedBlockStream::stream_open().
@@ -33,9 +35,9 @@ $GLOBALS['_OLE_INSTANCES'] = array();
 * @author   Xavier Noguer <xnoguer@php.net>
 * @author   Christian Schmidt <schmidt@php.net>
 * @category   PHPExcel
-* @package    PHPExcel_Shared_OLE
+* @package    PHPExcel\Shared_OLE
 */
-class PHPExcel_Shared_OLE
+class Shared_OLE
 {
     const OLE_PPS_TYPE_ROOT   =      5;
     const OLE_PPS_TYPE_DIR    =      1;
@@ -97,18 +99,18 @@ class PHPExcel_Shared_OLE
     {
         $fh = fopen($file, "r");
         if (!$fh) {
-            throw new PHPExcel_Reader_Exception("Can't open file $file");
+            throw new Reader_Exception("Can't open file $file");
         }
         $this->_file_handle = $fh;
 
         $signature = fread($fh, 8);
         if ("\xD0\xCF\x11\xE0\xA1\xB1\x1A\xE1" != $signature) {
-            throw new PHPExcel_Reader_Exception("File doesn't seem to be an OLE container.");
+            throw new Reader_Exception("File doesn't seem to be an OLE container.");
         }
         fseek($fh, 28);
         if (fread($fh, 2) != "\xFE\xFF") {
             // This shouldn't be a problem in practice
-            throw new PHPExcel_Reader_Exception("Only Little-Endian encoding is supported.");
+            throw new Reader_Exception("Only Little-Endian encoding is supported.");
         }
         // Size of blocks and short blocks in bytes
         $this->bigBlockSize = pow(2, self::_readInt2($fh));
@@ -159,7 +161,7 @@ class PHPExcel_Shared_OLE
         for ($i = 0; $i < $bbatBlockCount; ++$i) {
             $pos = $this->_getBlockOffset($mbatBlocks[$i]);
             fseek($fh, $pos);
-            for ($j = 0; $j < $this->bigBlockSize / 4; ++$j) {
+            for ($j = 0 ; $j < $this->bigBlockSize / 4; ++$j) {
                 $this->bbat[] = self::_readInt4($fh);
             }
         }
@@ -190,7 +192,7 @@ class PHPExcel_Shared_OLE
 
     /**
     * Returns a stream for use with fread() etc. External callers should
-    * use PHPExcel_Shared_OLE_PPS_File::getStream().
+    * use PHPExcel\Shared_OLE_PPS_File::getStream().
     * @param   int|PPS   block id or PPS
     * @return  resource  read-only stream
     */
@@ -198,7 +200,8 @@ class PHPExcel_Shared_OLE
     {
         static $isRegistered = false;
         if (!$isRegistered) {
-            stream_wrapper_register('ole-chainedblockstream', 'PHPExcel_Shared_OLE_ChainedBlockStream');
+            stream_wrapper_register('ole-chainedblockstream',
+                __NAMESPACE__ . '\Shared_OLE_ChainedBlockStream');
             $isRegistered = true;
         }
 
@@ -209,7 +212,7 @@ class PHPExcel_Shared_OLE
         $instanceId = end(array_keys($GLOBALS['_OLE_INSTANCES']));
 
         $path = 'ole-chainedblockstream://oleInstanceId=' . $instanceId;
-        if ($blockIdOrPps instanceof PHPExcel_Shared_OLE_PPS) {
+        if ($blockIdOrPps instanceof Shared_OLE_PPS) {
             $path .= '&blockId=' . $blockIdOrPps->_StartBlock;
             $path .= '&size=' . $blockIdOrPps->Size;
         } else {
@@ -265,7 +268,7 @@ class PHPExcel_Shared_OLE
     public function _readPpsWks($blockId)
     {
         $fh = $this->getStream($blockId);
-        for ($pos = 0;; $pos += 128) {
+        for ($pos = 0; ; $pos += 128) {
             fseek($fh, $pos, SEEK_SET);
             $nameUtf16 = fread($fh, 64);
             $nameLength = self::_readInt2($fh);
@@ -274,18 +277,19 @@ class PHPExcel_Shared_OLE
             $name = str_replace("\x00", "", $nameUtf16);
             $type = self::_readInt1($fh);
             switch ($type) {
-                case self::OLE_PPS_TYPE_ROOT:
-                    $pps = new PHPExcel_Shared_OLE_PPS_Root(null, null, array());
-                    $this->root = $pps;
-                    break;
-                case self::OLE_PPS_TYPE_DIR:
-                    $pps = new PHPExcel_Shared_OLE_PPS(null, null, null, null, null, null, null, null, null, array());
-                    break;
-                case self::OLE_PPS_TYPE_FILE:
-                    $pps = new PHPExcel_Shared_OLE_PPS_File($name);
-                    break;
-                default:
-                    continue;
+            case self::OLE_PPS_TYPE_ROOT:
+                $pps = new Shared_OLE_PPS_Root(null, null, array());
+                $this->root = $pps;
+                break;
+            case self::OLE_PPS_TYPE_DIR:
+                $pps = new Shared_OLE_PPS(null, null, null, null, null,
+                                   null, null, null, null, array());
+                break;
+            case self::OLE_PPS_TYPE_FILE:
+                $pps = new Shared_OLE_PPS_File($name);
+                break;
+            default:
+                continue;
             }
             fseek($fh, 1, SEEK_CUR);
             $pps->Type    = $type;
@@ -302,7 +306,9 @@ class PHPExcel_Shared_OLE
             $this->_list[] = $pps;
 
             // check if the PPS tree (starting from root) is complete
-            if (isset($this->root) && $this->_ppsTreeComplete($this->root->No)) {
+            if (isset($this->root) &&
+                $this->_ppsTreeComplete($this->root->No)) {
+
                 break;
             }
         }
@@ -469,7 +475,8 @@ class PHPExcel_Shared_OLE
         // days from 1-1-1601 until the beggining of UNIX era
         $days = 134774;
         // calculate seconds
-        $big_date = $days*24*3600 + gmmktime(date("H", $date), date("i", $date), date("s", $date), date("m", $date), date("d", $date), date("Y", $date));
+        $big_date = $days*24*3600 + gmmktime(date("H",$date),date("i",$date),date("s",$date),
+                                             date("m",$date),date("d",$date),date("Y",$date));
         // multiply just to make MS happy
         $big_date *= 10000000;
 
@@ -508,7 +515,7 @@ class PHPExcel_Shared_OLE
         }
 
         // factor used for separating numbers into 4 bytes parts
-        $factor = pow(2, 32);
+        $factor = pow(2,32);
         list(, $high_part) = unpack('V', substr($string, 4, 4));
         list(, $low_part) = unpack('V', substr($string, 0, 4));
 

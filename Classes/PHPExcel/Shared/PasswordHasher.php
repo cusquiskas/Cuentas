@@ -2,7 +2,7 @@
 /**
  * PHPExcel
  *
- * Copyright (c) 2006 - 2015 PHPExcel
+ * Copyright (c) 2006 - 2013 PHPExcel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -19,21 +19,23 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category   PHPExcel
- * @package    PHPExcel_Shared
- * @copyright  Copyright (c) 2006 - 2015 PHPExcel (http://www.codeplex.com/PHPExcel)
+ * @package    PHPExcel\Shared
+ * @copyright  Copyright (c) 2006 - 2013 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  * @version    ##VERSION##, ##DATE##
  */
 
 
+namespace PHPExcel;
+
 /**
- * PHPExcel_Shared_PasswordHasher
+ * PHPExcel\Shared_PasswordHasher
  *
  * @category   PHPExcel
- * @package    PHPExcel_Shared
- * @copyright  Copyright (c) 2006 - 2015 PHPExcel (http://www.codeplex.com/PHPExcel)
+ * @package    PHPExcel\Shared
+ * @copyright  Copyright (c) 2006 - 2013 PHPExcel (http://www.codeplex.com/PHPExcel)
  */
-class PHPExcel_Shared_PasswordHasher
+class Shared_PasswordHasher
 {
     /**
      * Create a password hash from a given string.
@@ -45,9 +47,8 @@ class PHPExcel_Shared_PasswordHasher
      * @param     string    $pPassword    Password to hash
      * @return     string                Hashed password
      */
-    public static function hashPassword($pPassword = '')
-    {
-        $password   = 0x0000;
+    public static function hashPassword($pPassword = '') {
+        $password    = 0x0000;
         $charPos    = 1;       // char position
 
         // split the plain text password in its component characters

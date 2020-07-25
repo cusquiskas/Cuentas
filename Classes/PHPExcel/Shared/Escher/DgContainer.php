@@ -1,9 +1,8 @@
 <?php
-
 /**
- * PHPExcel_Shared_Escher_DgContainer
+ * PHPExcel
  *
- * Copyright (c) 2006 - 2015 PHPExcel
+ * Copyright (c) 2006 - 2013 PHPExcel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,56 +19,68 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category   PHPExcel
- * @package    PHPExcel_Shared_Escher
- * @copyright  Copyright (c) 2006 - 2015 PHPExcel (http://www.codeplex.com/PHPExcel)
+ * @package    PHPExcel\Shared_Escher
+ * @copyright  Copyright (c) 2006 - 2013 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  * @version    ##VERSION##, ##DATE##
  */
-class PHPExcel_Shared_Escher_DgContainer
+
+
+namespace PHPExcel;
+
+/**
+ * PHPExcel\Shared_Escher_DgContainer
+ *
+ * @category   PHPExcel
+ * @package    PHPExcel\Shared_Escher
+ * @copyright  Copyright (c) 2006 - 2013 PHPExcel (http://www.codeplex.com/PHPExcel)
+ */
+class Shared_Escher_DgContainer
 {
     /**
      * Drawing index, 1-based.
      *
      * @var int
      */
-    private $dgId;
+    private $_dgId;
 
     /**
      * Last shape index in this drawing
      *
      * @var int
      */
-    private $lastSpId;
+    private $_lastSpId;
 
-    private $spgrContainer = null;
+    private $_spgrContainer = null;
 
     public function getDgId()
     {
-        return $this->dgId;
+        return $this->_dgId;
     }
 
     public function setDgId($value)
     {
-        $this->dgId = $value;
+        $this->_dgId = $value;
     }
 
     public function getLastSpId()
     {
-        return $this->lastSpId;
+        return $this->_lastSpId;
     }
 
     public function setLastSpId($value)
     {
-        $this->lastSpId = $value;
+        $this->_lastSpId = $value;
     }
 
     public function getSpgrContainer()
     {
-        return $this->spgrContainer;
+        return $this->_spgrContainer;
     }
 
     public function setSpgrContainer($spgrContainer)
     {
-        return $this->spgrContainer = $spgrContainer;
+        return $this->_spgrContainer = $spgrContainer;
     }
+
 }

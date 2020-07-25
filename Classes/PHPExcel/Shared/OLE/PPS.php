@@ -20,14 +20,16 @@
 // $Id: PPS.php,v 1.7 2007/02/13 21:00:42 schmidt Exp $
 
 
+namespace PHPExcel;
+
 /**
 * Class for creating PPS's for OLE containers
 *
 * @author   Xavier Noguer <xnoguer@php.net>
 * @category PHPExcel
-* @package  PHPExcel_Shared_OLE
+* @package  PHPExcel\Shared_OLE
 */
-class PHPExcel_Shared_OLE_PPS
+class Shared_OLE_PPS
 {
     /**
     * The PPS index
@@ -169,7 +171,7 @@ class PHPExcel_Shared_OLE_PPS
     */
     public function _getPpsWk()
     {
-        $ret = str_pad($this->Name, 64, "\x00");
+        $ret = str_pad($this->Name,64,"\x00");
 
         $ret .= pack("v", strlen($this->Name) + 2)  // 66
               . pack("c", $this->Type)              // 67
@@ -182,8 +184,8 @@ class PHPExcel_Shared_OLE_PPS
               . "\xc0\x00\x00\x00"                  // 92
               . "\x00\x00\x00\x46"                  // 96 // Seems to be ok only for Root
               . "\x00\x00\x00\x00"                  // 100
-              . PHPExcel_Shared_OLE::LocalDate2OLE($this->Time1st)       // 108
-              . PHPExcel_Shared_OLE::LocalDate2OLE($this->Time2nd)       // 116
+              . Shared_OLE::LocalDate2OLE($this->Time1st)       // 108
+              . Shared_OLE::LocalDate2OLE($this->Time2nd)       // 116
               . pack("V", isset($this->_StartBlock)?
                         $this->_StartBlock:0)        // 120
               . pack("V", $this->Size)               // 124
@@ -202,9 +204,9 @@ class PHPExcel_Shared_OLE_PPS
     */
     public static function _savePpsSetPnt(&$raList, $to_save, $depth = 0)
     {
-        if (!is_array($to_save) || (empty($to_save))) {
+        if ( !is_array($to_save) || (empty($to_save)) ) {
             return 0xFFFFFFFF;
-        } elseif (count($to_save) == 1) {
+        } elseif( count($to_save) == 1 ) {
             $cnt = count($raList);
             // If the first entry, it's the root... Don't clone it!
             $raList[$cnt] = ( $depth == 0 ) ? $to_save[0] : clone $to_save[0];

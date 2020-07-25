@@ -1,9 +1,8 @@
 <?php
-
 /**
- * PHPExcel_Chart_Title
+ * PHPExcel
  *
- * Copyright (c) 2006 - 2015 PHPExcel
+ * Copyright (c) 2006 - 2013 PHPExcel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,12 +19,23 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category    PHPExcel
- * @package        PHPExcel_Chart
- * @copyright    Copyright (c) 2006 - 2015 PHPExcel (http://www.codeplex.com/PHPExcel)
+ * @package        PHPExcel\Chart
+ * @copyright    Copyright (c) 2006 - 2013 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license        http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  * @version        ##VERSION##, ##DATE##
  */
-class PHPExcel_Chart_Title
+
+
+namespace PHPExcel;
+
+/**
+ * PHPExcel\Chart_Title
+ *
+ * @category    PHPExcel
+ * @package        PHPExcel\Chart
+ * @copyright    Copyright (c) 2006 - 2013 PHPExcel (http://www.codeplex.com/PHPExcel)
+ */
+class Chart_Title
 {
 
     /**
@@ -33,22 +43,22 @@ class PHPExcel_Chart_Title
      *
      * @var string
      */
-    private $caption = null;
+    private $_caption = null;
 
     /**
      * Title Layout
      *
-     * @var PHPExcel_Chart_Layout
+     * @var PHPExcel\Chart_Layout
      */
-    private $layout = null;
+    private $_layout = null;
 
     /**
-     * Create a new PHPExcel_Chart_Title
+     * Create a new PHPExcel\Chart_Title
      */
-    public function __construct($caption = null, PHPExcel_Chart_Layout $layout = null)
+    public function __construct($caption = null, Chart_Layout $layout = null)
     {
-        $this->caption = $caption;
-        $this->layout = $layout;
+        $this->_caption = $caption;
+        $this->_layout = $layout;
     }
 
     /**
@@ -56,31 +66,26 @@ class PHPExcel_Chart_Title
      *
      * @return string
      */
-    public function getCaption()
-    {
-        return $this->caption;
+    public function getCaption() {
+        return $this->_caption;
     }
 
     /**
      * Set caption
      *
      * @param string $caption
-     * @return PHPExcel_Chart_Title
      */
-    public function setCaption($caption = null)
-    {
-        $this->caption = $caption;
-        
-        return $this;
+    public function setCaption($caption = null) {
+        $this->_caption = $caption;
     }
 
     /**
      * Get Layout
      *
-     * @return PHPExcel_Chart_Layout
+     * @return PHPExcel\Chart_Layout
      */
-    public function getLayout()
-    {
-        return $this->layout;
+    public function getLayout() {
+        return $this->_layout;
     }
+
 }

@@ -1,9 +1,8 @@
 <?php
-
 /**
- * PHPExcel_Style_Supervisor
+ * PHPExcel
  *
- * Copyright (c) 2006 - 2015 PHPExcel
+ * Copyright (c) 2006 - 2013 PHPExcel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,29 +19,40 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category   PHPExcel
- * @package    PHPExcel_Style
- * @copyright  Copyright (c) 2006 - 2015 PHPExcel (http://www.codeplex.com/PHPExcel)
+ * @package    PHPExcel\Style
+ * @copyright  Copyright (c) 2006 - 2013 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  * @version    ##VERSION##, ##DATE##
  */
-abstract class PHPExcel_Style_Supervisor
+
+
+namespace PHPExcel;
+
+/**
+ * PHPExcel\Style\Supervisor
+ *
+ * @category   PHPExcel
+ * @package    PHPExcel\Style
+ * @copyright  Copyright (c) 2006 - 2013 PHPExcel (http://www.codeplex.com/PHPExcel)
+ */
+abstract class Style_Supervisor
 {
     /**
      * Supervisor?
      *
      * @var boolean
      */
-    protected $isSupervisor;
+    protected $_isSupervisor;
 
     /**
      * Parent. Only used for supervisor
      *
-     * @var PHPExcel_Style
+     * @var PHPExcel\Style
      */
-    protected $parent;
+    protected $_parent;
 
     /**
-     * Create a new PHPExcel_Style_Alignment
+     * Create a new PHPExcel\Style_Alignment
      *
      * @param    boolean    $isSupervisor    Flag indicating if this is a supervisor or not
      *                                    Leave this value at default unless you understand exactly what
@@ -51,18 +61,18 @@ abstract class PHPExcel_Style_Supervisor
     public function __construct($isSupervisor = false)
     {
         // Supervisor?
-        $this->isSupervisor = $isSupervisor;
+        $this->_isSupervisor = $isSupervisor;
     }
 
     /**
      * Bind parent. Only used for supervisor
      *
      * @param PHPExcel $parent
-     * @return PHPExcel_Style_Supervisor
+     * @return PHPExcel\Style_Supervisor
      */
-    public function bindParent($parent, $parentPropertyName = null)
+    public function bindParent($parent, $parentPropertyName=null)
     {
-        $this->parent = $parent;
+        $this->_parent = $parent;
         return $this;
     }
 
@@ -73,17 +83,17 @@ abstract class PHPExcel_Style_Supervisor
      */
     public function getIsSupervisor()
     {
-        return $this->isSupervisor;
+        return $this->_isSupervisor;
     }
 
     /**
      * Get the currently active sheet. Only used for supervisor
      *
-     * @return PHPExcel_Worksheet
+     * @return PHPExcel\Worksheet
      */
     public function getActiveSheet()
     {
-        return $this->parent->getActiveSheet();
+        return $this->_parent->getActiveSheet();
     }
 
     /**
@@ -111,11 +121,10 @@ abstract class PHPExcel_Style_Supervisor
     /**
      * Implement PHP __clone to create a deep clone, not just a shallow copy.
      */
-    public function __clone()
-    {
+    public function __clone() {
         $vars = get_object_vars($this);
         foreach ($vars as $key => $value) {
-            if ((is_object($value)) && ($key != 'parent')) {
+            if ((is_object($value)) && ($key != '_parent')) {
                 $this->$key = clone $value;
             } else {
                 $this->$key = $value;

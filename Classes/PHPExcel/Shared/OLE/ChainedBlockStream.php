@@ -1,9 +1,8 @@
 <?php
-
 /**
- * PHPExcel_Shared_OLE_ChainedBlockStream
+ * PHPExcel
  *
- * Copyright (c) 2006 - 2015 PHPExcel
+ * Copyright (C) 2006 - 2013 PHPExcel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,12 +19,26 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category   PHPExcel
- * @package    PHPExcel_Shared_OLE
+ * @package    PHPExcel\Shared_OLE
  * @copyright  Copyright (c) 2006 - 2007 Christian Schmidt
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  * @version ##VERSION##, ##DATE##
  */
-class PHPExcel_Shared_OLE_ChainedBlockStream
+
+
+namespace PHPExcel;
+
+/**
+ * PHPExcel\Shared_OLE_ChainedBlockStream
+ *
+ * Stream wrapper for reading data stored in an OLE file. Implements methods
+ * for PHP's stream_wrapper_register(). For creating streams using this
+ * wrapper, use PHPExcel\Shared_OLE_PPS_File::getStream().
+ *
+ * @category   PHPExcel
+ * @package    PHPExcel\Shared_OLE
+ */
+class Shared_OLE_ChainedBlockStream
 {
     /**
      * The OLE container of the file that is being read.
@@ -73,7 +86,10 @@ class PHPExcel_Shared_OLE_ChainedBlockStream
 
         // 25 is length of "ole-chainedblockstream://"
         parse_str(substr($path, 25), $this->params);
-        if (!isset($this->params['oleInstanceId'], $this->params['blockId'], $GLOBALS['_OLE_INSTANCES'][$this->params['oleInstanceId']])) {
+        if (!isset($this->params['oleInstanceId'],
+                   $this->params['blockId'],
+                   $GLOBALS['_OLE_INSTANCES'][$this->params['oleInstanceId']])) {
+
             if ($options & STREAM_REPORT_ERRORS) {
                 trigger_error('OLE stream not found', E_USER_WARNING);
             }
@@ -83,7 +99,10 @@ class PHPExcel_Shared_OLE_ChainedBlockStream
 
         $blockId = $this->params['blockId'];
         $this->data = '';
-        if (isset($this->params['size']) && $this->params['size'] < $this->ole->bigBlockThreshold && $blockId != $this->ole->root->_StartBlock) {
+        if (isset($this->params['size']) &&
+            $this->params['size'] < $this->ole->bigBlockThreshold &&
+            $blockId != $this->ole->root->_StartBlock) {
+
             // Block id refers to small blocks
             $rootPos = $this->ole->_getBlockOffset($this->ole->root->_StartBlock);
             while ($blockId != -2) {
@@ -145,6 +164,14 @@ class PHPExcel_Shared_OLE_ChainedBlockStream
      */
     public function stream_eof()
     {
+//        As we don't support below 5.2 anymore, this is simply redundancy and overhead
+//        $eof = $this->pos >= strlen($this->data);
+//        // Workaround for bug in PHP 5.0.x: http://bugs.php.net/27508
+//        if (version_compare(PHP_VERSION, '5.0', '>=') &&
+//            version_compare(PHP_VERSION, '5.1', '<')) {
+//           $eof = !$eof;
+//        }
+//        return $eof;
         return $this->pos >= strlen($this->data);
     }
 

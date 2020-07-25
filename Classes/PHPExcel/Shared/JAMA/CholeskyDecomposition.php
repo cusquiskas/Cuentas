@@ -15,8 +15,8 @@
  *    @author Michael Bommarito
  *    @version 1.2
  */
-class CholeskyDecomposition
-{
+class CholeskyDecomposition {
+
     /**
      *    Decomposition storage
      *    @var array
@@ -38,21 +38,21 @@ class CholeskyDecomposition
      */
     private $isspd = true;
 
+
     /**
      *    CholeskyDecomposition
      *
      *    Class constructor - decomposes symmetric positive definite matrix
      *    @param mixed Matrix square symmetric positive definite matrix
      */
-    public function __construct($A = null)
-    {
+    public function __construct($A = null) {
         if ($A instanceof Matrix) {
             $this->L = $A->getArray();
             $this->m = $A->getRowDimension();
 
-            for ($i = 0; $i < $this->m; ++$i) {
-                for ($j = $i; $j < $this->m; ++$j) {
-                    for ($sum = $this->L[$i][$j], $k = $i - 1; $k >= 0; --$k) {
+            for($i = 0; $i < $this->m; ++$i) {
+                for($j = $i; $j < $this->m; ++$j) {
+                    for($sum = $this->L[$i][$j], $k = $i - 1; $k >= 0; --$k) {
                         $sum -= $this->L[$i][$k] * $this->L[$j][$k];
                     }
                     if ($i == $j) {
@@ -73,19 +73,20 @@ class CholeskyDecomposition
                 }
             }
         } else {
-            throw new PHPExcel_Calculation_Exception(JAMAError(ARGUMENT_TYPE_EXCEPTION));
+            throw new PHPExcel\Calculation_Exception(JAMAError(ArgumentTypeException));
         }
     }    //    function __construct()
+
 
     /**
      *    Is the matrix symmetric and positive definite?
      *
      *    @return boolean
      */
-    public function isSPD()
-    {
+    public function isSPD() {
         return $this->isspd;
     }    //    function isSPD()
+
 
     /**
      *    getL
@@ -93,10 +94,10 @@ class CholeskyDecomposition
      *    Return triangular factor.
      *    @return Matrix Lower triangular matrix
      */
-    public function getL()
-    {
+    public function getL() {
         return new Matrix($this->L);
     }    //    function getL()
+
 
     /**
      *    Solve A*X = B
@@ -104,8 +105,7 @@ class CholeskyDecomposition
      *    @param $B Row-equal matrix
      *    @return Matrix L * L' * X = B
      */
-    public function solve($B = null)
-    {
+    public function solve($B = null) {
         if ($B instanceof Matrix) {
             if ($B->getRowDimension() == $this->m) {
                 if ($this->isspd) {
@@ -136,13 +136,14 @@ class CholeskyDecomposition
 
                     return new Matrix($X, $this->m, $nx);
                 } else {
-                    throw new PHPExcel_Calculation_Exception(JAMAError(MatrixSPDException));
+                    throw new PHPExcel\Calculation_Exception(JAMAError(MatrixSPDException));
                 }
             } else {
-                throw new PHPExcel_Calculation_Exception(JAMAError(MATRIX_DIMENSION_EXCEPTION));
+                throw new PHPExcel\Calculation_Exception(JAMAError(MatrixDimensionException));
             }
         } else {
-            throw new PHPExcel_Calculation_Exception(JAMAError(ARGUMENT_TYPE_EXCEPTION));
+            throw new PHPExcel\Calculation_Exception(JAMAError(ArgumentTypeException));
         }
     }    //    function solve()
-}
+
+}    //    class CholeskyDecomposition

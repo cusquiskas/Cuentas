@@ -2,7 +2,7 @@
 /**
  * PHPExcel
  *
- * Copyright (c) 2006 - 2015 PHPExcel
+ * Copyright (c) 2006 - 2013 PHPExcel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -19,42 +19,44 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category   PHPExcel
- * @package    PHPExcel_Reader_Excel2007
- * @copyright  Copyright (c) 2006 - 2015 PHPExcel (http://www.codeplex.com/PHPExcel)
+ * @package    PHPExcel\Reader_Excel2007
+ * @copyright  Copyright (c) 2006 - 2013 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  * @version    ##VERSION##, ##DATE##
  */
 
 
+namespace PHPExcel;
+
 /**
- * PHPExcel_Reader_Excel2007_Theme
+ * PHPExcel\Reader_Excel2007_Theme
  *
  * @category   PHPExcel
- * @package    PHPExcel_Reader_Excel2007
- * @copyright  Copyright (c) 2006 - 2015 PHPExcel (http://www.codeplex.com/PHPExcel)
+ * @package    PHPExcel\Reader_Excel2007
+ * @copyright  Copyright (c) 2006 - 2013 PHPExcel (http://www.codeplex.com/PHPExcel)
  */
-class PHPExcel_Reader_Excel2007_Theme
+class Reader_Excel2007_Theme
 {
     /**
      * Theme Name
      *
      * @var string
      */
-    private $themeName;
+    private $_themeName;
 
     /**
      * Colour Scheme Name
      *
      * @var string
      */
-    private $colourSchemeName;
+    private $_colourSchemeName;
 
     /**
      * Colour Map indexed by position
      *
      * @var array of string
      */
-    private $colourMapValues;
+    private $_colourMapValues;
 
 
     /**
@@ -62,19 +64,19 @@ class PHPExcel_Reader_Excel2007_Theme
      *
      * @var array of string
      */
-    private $colourMap;
+    private $_colourMap;
 
 
     /**
-     * Create a new PHPExcel_Theme
+     * Create a new PHPExcel\Theme
      *
      */
-    public function __construct($themeName, $colourSchemeName, $colourMap)
+    public function __construct($themeName,$colourSchemeName,$colourMap)
     {
         // Initialise values
-        $this->themeName        = $themeName;
-        $this->colourSchemeName = $colourSchemeName;
-        $this->colourMap        = $colourMap;
+        $this->_themeName            = $themeName;
+        $this->_colourSchemeName    = $colourSchemeName;
+        $this->_colourMap            = $colourMap;
     }
 
     /**
@@ -84,7 +86,7 @@ class PHPExcel_Reader_Excel2007_Theme
      */
     public function getThemeName()
     {
-        return $this->themeName;
+        return $this->_themeName;
     }
 
     /**
@@ -92,9 +94,8 @@ class PHPExcel_Reader_Excel2007_Theme
      *
      * @return string
      */
-    public function getColourSchemeName()
-    {
-        return $this->colourSchemeName;
+    public function getColourSchemeName() {
+        return $this->_colourSchemeName;
     }
 
     /**
@@ -102,10 +103,9 @@ class PHPExcel_Reader_Excel2007_Theme
      *
      * @return string
      */
-    public function getColourByIndex($index = 0)
-    {
-        if (isset($this->colourMap[$index])) {
-            return $this->colourMap[$index];
+    public function getColourByIndex($index=0) {
+        if (isset($this->_colourMap[$index])) {
+            return $this->_colourMap[$index];
         }
         return null;
     }
@@ -113,8 +113,7 @@ class PHPExcel_Reader_Excel2007_Theme
     /**
      * Implement PHP __clone to create a deep clone, not just a shallow copy.
      */
-    public function __clone()
-    {
+    public function __clone() {
         $vars = get_object_vars($this);
         foreach ($vars as $key => $value) {
             if ((is_object($value)) && ($key != '_parent')) {

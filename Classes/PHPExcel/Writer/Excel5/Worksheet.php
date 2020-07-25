@@ -1,9 +1,8 @@
 <?php
-
 /**
- * PHPExcel_Writer_Excel5_Worksheet
+ * PHPExcel
  *
- * Copyright (c) 2006 - 2015 PHPExcel
+ * Copyright (c) 2006 - 2013 PHPExcel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,8 +19,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category   PHPExcel
- * @package    PHPExcel_Writer_Excel5
- * @copyright  Copyright (c) 2006 - 2015 PHPExcel (http://www.codeplex.com/PHPExcel)
+ * @package    PHPExcel\Writer_Excel5
+ * @copyright  Copyright (c) 2006 - 2013 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  * @version    ##VERSION##, ##DATE##
  */
@@ -60,136 +59,147 @@
 // *    License along with this library; if not, write to the Free Software
 // *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // */
-class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
+
+
+namespace PHPExcel;
+
+/**
+ * PHPExcel\Writer_Excel5_Worksheet
+ *
+ * @category   PHPExcel
+ * @package    PHPExcel\Writer_Excel5
+ * @copyright  Copyright (c) 2006 - 2013 PHPExcel (http://www.codeplex.com/PHPExcel)
+ */
+class Writer_Excel5_Worksheet extends Writer_Excel5_BIFFwriter
 {
     /**
      * Formula parser
      *
-     * @var PHPExcel_Writer_Excel5_Parser
+     * @var PHPExcel\Writer_Excel5_Parser
      */
-    private $parser;
+    private $_parser;
 
     /**
      * Maximum number of characters for a string (LABEL record in BIFF5)
      * @var integer
      */
-    private $xlsStringMaxLength;
+    public $_xls_strmax;
 
     /**
      * Array containing format information for columns
      * @var array
      */
-    private $columnInfo;
+    public $_colinfo;
 
     /**
      * Array containing the selected area for the worksheet
      * @var array
      */
-    private $selection;
+    public $_selection;
 
     /**
      * The active pane for the worksheet
      * @var integer
      */
-    private $activePane;
+    public $_active_pane;
 
     /**
      * Whether to use outline.
      * @var integer
      */
-    private $outlineOn;
+    public $_outline_on;
 
     /**
      * Auto outline styles.
      * @var bool
      */
-    private $outlineStyle;
+    public $_outline_style;
 
     /**
      * Whether to have outline summary below.
      * @var bool
      */
-    private $outlineBelow;
+    public $_outline_below;
 
     /**
      * Whether to have outline summary at the right.
      * @var bool
      */
-    private $outlineRight;
+    public $_outline_right;
 
     /**
      * Reference to the total number of strings in the workbook
      * @var integer
      */
-    private $stringTotal;
+    public $_str_total;
 
     /**
      * Reference to the number of unique strings in the workbook
      * @var integer
      */
-    private $stringUnique;
+    public $_str_unique;
 
     /**
      * Reference to the array containing all the unique strings in the workbook
      * @var array
      */
-    private $stringTable;
+    public $_str_table;
 
     /**
      * Color cache
      */
-    private $colors;
+    private $_colors;
 
     /**
      * Index of first used row (at least 0)
      * @var int
      */
-    private $firstRowIndex;
+    private $_firstRowIndex;
 
     /**
      * Index of last used row. (no used rows means -1)
      * @var int
      */
-    private $lastRowIndex;
+    private $_lastRowIndex;
 
     /**
      * Index of first used column (at least 0)
      * @var int
      */
-    private $firstColumnIndex;
+    private $_firstColumnIndex;
 
     /**
      * Index of last used column (no used columns means -1)
      * @var int
      */
-    private $lastColumnIndex;
+    private $_lastColumnIndex;
 
     /**
      * Sheet object
-     * @var PHPExcel_Worksheet
+     * @var PHPExcel\Worksheet
      */
-    public $phpSheet;
+    public $_phpSheet;
 
     /**
      * Count cell style Xfs
      *
      * @var int
      */
-    private $countCellStyleXfs;
+    private $_countCellStyleXfs;
 
     /**
      * Escher object corresponding to MSODRAWING
      *
-     * @var PHPExcel_Shared_Escher
+     * @var PHPExcel\Shared_Escher
      */
-    private $escher;
+    private $_escher;
 
     /**
      * Array of font hashes associated to FONT records index
      *
      * @var array
      */
-    public $fontHashIndex;
+    public $_fntHashIndex;
 
     /**
      * Constructor
@@ -201,9 +211,10 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
      * @param mixed        $parser            The formula parser created for the Workbook
      * @param boolean    $preCalculateFormulas    Flag indicating whether formulas should be calculated or just written
      * @param string    $phpSheet        The worksheet to write
-     * @param PHPExcel_Worksheet $phpSheet
+     * @param PHPExcel\Worksheet $phpSheet
      */
-    public function __construct(&$str_total, &$str_unique, &$str_table, &$colors, $parser, $preCalculateFormulas, $phpSheet)
+    public function __construct(&$str_total, &$str_unique, &$str_table, &$colors,
+                                $parser, $preCalculateFormulas, $phpSheet)
     {
         // It needs to call its parent's constructor explicitly
         parent::__construct();
@@ -213,50 +224,48 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
 
 
         $this->_preCalculateFormulas = $preCalculateFormulas;
-        $this->stringTotal        = &$str_total;
-        $this->stringUnique        = &$str_unique;
-        $this->stringTable        = &$str_table;
-        $this->colors            = &$colors;
-        $this->parser            = $parser;
+        $this->_str_total        = &$str_total;
+        $this->_str_unique        = &$str_unique;
+        $this->_str_table        = &$str_table;
+        $this->_colors            = &$colors;
+        $this->_parser            = $parser;
 
-        $this->phpSheet = $phpSheet;
+        $this->_phpSheet = $phpSheet;
 
         //$this->ext_sheets        = array();
         //$this->offset            = 0;
-        $this->xlsStringMaxLength = 255;
-        $this->columnInfo  = array();
-        $this->selection   = array(0,0,0,0);
-        $this->activePane  = 3;
+        $this->_xls_strmax        = 255;
+        $this->_colinfo            = array();
+        $this->_selection        = array(0,0,0,0);
+        $this->_active_pane        = 3;
 
-        $this->_print_headers = 0;
+        $this->_print_headers        = 0;
 
-        $this->outlineStyle  = 0;
-        $this->outlineBelow  = 1;
-        $this->outlineRight  = 1;
-        $this->outlineOn     = 1;
+        $this->_outline_style        = 0;
+        $this->_outline_below        = 1;
+        $this->_outline_right        = 1;
+        $this->_outline_on            = 1;
 
-        $this->fontHashIndex = array();
+        $this->_fntHashIndex    = array();
 
         // calculate values for DIMENSIONS record
         $minR = 1;
         $minC = 'A';
 
-        $maxR  = $this->phpSheet->getHighestRow();
-        $maxC = $this->phpSheet->getHighestColumn();
+        $maxR  = $this->_phpSheet->getHighestRow();
+        $maxC = $this->_phpSheet->getHighestColumn();
 
         // Determine lowest and highest column and row
-//        $this->firstRowIndex = ($minR > 65535) ? 65535 : $minR;
-        $this->lastRowIndex = ($maxR > 65535) ? 65535 : $maxR ;
+//        $this->_firstRowIndex = ($minR > 65535) ? 65535 : $minR;
+        $this->_lastRowIndex = ($maxR > 65535) ? 65535 : $maxR ;
 
-        $this->firstColumnIndex = PHPExcel_Cell::columnIndexFromString($minC);
-        $this->lastColumnIndex  = PHPExcel_Cell::columnIndexFromString($maxC);
+        $this->_firstColumnIndex    = Cell::columnIndexFromString($minC);
+        $this->_lastColumnIndex        = Cell::columnIndexFromString($maxC);
 
-//        if ($this->firstColumnIndex > 255) $this->firstColumnIndex = 255;
-        if ($this->lastColumnIndex > 255) {
-            $this->lastColumnIndex = 255;
-        }
+//        if ($this->_firstColumnIndex > 255) $this->_firstColumnIndex = 255;
+        if ($this->_lastColumnIndex > 255) $this->_lastColumnIndex = 255;
 
-        $this->countCellStyleXfs = count($phpSheet->getParent()->getCellStyleXfCollection());
+        $this->_countCellStyleXfs = count($phpSheet->getParent()->getCellStyleXfCollection());
     }
 
     /**
@@ -264,36 +273,36 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
      * and to the end of the workbook.
      *
      * @access public
-     * @see PHPExcel_Writer_Excel5_Workbook::storeWorkbook()
+     * @see PHPExcel\Writer_Excel5_Workbook::storeWorkbook()
      */
-    public function close()
+    function close()
     {
-        $phpSheet = $this->phpSheet;
+        $_phpSheet = $this->_phpSheet;
 
-        $num_sheets = $phpSheet->getParent()->getSheetCount();
+        $num_sheets = $_phpSheet->getParent()->getSheetCount();
 
         // Write BOF record
-        $this->storeBof(0x0010);
+        $this->_storeBof(0x0010);
 
         // Write PRINTHEADERS
-        $this->writePrintHeaders();
+        $this->_writePrintHeaders();
 
         // Write PRINTGRIDLINES
-        $this->writePrintGridlines();
+        $this->_writePrintGridlines();
 
         // Write GRIDSET
-        $this->writeGridset();
+        $this->_writeGridset();
 
         // Calculate column widths
-        $phpSheet->calculateColumnWidths();
+        $_phpSheet->calculateColumnWidths();
 
         // Column dimensions
-        if (($defaultWidth = $phpSheet->getDefaultColumnDimension()->getWidth()) < 0) {
-            $defaultWidth = PHPExcel_Shared_Font::getDefaultColumnWidthByFont($phpSheet->getParent()->getDefaultStyle()->getFont());
+        if (($defaultWidth = $_phpSheet->getDefaultColumnDimension()->getWidth()) < 0) {
+            $defaultWidth = Shared_Font::getDefaultColumnWidthByFont($_phpSheet->getParent()->getDefaultStyle()->getFont());
         }
 
-        $columnDimensions = $phpSheet->getColumnDimensions();
-        $maxCol = $this->lastColumnIndex -1;
+        $columnDimensions = $_phpSheet->getColumnDimensions();
+        $maxCol = $this->_lastColumnIndex -1;
         for ($i = 0; $i <= $maxCol; ++$i) {
             $hidden = 0;
             $level = 0;
@@ -301,7 +310,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
 
             $width = $defaultWidth;
 
-            $columnLetter = PHPExcel_Cell::stringFromColumnIndex($i);
+            $columnLetter = Cell::stringFromColumnIndex($i);
             if (isset($columnDimensions[$columnLetter])) {
                 $columnDimension = $columnDimensions[$columnLetter];
                 if ($columnDimension->getWidth() >= 0) {
@@ -312,81 +321,97 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
                 $xfIndex = $columnDimension->getXfIndex() + 15; // there are 15 cell style Xfs
             }
 
-            // Components of columnInfo:
+            // Components of _colinfo:
             // $firstcol first column on the range
             // $lastcol  last column on the range
             // $width    width to set
             // $xfIndex  The optional cell style Xf index to apply to the columns
             // $hidden   The optional hidden atribute
             // $level    The optional outline level
-            $this->columnInfo[] = array($i, $i, $width, $xfIndex, $hidden, $level);
+            $this->_colinfo[] = array($i, $i, $width, $xfIndex, $hidden, $level);
         }
 
         // Write GUTS
-        $this->writeGuts();
+        $this->_writeGuts();
 
         // Write DEFAULTROWHEIGHT
-        $this->writeDefaultRowHeight();
+        $this->_writeDefaultRowHeight();
+
         // Write WSBOOL
-        $this->writeWsbool();
+        $this->_writeWsbool();
+
         // Write horizontal and vertical page breaks
-        $this->writeBreaks();
+        $this->_writeBreaks();
+
         // Write page header
-        $this->writeHeader();
+        $this->_writeHeader();
+
         // Write page footer
-        $this->writeFooter();
+        $this->_writeFooter();
+
         // Write page horizontal centering
-        $this->writeHcenter();
+        $this->_writeHcenter();
+
         // Write page vertical centering
-        $this->writeVcenter();
+        $this->_writeVcenter();
+
         // Write left margin
-        $this->writeMarginLeft();
+        $this->_writeMarginLeft();
+
         // Write right margin
-        $this->writeMarginRight();
+        $this->_writeMarginRight();
+
         // Write top margin
-        $this->writeMarginTop();
+        $this->_writeMarginTop();
+
         // Write bottom margin
-        $this->writeMarginBottom();
+        $this->_writeMarginBottom();
+
         // Write page setup
-        $this->writeSetup();
+        $this->_writeSetup();
+
         // Write sheet protection
-        $this->writeProtect();
+        $this->_writeProtect();
+
         // Write SCENPROTECT
-        $this->writeScenProtect();
+        $this->_writeScenProtect();
+
         // Write OBJECTPROTECT
-        $this->writeObjectProtect();
+        $this->_writeObjectProtect();
+
         // Write sheet password
-        $this->writePassword();
+        $this->_writePassword();
+
         // Write DEFCOLWIDTH record
-        $this->writeDefcol();
+        $this->_writeDefcol();
 
         // Write the COLINFO records if they exist
-        if (!empty($this->columnInfo)) {
-            $colcount = count($this->columnInfo);
+        if (!empty($this->_colinfo)) {
+            $colcount = count($this->_colinfo);
             for ($i = 0; $i < $colcount; ++$i) {
-                $this->writeColinfo($this->columnInfo[$i]);
+                $this->_writeColinfo($this->_colinfo[$i]);
             }
         }
-        $autoFilterRange = $phpSheet->getAutoFilter()->getRange();
+        $autoFilterRange = $_phpSheet->getAutoFilter()->getRange();
         if (!empty($autoFilterRange)) {
             // Write AUTOFILTERINFO
-            $this->writeAutoFilterInfo();
+            $this->_writeAutoFilterInfo();
         }
 
         // Write sheet dimensions
-        $this->writeDimensions();
+        $this->_writeDimensions();
 
         // Row dimensions
-        foreach ($phpSheet->getRowDimensions() as $rowDimension) {
+        foreach ($_phpSheet->getRowDimensions() as $rowDimension) {
             $xfIndex = $rowDimension->getXfIndex() + 15; // there are 15 cellXfs
-            $this->writeRow($rowDimension->getRowIndex() - 1, $rowDimension->getRowHeight(), $xfIndex, ($rowDimension->getVisible() ? '0' : '1'), $rowDimension->getOutlineLevel());
+            $this->_writeRow( $rowDimension->getRowIndex() - 1, $rowDimension->getRowHeight(), $xfIndex, ($rowDimension->getVisible() ? '0' : '1'), $rowDimension->getOutlineLevel() );
         }
 
         // Write Cells
-        foreach ($phpSheet->getCellCollection() as $cellID) {
-            $cell = $phpSheet->getCell($cellID);
+        foreach ($_phpSheet->getCellCollection() as $cellID) {
+            $cell = $_phpSheet->getCell($cellID);
             $row = $cell->getRow() - 1;
-            $column = PHPExcel_Cell::columnIndexFromString($cell->getColumn()) - 1;
+            $column = Cell::columnIndexFromString($cell->getColumn()) - 1;
 
             // Don't break Excel!
 //            if ($row + 1 > 65536 or $column + 1 > 256) {
@@ -398,51 +423,52 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
             $xfIndex = $cell->getXfIndex() + 15; // there are 15 cell style Xfs
 
             $cVal = $cell->getValue();
-            if ($cVal instanceof PHPExcel_RichText) {
-                // $this->writeString($row, $column, $cVal->getPlainText(), $xfIndex);
+            if ($cVal instanceof RichText) {
+                // $this->_writeString($row, $column, $cVal->getPlainText(), $xfIndex);
                 $arrcRun = array();
-                $str_len = PHPExcel_Shared_String::CountCharacters($cVal->getPlainText(), 'UTF-8');
+                $str_len = Shared_String::CountCharacters($cVal->getPlainText(), 'UTF-8');
                 $str_pos = 0;
                 $elements = $cVal->getRichTextElements();
                 foreach ($elements as $element) {
                     // FONT Index
-                    if ($element instanceof PHPExcel_RichText_Run) {
-                        $str_fontidx = $this->fontHashIndex[$element->getFont()->getHashCode()];
-                    } else {
+                    if ($element instanceof RichText_Run) {
+                        $str_fontidx = $this->_fntHashIndex[$element->getFont()->getHashCode()];
+                    }
+                    else {
                         $str_fontidx = 0;
                     }
                     $arrcRun[] = array('strlen' => $str_pos, 'fontidx' => $str_fontidx);
                     // Position FROM
-                    $str_pos += PHPExcel_Shared_String::CountCharacters($element->getText(), 'UTF-8');
+                    $str_pos += Shared_String::CountCharacters($element->getText(), 'UTF-8');
                 }
-                $this->writeRichTextString($row, $column, $cVal->getPlainText(), $xfIndex, $arrcRun);
+                $this->_writeRichTextString($row, $column, $cVal->getPlainText(), $xfIndex, $arrcRun);
             } else {
                 switch ($cell->getDatatype()) {
-                    case PHPExcel_Cell_DataType::TYPE_STRING:
-                    case PHPExcel_Cell_DataType::TYPE_NULL:
+                    case Cell_DataType::TYPE_STRING:
+                    case Cell_DataType::TYPE_NULL:
                         if ($cVal === '' || $cVal === null) {
-                            $this->writeBlank($row, $column, $xfIndex);
+                            $this->_writeBlank($row, $column, $xfIndex);
                         } else {
-                            $this->writeString($row, $column, $cVal, $xfIndex);
+                            $this->_writeString($row, $column, $cVal, $xfIndex);
                         }
                         break;
 
-                    case PHPExcel_Cell_DataType::TYPE_NUMERIC:
-                        $this->writeNumber($row, $column, $cVal, $xfIndex);
+                    case Cell_DataType::TYPE_NUMERIC:
+                        $this->_writeNumber($row, $column, $cVal, $xfIndex);
                         break;
 
-                    case PHPExcel_Cell_DataType::TYPE_FORMULA:
+                    case Cell_DataType::TYPE_FORMULA:
                         $calculatedValue = $this->_preCalculateFormulas ?
                             $cell->getCalculatedValue() : null;
-                        $this->writeFormula($row, $column, $cVal, $xfIndex, $calculatedValue);
+                        $this->_writeFormula($row, $column, $cVal, $xfIndex, $calculatedValue);
                         break;
 
-                    case PHPExcel_Cell_DataType::TYPE_BOOL:
-                        $this->writeBoolErr($row, $column, $cVal, 0, $xfIndex);
+                    case Cell_DataType::TYPE_BOOL:
+                        $this->_writeBoolErr($row, $column, $cVal, 0, $xfIndex);
                         break;
 
-                    case PHPExcel_Cell_DataType::TYPE_ERROR:
-                        $this->writeBoolErr($row, $column, self::mapErrorCode($cVal), 1, $xfIndex);
+                    case Cell_DataType::TYPE_ERROR:
+                        $this->_writeBoolErr($row, $column, self::_mapErrorCode($cVal), 1, $xfIndex);
                         break;
 
                 }
@@ -450,37 +476,37 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
         }
 
         // Append
-        $this->writeMsoDrawing();
+        $this->_writeMsoDrawing();
 
         // Write WINDOW2 record
-        $this->writeWindow2();
+        $this->_writeWindow2();
 
         // Write PLV record
-        $this->writePageLayoutView();
+        $this->_writePageLayoutView();
 
         // Write ZOOM record
-        $this->writeZoom();
-        if ($phpSheet->getFreezePane()) {
-            $this->writePanes();
+        $this->_writeZoom();
+        if ($_phpSheet->getFreezePane()) {
+            $this->_writePanes();
         }
 
         // Write SELECTION record
-        $this->writeSelection();
+        $this->_writeSelection();
 
         // Write MergedCellsTable Record
-        $this->writeMergedCells();
+        $this->_writeMergedCells();
 
         // Hyperlinks
-        foreach ($phpSheet->getHyperLinkCollection() as $coordinate => $hyperlink) {
-            list($column, $row) = PHPExcel_Cell::coordinateFromString($coordinate);
+        foreach ($_phpSheet->getHyperLinkCollection() as $coordinate => $hyperlink) {
+            list($column, $row) = Cell::coordinateFromString($coordinate);
 
             $url = $hyperlink->getUrl();
 
-            if (strpos($url, 'sheet://') !== false) {
+            if ( strpos($url, 'sheet://') !== false ) {
                 // internal to current workbook
                 $url = str_replace('sheet://', 'internal:', $url);
 
-            } elseif (preg_match('/^(http:|https:|ftp:|mailto:)/', $url)) {
+            } else if ( preg_match('/^(http:|https:|ftp:|mailto:)/', $url) ) {
                 // URL
                 // $url = $url;
 
@@ -489,38 +515,38 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
                 $url = 'external:' . $url;
             }
 
-            $this->writeUrl($row - 1, PHPExcel_Cell::columnIndexFromString($column) - 1, $url);
+            $this->_writeUrl($row - 1, Cell::columnIndexFromString($column) - 1, $url);
         }
 
-        $this->writeDataValidity();
-        $this->writeSheetLayout();
+        $this->_writeDataValidity();
+        $this->_writeSheetLayout();
 
         // Write SHEETPROTECTION record
-        $this->writeSheetProtection();
-        $this->writeRangeProtection();
+        $this->_writeSheetProtection();
+        $this->_writeRangeProtection();
 
-        $arrConditionalStyles = $phpSheet->getConditionalStylesCollection();
-        if (!empty($arrConditionalStyles)) {
+        $arrConditionalStyles = $_phpSheet->getConditionalStylesCollection();
+        if(!empty($arrConditionalStyles)){
             $arrConditional = array();
             // @todo CFRule & CFHeader
             // Write CFHEADER record
-            $this->writeCFHeader();
+            $this->_writeCFHeader();
             // Write ConditionalFormattingTable records
             foreach ($arrConditionalStyles as $cellCoordinate => $conditionalStyles) {
                 foreach ($conditionalStyles as $conditional) {
-                    if ($conditional->getConditionType() == PHPExcel_Style_Conditional::CONDITION_EXPRESSION
-                        || $conditional->getConditionType() == PHPExcel_Style_Conditional::CONDITION_CELLIS) {
-                        if (!in_array($conditional->getHashCode(), $arrConditional)) {
+                    if($conditional->getConditionType() == Style_Conditional::CONDITION_EXPRESSION
+                        || $conditional->getConditionType() == Style_Conditional::CONDITION_CELLIS){
+                        if(!in_array($conditional->getHashCode(), $arrConditional)){
                             $arrConditional[] = $conditional->getHashCode();
                             // Write CFRULE record
-                            $this->writeCFRule($conditional);
+                            $this->_writeCFRule($conditional);
                         }
                     }
                 }
             }
         }
 
-        $this->storeEof();
+        $this->_storeEof();
     }
 
     /**
@@ -531,7 +557,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
      * @param string $range E.g. 'A1' or 'A1:B6'
      * @return string Binary data
      */
-    private function writeBIFF8CellRangeAddressFixed($range = 'A1')
+    private function _writeBIFF8CellRangeAddressFixed($range = 'A1')
     {
         $explodes = explode(':', $range);
 
@@ -545,10 +571,15 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
             $lastCell = $explodes[1];
         }
 
-        $firstCellCoordinates = PHPExcel_Cell::coordinateFromString($firstCell); // e.g. array(0, 1)
-        $lastCellCoordinates  = PHPExcel_Cell::coordinateFromString($lastCell);  // e.g. array(1, 6)
+        $firstCellCoordinates = Cell::coordinateFromString($firstCell); // e.g. array(0, 1)
+        $lastCellCoordinates  = Cell::coordinateFromString($lastCell);  // e.g. array(1, 6)
 
-        return pack('vvvv', $firstCellCoordinates[1] - 1, $lastCellCoordinates[1] - 1, PHPExcel_Cell::columnIndexFromString($firstCellCoordinates[0]) - 1, PHPExcel_Cell::columnIndexFromString($lastCellCoordinates[0]) - 1);
+        return(pack('vvvv',
+            $firstCellCoordinates[1] - 1,
+            $lastCellCoordinates[1] - 1,
+            Cell::columnIndexFromString($firstCellCoordinates[0]) - 1,
+            Cell::columnIndexFromString($lastCellCoordinates[0]) - 1
+        ));
     }
 
     /**
@@ -557,7 +588,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
      *
      * @return string The data
      */
-    public function getData()
+    function getData()
     {
         $buffer = 4096;
 
@@ -577,7 +608,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
      * @access public
      * @param integer $print Whether to print the headers or not. Defaults to 1 (print).
      */
-    public function printRowColHeaders($print = 1)
+    function printRowColHeaders($print = 1)
     {
         $this->_print_headers = $print;
     }
@@ -591,18 +622,18 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
      * @param bool $symbols_right
      * @param bool $auto_style
      */
-    public function setOutline($visible = true, $symbols_below = true, $symbols_right = true, $auto_style = false)
+    function setOutline($visible = true, $symbols_below = true, $symbols_right = true, $auto_style = false)
     {
-        $this->outlineOn    = $visible;
-        $this->outlineBelow = $symbols_below;
-        $this->outlineRight = $symbols_right;
-        $this->outlineStyle = $auto_style;
+        $this->_outline_on    = $visible;
+        $this->_outline_below = $symbols_below;
+        $this->_outline_right = $symbols_right;
+        $this->_outline_style = $auto_style;
 
         // Ensure this is a boolean vale for Window2
-        if ($this->outlineOn) {
-            $this->outlineOn = 1;
+        if ($this->_outline_on) {
+            $this->_outline_on = 1;
         }
-    }
+     }
 
     /**
      * Write a double to the specified row and column (zero indexed).
@@ -618,19 +649,19 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
      * @param mixed   $xfIndex The optional XF format
      * @return integer
      */
-    private function writeNumber($row, $col, $num, $xfIndex)
+    private function _writeNumber($row, $col, $num, $xfIndex)
     {
         $record    = 0x0203;                 // Record identifier
         $length    = 0x000E;                 // Number of bytes to follow
 
-        $header        = pack("vv", $record, $length);
+        $header        = pack("vv",  $record, $length);
         $data        = pack("vvv", $row, $col, $xfIndex);
-        $xl_double    = pack("d", $num);
+        $xl_double    = pack("d",   $num);
         if (self::getByteOrder()) { // if it's Big Endian
             $xl_double = strrev($xl_double);
         }
 
-        $this->append($header.$data.$xl_double);
+        $this->_append($header.$data.$xl_double);
         return(0);
     }
 
@@ -642,35 +673,34 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
      * @param string $str The string
      * @param int $xfIndex Index to XF record
      */
-    private function writeString($row, $col, $str, $xfIndex)
+    private function _writeString($row, $col, $str, $xfIndex)
     {
-        $this->writeLabelSst($row, $col, $str, $xfIndex);
+        $this->_writeLabelSst($row, $col, $str, $xfIndex);
     }
 
     /**
      * Write a LABELSST record or a LABEL record. Which one depends on BIFF version
-     * It differs from writeString by the writing of rich text strings.
+     * It differs from _writeString by the writing of rich text strings.
      * @param int $row Row index (0-based)
      * @param int $col Column index (0-based)
      * @param string $str The string
      * @param mixed   $xfIndex The XF format index for the cell
      * @param array $arrcRun Index to Font record and characters beginning
      */
-    private function writeRichTextString($row, $col, $str, $xfIndex, $arrcRun)
-    {
+    private function _writeRichTextString($row, $col, $str, $xfIndex, $arrcRun){
         $record    = 0x00FD;                   // Record identifier
         $length    = 0x000A;                   // Bytes to follow
-        $str = PHPExcel_Shared_String::UTF8toBIFF8UnicodeShort($str, $arrcRun);
+        $str = Shared_String::UTF8toBIFF8UnicodeShort($str, $arrcRun);
 
         /* check if string is already present */
-        if (!isset($this->stringTable[$str])) {
-            $this->stringTable[$str] = $this->stringUnique++;
+        if (!isset($this->_str_table[$str])) {
+            $this->_str_table[$str] = $this->_str_unique++;
         }
-        $this->stringTotal++;
+        $this->_str_total++;
 
-        $header    = pack('vv', $record, $length);
-        $data    = pack('vvvV', $row, $col, $xfIndex, $this->stringTable[$str]);
-        $this->append($header.$data);
+        $header    = pack('vv',   $record, $length);
+        $data    = pack('vvvV', $row, $col, $xfIndex, $this->_str_table[$str]);
+        $this->_append($header.$data);
     }
 
     /**
@@ -688,7 +718,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
      * @param mixed   $xfIndex The XF format index for the cell
      * @return integer
      */
-    private function writeLabel($row, $col, $str, $xfIndex)
+    private function _writeLabel($row, $col, $str, $xfIndex)
     {
         $strlen    = strlen($str);
         $record    = 0x0204;                   // Record identifier
@@ -696,16 +726,16 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
 
         $str_error = 0;
 
-        if ($strlen > $this->xlsStringMaxLength) { // LABEL must be < 255 chars
-            $str    = substr($str, 0, $this->xlsStringMaxLength);
-            $length    = 0x0008 + $this->xlsStringMaxLength;
-            $strlen    = $this->xlsStringMaxLength;
+        if ($strlen > $this->_xls_strmax) { // LABEL must be < 255 chars
+            $str    = substr($str, 0, $this->_xls_strmax);
+            $length    = 0x0008 + $this->_xls_strmax;
+            $strlen    = $this->_xls_strmax;
             $str_error = -3;
         }
 
-        $header    = pack("vv", $record, $length);
+        $header    = pack("vv",   $record, $length);
         $data    = pack("vvvv", $row, $col, $xfIndex, $strlen);
-        $this->append($header . $data . $str);
+        $this->_append($header . $data . $str);
         return($str_error);
     }
 
@@ -724,22 +754,22 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
      * @param mixed   $xfIndex The XF format index for the cell
      * @return integer
      */
-    private function writeLabelSst($row, $col, $str, $xfIndex)
+    private function _writeLabelSst($row, $col, $str, $xfIndex)
     {
         $record    = 0x00FD;                   // Record identifier
         $length    = 0x000A;                   // Bytes to follow
 
-        $str = PHPExcel_Shared_String::UTF8toBIFF8UnicodeLong($str);
+        $str = Shared_String::UTF8toBIFF8UnicodeLong($str);
 
         /* check if string is already present */
-        if (!isset($this->stringTable[$str])) {
-            $this->stringTable[$str] = $this->stringUnique++;
+        if (!isset($this->_str_table[$str])) {
+            $this->_str_table[$str] = $this->_str_unique++;
         }
-        $this->stringTotal++;
+        $this->_str_total++;
 
-        $header    = pack('vv', $record, $length);
-        $data    = pack('vvvV', $row, $col, $xfIndex, $this->stringTable[$str]);
-        $this->append($header.$data);
+        $header    = pack('vv',   $record, $length);
+        $data    = pack('vvvV', $row, $col, $xfIndex, $this->_str_table[$str]);
+        $this->_append($header.$data);
     }
 
     /**
@@ -750,7 +780,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
      * @param integer $col    Zero indexed column
      * @param string  $note   The note to write
      */
-    private function writeNote($row, $col, $note)
+    private function _writeNote($row, $col, $note)
     {
         $note_length    = strlen($note);
         $record            = 0x001C;            // Record identifier
@@ -758,16 +788,16 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
 
         // Length for this record is no more than 2048 + 6
         $length    = 0x0006 + min($note_length, 2048);
-        $header    = pack("vv", $record, $length);
+        $header    = pack("vv",   $record, $length);
         $data    = pack("vvv", $row, $col, $note_length);
-        $this->append($header . $data . substr($note, 0, 2048));
+        $this->_append($header . $data . substr($note, 0, 2048));
 
         for ($i = $max_length; $i < $note_length; $i += $max_length) {
             $chunk  = substr($note, $i, $max_length);
             $length = 0x0006 + strlen($chunk);
-            $header = pack("vv", $record, $length);
+            $header = pack("vv",   $record, $length);
             $data   = pack("vvv", -1, 0, strlen($chunk));
-            $this->append($header.$data.$chunk);
+            $this->_append($header.$data.$chunk);
         }
         return(0);
     }
@@ -788,14 +818,14 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
      * @param integer $col    Zero indexed column
      * @param mixed   $xfIndex The XF format index
      */
-    public function writeBlank($row, $col, $xfIndex)
+    function _writeBlank($row, $col, $xfIndex)
     {
         $record    = 0x0201;                 // Record identifier
         $length    = 0x0006;                 // Number of bytes to follow
 
-        $header    = pack("vv", $record, $length);
+        $header    = pack("vv",  $record, $length);
         $data      = pack("vvv", $row, $col, $xfIndex);
-        $this->append($header . $data);
+        $this->_append($header . $data);
         return 0;
     }
 
@@ -808,14 +838,14 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
      * @param boolean $isError Error or Boolean?
      * @param int $xfIndex
      */
-    private function writeBoolErr($row, $col, $value, $isError, $xfIndex)
+    private function _writeBoolErr($row, $col, $value, $isError, $xfIndex)
     {
         $record = 0x0205;
         $length = 8;
 
-        $header    = pack("vv", $record, $length);
+        $header    = pack("vv",  $record, $length);
         $data      = pack("vvvCC", $row, $col, $xfIndex, $value, $isError);
-        $this->append($header . $data);
+        $this->_append($header . $data);
         return 0;
     }
 
@@ -835,7 +865,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
      * @param mixed   $calculatedValue  Calculated value
      * @return integer
      */
-    private function writeFormula($row, $col, $formula, $xfIndex, $calculatedValue)
+    private function _writeFormula($row, $col, $formula, $xfIndex, $calculatedValue)
     {
         $record    = 0x0006;     // Record identifier
 
@@ -853,9 +883,9 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
                 // Numeric value
                 $num = pack('d', $calculatedValue);
             } elseif (is_string($calculatedValue)) {
-                if (array_key_exists($calculatedValue, PHPExcel_Cell_DataType::getErrorCodes())) {
+                if (array_key_exists($calculatedValue, Cell_DataType::getErrorCodes())) {
                     // Error value
-                    $num = pack('CCCvCv', 0x02, 0x00, self::mapErrorCode($calculatedValue), 0x00, 0x00, 0xFFFF);
+                    $num = pack('CCCvCv', 0x02, 0x00, self::_mapErrorCode($calculatedValue), 0x00, 0x00, 0xFFFF);
                 } elseif ($calculatedValue === '') {
                     // Empty string (and BIFF8)
                     $num = pack('CCCvCv', 0x03, 0x00, 0x00, 0x00, 0x00, 0xFFFF);
@@ -877,36 +907,36 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
 
         // Strip the '=' or '@' sign at the beginning of the formula string
         if ($formula{0} == '=') {
-            $formula = substr($formula, 1);
+            $formula = substr($formula,1);
         } else {
             // Error handling
-            $this->writeString($row, $col, 'Unrecognised character for formula');
+            $this->_writeString($row, $col, 'Unrecognised character for formula');
             return -1;
         }
 
         // Parse the formula using the parser in Parser.php
         try {
-            $error = $this->parser->parse($formula);
-            $formula = $this->parser->toReversePolish();
+            $error = $this->_parser->parse($formula);
+            $formula = $this->_parser->toReversePolish();
 
             $formlen    = strlen($formula);    // Length of the binary string
             $length     = 0x16 + $formlen;     // Length of the record data
 
-            $header    = pack("vv", $record, $length);
+            $header    = pack("vv",      $record, $length);
 
             $data      = pack("vvv", $row, $col, $xfIndex)
                         . $num
                         . pack("vVv", $grbit, $unknown, $formlen);
-            $this->append($header . $data . $formula);
+            $this->_append($header . $data . $formula);
 
             // Append also a STRING record if necessary
             if ($stringValue !== null) {
-                $this->writeStringRecord($stringValue);
+                $this->_writeStringRecord($stringValue);
             }
 
             return 0;
 
-        } catch (PHPExcel_Exception $e) {
+        } catch (Exception $e) {
             // do nothing
         }
 
@@ -917,15 +947,15 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
      *
      * @param string $stringValue
      */
-    private function writeStringRecord($stringValue)
+    private function _writeStringRecord($stringValue)
     {
         $record = 0x0207;     // Record identifier
-        $data = PHPExcel_Shared_String::UTF8toBIFF8UnicodeLong($stringValue);
+        $data = Shared_String::UTF8toBIFF8UnicodeLong($stringValue);
 
         $length = strlen($data);
         $header = pack('vv', $record, $length);
 
-        $this->append($header . $data);
+        $this->_append($header . $data);
     }
 
     /**
@@ -933,7 +963,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
      * This is comprised of two elements: the visible label and
      * the invisible link. The visible label is the same as the link unless an
      * alternative string is specified. The label is written using the
-     * writeString() method. Therefore the 255 characters string limit applies.
+     * _writeString() method. Therefore the 255 characters string limit applies.
      * $string and $format are optional.
      *
      * The hyperlink can be to a http, ftp, mail, internal sheet (not yet), or external
@@ -948,20 +978,20 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
      * @param string  $url    URL string
      * @return integer
      */
-    private function writeUrl($row, $col, $url)
+    private function _writeUrl($row, $col, $url)
     {
         // Add start row and col to arg list
-        return($this->writeUrlRange($row, $col, $row, $col, $url));
+        return($this->_writeUrlRange($row, $col, $row, $col, $url));
     }
 
     /**
-     * This is the more general form of writeUrl(). It allows a hyperlink to be
+     * This is the more general form of _writeUrl(). It allows a hyperlink to be
      * written to a range of cells. This function also decides the type of hyperlink
      * to be written. These are either, Web (http, ftp, mailto), Internal
      * (Sheet1!A1) or external ('c:\temp\foo.xls#Sheet1!A1').
      *
      * @access private
-     * @see writeUrl()
+     * @see _writeUrl()
      * @param integer $row1   Start row
      * @param integer $col1   Start column
      * @param integer $row2   End row
@@ -969,16 +999,16 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
      * @param string  $url    URL string
      * @return integer
      */
-    public function writeUrlRange($row1, $col1, $row2, $col2, $url)
+    function _writeUrlRange($row1, $col1, $row2, $col2, $url)
     {
         // Check for internal/external sheet links or default to web link
         if (preg_match('[^internal:]', $url)) {
-            return($this->writeUrlInternal($row1, $col1, $row2, $col2, $url));
+            return($this->_writeUrlInternal($row1, $col1, $row2, $col2, $url));
         }
         if (preg_match('[^external:]', $url)) {
-            return($this->writeUrlExternal($row1, $col1, $row2, $col2, $url));
+            return($this->_writeUrlExternal($row1, $col1, $row2, $col2, $url));
         }
-        return($this->writeUrlWeb($row1, $col1, $row2, $col2, $url));
+        return($this->_writeUrlWeb($row1, $col1, $row2, $col2, $url));
     }
 
     /**
@@ -987,7 +1017,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
      * sheet. However it is differentiated by the $unknown2 data stream.
      *
      * @access private
-     * @see writeUrl()
+     * @see _writeUrl()
      * @param integer $row1   Start row
      * @param integer $col1   Start column
      * @param integer $row2   End row
@@ -995,7 +1025,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
      * @param string  $url    URL string
      * @return integer
      */
-    public function writeUrlWeb($row1, $col1, $row2, $col2, $url)
+    function _writeUrlWeb($row1, $col1, $row2, $col2, $url)
     {
         $record      = 0x01B8;                       // Record identifier
         $length      = 0x00000;                      // Bytes to follow
@@ -1018,11 +1048,11 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
         $length      = 0x34 + strlen($url);
 
         // Pack the header data
-        $header      = pack("vv", $record, $length);
+        $header      = pack("vv",   $record, $length);
         $data        = pack("vvvv", $row1, $row2, $col1, $col2);
 
         // Write the packed data
-        $this->append($header . $data .
+        $this->_append($header . $data .
                        $unknown1 . $options .
                        $unknown2 . $url_len . $url);
         return 0;
@@ -1032,7 +1062,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
      * Used to write internal reference hyperlinks such as "Sheet1!A1".
      *
      * @access private
-     * @see writeUrl()
+     * @see _writeUrl()
      * @param integer $row1   Start row
      * @param integer $col1   Start column
      * @param integer $row2   End row
@@ -1040,7 +1070,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
      * @param string  $url    URL string
      * @return integer
      */
-    public function writeUrlInternal($row1, $col1, $row2, $col2, $url)
+    function _writeUrlInternal($row1, $col1, $row2, $col2, $url)
     {
         $record      = 0x01B8;                       // Record identifier
         $length      = 0x00000;                      // Bytes to follow
@@ -1058,20 +1088,20 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
         $url .= "\0";
 
         // character count
-        $url_len = PHPExcel_Shared_String::CountCharacters($url);
+        $url_len = Shared_String::CountCharacters($url);
         $url_len = pack('V', $url_len);
 
-        $url = PHPExcel_Shared_String::ConvertEncoding($url, 'UTF-16LE', 'UTF-8');
+        $url = Shared_String::ConvertEncoding($url, 'UTF-16LE', 'UTF-8');
 
         // Calculate the data length
         $length      = 0x24 + strlen($url);
 
         // Pack the header data
-        $header      = pack("vv", $record, $length);
+        $header      = pack("vv",   $record, $length);
         $data        = pack("vvvv", $row1, $row2, $col1, $col2);
 
         // Write the packed data
-        $this->append($header . $data .
+        $this->_append($header . $data .
                        $unknown1 . $options .
                        $url_len . $url);
         return 0;
@@ -1085,7 +1115,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
      * these cases for the sake of simpler code.
      *
      * @access private
-     * @see writeUrl()
+     * @see _writeUrl()
      * @param integer $row1   Start row
      * @param integer $col1   Start column
      * @param integer $row2   End row
@@ -1093,12 +1123,12 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
      * @param string  $url    URL string
      * @return integer
      */
-    public function writeUrlExternal($row1, $col1, $row2, $col2, $url)
+    function _writeUrlExternal($row1, $col1, $row2, $col2, $url)
     {
         // Network drives are different. We will handle them separately
         // MS/Novell network drives and shares start with \\
         if (preg_match('[^external:\\\\]', $url)) {
-            return; //($this->writeUrlExternal_net($row1, $col1, $row2, $col2, $url, $str, $format));
+            return; //($this->_writeUrlExternal_net($row1, $col1, $row2, $col2, $url, $str, $format));
         }
 
         $record      = 0x01B8;                       // Record identifier
@@ -1115,7 +1145,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
         //   otherwise, absolute
 
         $absolute = 0x00; // relative path
-        if (preg_match('/^[A-Z]:/', $url)) {
+        if ( preg_match('/^[A-Z]:/', $url) ) {
             $absolute = 0x02; // absolute path on Windows, e.g. C:\...
         }
         $link_type               = 0x01 | $absolute;
@@ -1143,15 +1173,15 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
         $dir_long       = $dir_long . "\0";
 
         // Pack the lengths of the dir strings
-        $dir_short_len = pack("V", strlen($dir_short));
-        $dir_long_len  = pack("V", strlen($dir_long));
-        $stream_len    = pack("V", 0); //strlen($dir_long) + 0x06);
+        $dir_short_len = pack("V", strlen($dir_short)      );
+        $dir_long_len  = pack("V", strlen($dir_long)       );
+        $stream_len    = pack("V", 0);//strlen($dir_long) + 0x06);
 
         // Pack the undocumented parts of the hyperlink stream
-        $unknown1 = pack("H*", 'D0C9EA79F9BACE118C8200AA004BA90B02000000');
-        $unknown2 = pack("H*", '0303000000000000C000000000000046');
-        $unknown3 = pack("H*", 'FFFFADDE000000000000000000000000000000000000000');
-        $unknown4 = pack("v", 0x03);
+        $unknown1 = pack("H*",'D0C9EA79F9BACE118C8200AA004BA90B02000000'       );
+        $unknown2 = pack("H*",'0303000000000000C000000000000046'               );
+        $unknown3 = pack("H*",'FFFFADDE000000000000000000000000000000000000000');
+        $unknown4 = pack("v",  0x03                                            );
 
         // Pack the main data stream
         $data        = pack("vvvv", $row1, $row2, $col1, $col2) .
@@ -1174,7 +1204,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
         $header   = pack("vv", $record, $length);
 
         // Write the packed data
-        $this->append($header. $data);
+        $this->_append($header. $data);
         return 0;
     }
 
@@ -1188,7 +1218,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
      * @param bool    $hidden The optional hidden attribute
      * @param integer $level  The optional outline level for row, in range [0,7]
      */
-    private function writeRow($row, $height, $xfIndex, $hidden = false, $level = 0)
+    private function _writeRow($row, $height, $xfIndex, $hidden = false, $level = 0)
     {
         $record      = 0x0208;               // Record identifier
         $length      = 0x0010;               // Number of bytes to follow
@@ -1200,11 +1230,11 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
         $grbit       = 0x0000;               // Option flags
         $ixfe        = $xfIndex;
 
-        if ($height < 0) {
+        if ( $height < 0 ){
             $height = null;
         }
 
-        // Use writeRow($row, null, $XF) to set XF format without setting height
+        // Use _writeRow($row, null, $XF) to set XF format without setting height
         if ($height != null) {
             $miyRw = $height * 20;  // row height
         } else {
@@ -1219,7 +1249,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
 
         $grbit |= $level;
         if ($hidden) {
-            $grbit |= 0x0030;
+            $grbit |= 0x0020;
         }
         if ($height !== null) {
             $grbit |= 0x0040; // fUnsynced
@@ -1229,29 +1259,36 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
         }
         $grbit |= 0x0100;
 
-        $header   = pack("vv", $record, $length);
-        $data     = pack("vvvvvvvv", $row, $colMic, $colMac, $miyRw, $irwMac, $reserved, $grbit, $ixfe);
-        $this->append($header.$data);
+        $header   = pack("vv",       $record, $length);
+        $data     = pack("vvvvvvvv", $row, $colMic, $colMac, $miyRw,
+                                     $irwMac,$reserved, $grbit, $ixfe);
+        $this->_append($header.$data);
     }
 
     /**
      * Writes Excel DIMENSIONS to define the area in which there is data.
      */
-    private function writeDimensions()
+    private function _writeDimensions()
     {
         $record = 0x0200; // Record identifier
 
         $length = 0x000E;
-        $data = pack('VVvvv', $this->firstRowIndex, $this->lastRowIndex + 1, $this->firstColumnIndex, $this->lastColumnIndex + 1, 0x0000); // reserved
+        $data = pack('VVvvv'
+                , $this->_firstRowIndex
+                , $this->_lastRowIndex + 1
+                , $this->_firstColumnIndex
+                , $this->_lastColumnIndex + 1
+                , 0x0000 // reserved
+            );
 
         $header = pack("vv", $record, $length);
-        $this->append($header.$data);
+        $this->_append($header.$data);
     }
 
     /**
      * Write BIFF record Window2.
      */
-    private function writeWindow2()
+    private function _writeWindow2()
     {
         $record         = 0x023E;     // Record identifier
         $length         = 0x0012;
@@ -1263,18 +1300,18 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
 
         // The options flags that comprise $grbit
         $fDspFmla       = 0;                     // 0 - bit
-        $fDspGrid       = $this->phpSheet->getShowGridlines() ? 1 : 0; // 1
-        $fDspRwCol      = $this->phpSheet->getShowRowColHeaders() ? 1 : 0; // 2
-        $fFrozen        = $this->phpSheet->getFreezePane() ? 1 : 0;        // 3
+        $fDspGrid       = $this->_phpSheet->getShowGridlines() ? 1 : 0; // 1
+        $fDspRwCol      = $this->_phpSheet->getShowRowColHeaders() ? 1 : 0; // 2
+        $fFrozen        = $this->_phpSheet->getFreezePane() ? 1 : 0;        // 3
         $fDspZeros      = 1;                     // 4
         $fDefaultHdr    = 1;                     // 5
-        $fArabic        = $this->phpSheet->getRightToLeft() ? 1 : 0; // 6
-        $fDspGuts       = $this->outlineOn;    // 7
+        $fArabic        = $this->_phpSheet->getRightToLeft() ? 1 : 0; // 6
+        $fDspGuts       = $this->_outline_on;    // 7
         $fFrozenNoSplit = 0;                     // 0 - bit
         // no support in PHPExcel for selected sheet, therefore sheet is only selected if it is the active sheet
-        $fSelected      = ($this->phpSheet === $this->phpSheet->getParent()->getActiveSheet()) ? 1 : 0;
+        $fSelected      = ($this->_phpSheet === $this->_phpSheet->getParent()->getActiveSheet()) ? 1 : 0;
         $fPaged         = 1;                     // 2
-        $fPageBreakPreview = $this->phpSheet->getSheetView()->getView() === PHPExcel_Worksheet_SheetView::SHEETVIEW_PAGE_BREAK_PREVIEW;
+        $fPageBreakPreview = $this->_phpSheet->getSheetView()->getView() === Worksheet_SheetView::SHEETVIEW_PAGE_BREAK_PREVIEW;
 
         $grbit             = $fDspFmla;
         $grbit            |= $fDspGrid       << 1;
@@ -1289,25 +1326,25 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
         $grbit            |= $fPaged           << 10;
         $grbit            |= $fPageBreakPreview << 11;
 
-        $header  = pack("vv", $record, $length);
+        $header  = pack("vv",   $record, $length);
         $data    = pack("vvv", $grbit, $rwTop, $colLeft);
 
         // FIXME !!!
         $rgbHdr       = 0x0040; // Row/column heading and gridline color index
-        $zoom_factor_page_break = ($fPageBreakPreview ? $this->phpSheet->getSheetView()->getZoomScale() : 0x0000);
-        $zoom_factor_normal =  $this->phpSheet->getSheetView()->getZoomScaleNormal();
+        $zoom_factor_page_break = ($fPageBreakPreview? $this->_phpSheet->getSheetView()->getZoomScale() : 0x0000);
+        $zoom_factor_normal =  $this->_phpSheet->getSheetView()->getZoomScaleNormal();
 
         $data .= pack("vvvvV", $rgbHdr, 0x0000, $zoom_factor_page_break, $zoom_factor_normal, 0x00000000);
 
-        $this->append($header.$data);
+        $this->_append($header.$data);
     }
 
     /**
      * Write BIFF record DEFAULTROWHEIGHT.
      */
-    private function writeDefaultRowHeight()
+    private function _writeDefaultRowHeight()
     {
-        $defaultRowHeight = $this->phpSheet->getDefaultRowDimension()->getRowHeight();
+        $defaultRowHeight = $this->_phpSheet->getDefaultRowDimension()->getRowHeight();
 
         if ($defaultRowHeight < 0) {
             return;
@@ -1320,14 +1357,14 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
         $length   = 0x0004;      // Number of bytes to follow
 
         $header   = pack("vv", $record, $length);
-        $data     = pack("vv", 1, $defaultRowHeight);
-        $this->append($header . $data);
+        $data     = pack("vv",  1, $defaultRowHeight);
+        $this->_append($header . $data);
     }
 
     /**
      * Write BIFF record DEFCOLWIDTH if COLINFO records are in use.
      */
-    private function writeDefcol()
+    private function _writeDefcol()
     {
         $defaultColWidth = 8;
 
@@ -1336,7 +1373,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
 
         $header = pack("vv", $record, $length);
         $data = pack("v", $defaultColWidth);
-        $this->append($header . $data);
+        $this->_append($header . $data);
     }
 
     /**
@@ -1353,7 +1390,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
      *                4 => Option flags.
      *                5 => Optional outline level
      */
-    private function writeColinfo($col_array)
+    private function _writeColinfo($col_array)
     {
         if (isset($col_array[0])) {
             $colFirst = $col_array[0];
@@ -1392,19 +1429,20 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
         $level = max(0, min($level, 7));
         $grbit |= $level << 8;
 
-        $header   = pack("vv", $record, $length);
-        $data     = pack("vvvvvv", $colFirst, $colLast, $coldx, $ixfe, $grbit, $reserved);
-        $this->append($header.$data);
+        $header   = pack("vv",     $record, $length);
+        $data     = pack("vvvvvv", $colFirst, $colLast, $coldx,
+                                   $ixfe, $grbit, $reserved);
+        $this->_append($header.$data);
     }
 
     /**
      * Write BIFF record SELECTION.
      */
-    private function writeSelection()
+    private function _writeSelection()
     {
         // look up the selected cell range
-        $selectedCells = $this->phpSheet->getSelectedCells();
-        $selectedCells = PHPExcel_Cell::splitRange($this->phpSheet->getSelectedCells());
+        $selectedCells = $this->_phpSheet->getSelectedCells();
+        $selectedCells = Cell::splitRange($this->_phpSheet->getSelectedCells());
         $selectedCells = $selectedCells[0];
         if (count($selectedCells) == 2) {
             list($first, $last) = $selectedCells;
@@ -1413,25 +1451,25 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
             $last  = $selectedCells[0];
         }
 
-        list($colFirst, $rwFirst) = PHPExcel_Cell::coordinateFromString($first);
-        $colFirst = PHPExcel_Cell::columnIndexFromString($colFirst) - 1; // base 0 column index
+        list($colFirst, $rwFirst) = Cell::coordinateFromString($first);
+        $colFirst = Cell::columnIndexFromString($colFirst) - 1; // base 0 column index
         --$rwFirst; // base 0 row index
 
-        list($colLast, $rwLast) = PHPExcel_Cell::coordinateFromString($last);
-        $colLast = PHPExcel_Cell::columnIndexFromString($colLast) - 1; // base 0 column index
+        list($colLast, $rwLast) = Cell::coordinateFromString($last);
+        $colLast = Cell::columnIndexFromString($colLast) - 1; // base 0 column index
         --$rwLast; // base 0 row index
 
         // make sure we are not out of bounds
         $colFirst = min($colFirst, 255);
-        $colLast  = min($colLast, 255);
+        $colLast  = min($colLast,  255);
 
         $rwFirst = min($rwFirst, 65535);
-        $rwLast  = min($rwLast, 65535);
+        $rwLast  = min($rwLast,  65535);
 
         $record   = 0x001D;                  // Record identifier
         $length   = 0x000F;                  // Number of bytes to follow
 
-        $pnn      = $this->activePane;     // Pane position
+        $pnn      = $this->_active_pane;     // Pane position
         $rwAct    = $rwFirst;                // Active row
         $colAct   = $colFirst;               // Active column
         $irefAct  = 0;                       // Active cell ref
@@ -1453,17 +1491,20 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
             list($colFirst, $colLast) = array($colLast, $colFirst);
         }
 
-        $header   = pack("vv", $record, $length);
-        $data     = pack("CvvvvvvCC", $pnn, $rwAct, $colAct, $irefAct, $cref, $rwFirst, $rwLast, $colFirst, $colLast);
-        $this->append($header . $data);
+        $header   = pack("vv",         $record, $length);
+        $data     = pack("CvvvvvvCC",  $pnn, $rwAct, $colAct,
+                                       $irefAct, $cref,
+                                       $rwFirst, $rwLast,
+                                       $colFirst, $colLast);
+        $this->_append($header . $data);
     }
 
     /**
      * Store the MERGEDCELLS records for all ranges of merged cells
      */
-    private function writeMergedCells()
+    private function _writeMergedCells()
     {
-        $mergeCells = $this->phpSheet->getMergeCells();
+        $mergeCells = $this->_phpSheet->getMergeCells();
         $countMergeCells = count($mergeCells);
 
         if ($countMergeCells == 0) {
@@ -1491,19 +1532,19 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
             ++$j;
 
             // extract the row and column indexes
-            $range = PHPExcel_Cell::splitRange($mergeCell);
+            $range = Cell::splitRange($mergeCell);
             list($first, $last) = $range[0];
-            list($firstColumn, $firstRow) = PHPExcel_Cell::coordinateFromString($first);
-            list($lastColumn, $lastRow) = PHPExcel_Cell::coordinateFromString($last);
+            list($firstColumn, $firstRow) = Cell::coordinateFromString($first);
+            list($lastColumn, $lastRow) = Cell::coordinateFromString($last);
 
-            $recordData .= pack('vvvv', $firstRow - 1, $lastRow - 1, PHPExcel_Cell::columnIndexFromString($firstColumn) - 1, PHPExcel_Cell::columnIndexFromString($lastColumn) - 1);
+            $recordData .= pack('vvvv', $firstRow - 1, $lastRow - 1, Cell::columnIndexFromString($firstColumn) - 1, Cell::columnIndexFromString($lastColumn) - 1);
 
             // flush record if we have reached limit for number of merged cells, or reached final merged cell
             if ($j == $maxCountMergeCellsPerRecord or $i == $countMergeCells) {
                 $recordData = pack('v', $j) . $recordData;
                 $length = strlen($recordData);
                 $header = pack('vv', $record, $length);
-                $this->append($header . $recordData);
+                $this->_append($header . $recordData);
 
                 // initialize for next record, if any
                 $recordData = '';
@@ -1515,72 +1556,72 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
     /**
      * Write SHEETLAYOUT record
      */
-    private function writeSheetLayout()
+    private function _writeSheetLayout()
     {
-        if (!$this->phpSheet->isTabColorSet()) {
+        if (!$this->_phpSheet->isTabColorSet()) {
             return;
         }
 
         $recordData = pack(
-            'vvVVVvv',
-            0x0862,
-            0x0000, // unused
-            0x00000000, // unused
-            0x00000000, // unused
-            0x00000014, // size of record data
-            $this->colors[$this->phpSheet->getTabColor()->getRGB()], // color index
-            0x0000        // unused
+            'vvVVVvv'
+            , 0x0862
+            , 0x0000        // unused
+            , 0x00000000    // unused
+            , 0x00000000    // unused
+            , 0x00000014    // size of record data
+            , $this->_colors[$this->_phpSheet->getTabColor()->getRGB()]    // color index
+            , 0x0000        // unused
         );
 
         $length = strlen($recordData);
 
         $record = 0x0862; // Record identifier
         $header = pack('vv', $record, $length);
-        $this->append($header . $recordData);
+        $this->_append($header . $recordData);
     }
 
     /**
      * Write SHEETPROTECTION
      */
-    private function writeSheetProtection()
+    private function _writeSheetProtection()
     {
         // record identifier
         $record = 0x0867;
 
         // prepare options
-        $options  =   (int) !$this->phpSheet->getProtection()->getObjects()
-                    | (int) !$this->phpSheet->getProtection()->getScenarios()           << 1
-                    | (int) !$this->phpSheet->getProtection()->getFormatCells()         << 2
-                    | (int) !$this->phpSheet->getProtection()->getFormatColumns()       << 3
-                    | (int) !$this->phpSheet->getProtection()->getFormatRows()          << 4
-                    | (int) !$this->phpSheet->getProtection()->getInsertColumns()       << 5
-                    | (int) !$this->phpSheet->getProtection()->getInsertRows()          << 6
-                    | (int) !$this->phpSheet->getProtection()->getInsertHyperlinks()    << 7
-                    | (int) !$this->phpSheet->getProtection()->getDeleteColumns()       << 8
-                    | (int) !$this->phpSheet->getProtection()->getDeleteRows()          << 9
-                    | (int) !$this->phpSheet->getProtection()->getSelectLockedCells()   << 10
-                    | (int) !$this->phpSheet->getProtection()->getSort()                << 11
-                    | (int) !$this->phpSheet->getProtection()->getAutoFilter()          << 12
-                    | (int) !$this->phpSheet->getProtection()->getPivotTables()         << 13
-                    | (int) !$this->phpSheet->getProtection()->getSelectUnlockedCells() << 14 ;
+        $options  =   (int) !$this->_phpSheet->getProtection()->getObjects()
+                    | (int) !$this->_phpSheet->getProtection()->getScenarios()           << 1
+                    | (int) !$this->_phpSheet->getProtection()->getFormatCells()         << 2
+                    | (int) !$this->_phpSheet->getProtection()->getFormatColumns()       << 3
+                    | (int) !$this->_phpSheet->getProtection()->getFormatRows()          << 4
+                    | (int) !$this->_phpSheet->getProtection()->getInsertColumns()       << 5
+                    | (int) !$this->_phpSheet->getProtection()->getInsertRows()          << 6
+                    | (int) !$this->_phpSheet->getProtection()->getInsertHyperlinks()    << 7
+                    | (int) !$this->_phpSheet->getProtection()->getDeleteColumns()       << 8
+                    | (int) !$this->_phpSheet->getProtection()->getDeleteRows()          << 9
+                    | (int) !$this->_phpSheet->getProtection()->getSelectLockedCells()   << 10
+                    | (int) !$this->_phpSheet->getProtection()->getSort()                << 11
+                    | (int) !$this->_phpSheet->getProtection()->getAutoFilter()          << 12
+                    | (int) !$this->_phpSheet->getProtection()->getPivotTables()         << 13
+                    | (int) !$this->_phpSheet->getProtection()->getSelectUnlockedCells() << 14 ;
 
         // record data
         $recordData = pack(
-            'vVVCVVvv',
-            0x0867, // repeated record identifier
-            0x0000, // not used
-            0x0000, // not used
-            0x00, // not used
-            0x01000200, // unknown data
-            0xFFFFFFFF, // unknown data
-            $options, // options
-            0x0000 // not used
+            'vVVCVVvv'
+            , 0x0867        // repeated record identifier
+            , 0x0000        // not used
+            , 0x0000        // not used
+            , 0x00            // not used
+            , 0x01000200    // unknown data
+            , 0xFFFFFFFF    // unknown data
+            , $options        // options
+            , 0x0000        // not used
         );
 
         $length = strlen($recordData);
         $header = pack('vv', $record, $length);
 
-        $this->append($header . $recordData);
+        $this->_append($header . $recordData);
     }
 
     /**
@@ -1589,9 +1630,9 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
      * Openoffice.org's Documentaion of the Microsoft Excel File Format uses term RANGEPROTECTION for these records
      * Microsoft Office Excel 97-2007 Binary File Format Specification uses term FEAT for these records
      */
-    private function writeRangeProtection()
+    private function _writeRangeProtection()
     {
-        foreach ($this->phpSheet->getProtectedCells() as $range => $password) {
+        foreach ($this->_phpSheet->getProtectedCells() as $range => $password) {
             // number of ranges, e.g. 'A1:B3 C20:D25'
             $cellRanges = explode(' ', $range);
             $cref = count($cellRanges);
@@ -1611,7 +1652,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
             );
 
             foreach ($cellRanges as $cellRange) {
-                $recordData .= $this->writeBIFF8CellRangeAddressFixed($cellRange);
+                $recordData .= $this->_writeBIFF8CellRangeAddressFixed($cellRange);
             }
 
             // the rgbFeat structure
@@ -1621,13 +1662,13 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
                 hexdec($password)
             );
 
-            $recordData .= PHPExcel_Shared_String::UTF8toBIFF8UnicodeLong('p' . md5($recordData));
+            $recordData .= Shared_String::UTF8toBIFF8UnicodeLong('p' . md5($recordData));
 
             $length = strlen($recordData);
 
             $record = 0x0868;        // Record identifier
             $header = pack("vv", $record, $length);
-            $this->append($header . $recordData);
+            $this->_append($header . $recordData);
         }
     }
 
@@ -1643,14 +1684,14 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
      *
      * @param integer $count The number of external sheet references in this worksheet
      */
-    private function writeExterncount($count)
+    private function _writeExterncount($count)
     {
         $record = 0x0016;          // Record identifier
         $length = 0x0002;          // Number of bytes to follow
 
         $header = pack("vv", $record, $length);
-        $data   = pack("v", $count);
-        $this->append($header . $data);
+        $data   = pack("v",  $count);
+        $this->_append($header . $data);
     }
 
     /**
@@ -1661,14 +1702,14 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
      *
      * @param string $sheetname The name of a external worksheet
      */
-    private function writeExternsheet($sheetname)
+    private function _writeExternsheet($sheetname)
     {
         $record    = 0x0017;         // Record identifier
 
         // References to the current sheet are encoded differently to references to
         // external sheets.
         //
-        if ($this->phpSheet->getTitle() == $sheetname) {
+        if ($this->_phpSheet->getTitle() == $sheetname) {
             $sheetname = '';
             $length    = 0x02;  // The following 2 bytes
             $cch       = 1;     // The following byte
@@ -1679,9 +1720,9 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
             $rgch      = 0x03;  // Reference to a sheet in the current workbook
         }
 
-        $header = pack("vv", $record, $length);
+        $header = pack("vv",  $record, $length);
         $data   = pack("CC", $cch, $rgch);
-        $this->append($header . $data . $sheetname);
+        $this->_append($header . $data . $sheetname);
     }
 
     /**
@@ -1690,13 +1731,13 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
      * Frozen panes are specified in terms of an integer number of rows and columns.
      * Thawed panes are specified in terms of Excel's units for rows and columns.
      */
-    private function writePanes()
+    private function _writePanes()
     {
         $panes = array();
-        if ($freezePane = $this->phpSheet->getFreezePane()) {
-            list($column, $row) = PHPExcel_Cell::coordinateFromString($freezePane);
+        if ($freezePane = $this->_phpSheet->getFreezePane()) {
+            list($column, $row) = Cell::coordinateFromString($freezePane);
             $panes[0] = $row - 1;
-            $panes[1] = PHPExcel_Cell::columnIndexFromString($column) - 1;
+            $panes[1] = Cell::columnIndexFromString($column) - 1;
         } else {
             // thaw panes
             return;
@@ -1715,7 +1756,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
         $length  = 0x000A;       // Number of bytes to follow
 
         // Code specific to frozen or thawed panes.
-        if ($this->phpSheet->getFreezePane()) {
+        if ($this->_phpSheet->getFreezePane()) {
             // Set default values for $rwTop and $colLeft
             if (!isset($rwTop)) {
                 $rwTop   = $y;
@@ -1760,42 +1801,42 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
             }
         }
 
-        $this->activePane = $pnnAct; // Used in writeSelection
+        $this->_active_pane = $pnnAct; // Used in _writeSelection
 
-        $header = pack("vv", $record, $length);
-        $data = pack("vvvvv", $x, $y, $rwTop, $colLeft, $pnnAct);
-        $this->append($header . $data);
+        $header     = pack("vv",    $record, $length);
+        $data       = pack("vvvvv", $x, $y, $rwTop, $colLeft, $pnnAct);
+        $this->_append($header . $data);
     }
 
     /**
      * Store the page setup SETUP BIFF record.
      */
-    private function writeSetup()
+    private function _writeSetup()
     {
         $record       = 0x00A1;                  // Record identifier
         $length       = 0x0022;                  // Number of bytes to follow
 
-        $iPaperSize   = $this->phpSheet->getPageSetup()->getPaperSize();    // Paper size
+        $iPaperSize   = $this->_phpSheet->getPageSetup()->getPaperSize();    // Paper size
 
-        $iScale = $this->phpSheet->getPageSetup()->getScale() ?
-            $this->phpSheet->getPageSetup()->getScale() : 100;   // Print scaling factor
+        $iScale = $this->_phpSheet->getPageSetup()->getScale() ?
+            $this->_phpSheet->getPageSetup()->getScale() : 100;   // Print scaling factor
 
         $iPageStart   = 0x01;                 // Starting page number
-        $iFitWidth    = (int) $this->phpSheet->getPageSetup()->getFitToWidth();    // Fit to number of pages wide
-        $iFitHeight    = (int) $this->phpSheet->getPageSetup()->getFitToHeight();    // Fit to number of pages high
+        $iFitWidth    = (int) $this->_phpSheet->getPageSetup()->getFitToWidth();    // Fit to number of pages wide
+        $iFitHeight    = (int) $this->_phpSheet->getPageSetup()->getFitToHeight();    // Fit to number of pages high
         $grbit        = 0x00;                 // Option flags
         $iRes         = 0x0258;               // Print resolution
         $iVRes        = 0x0258;               // Vertical print resolution
 
-        $numHdr       = $this->phpSheet->getPageMargins()->getHeader();  // Header Margin
+        $numHdr       = $this->_phpSheet->getPageMargins()->getHeader();  // Header Margin
 
-        $numFtr       = $this->phpSheet->getPageMargins()->getFooter();   // Footer Margin
+        $numFtr       = $this->_phpSheet->getPageMargins()->getFooter();   // Footer Margin
         $iCopies      = 0x01;                 // Number of copies
 
         $fLeftToRight = 0x0;                     // Print over then down
 
         // Page orientation
-        $fLandscape = ($this->phpSheet->getPageSetup()->getOrientation() == PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE) ?
+        $fLandscape = ($this->_phpSheet->getPageSetup()->getOrientation() == Worksheet_PageSetup::ORIENTATION_LANDSCAPE) ?
             0x0 : 0x1;
 
         $fNoPls       = 0x0;                     // Setup not read from printer
@@ -1822,58 +1863,65 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
         }
 
         $header = pack("vv", $record, $length);
-        $data1  = pack("vvvvvvvv", $iPaperSize, $iScale, $iPageStart, $iFitWidth, $iFitHeight, $grbit, $iRes, $iVRes);
+        $data1  = pack("vvvvvvvv", $iPaperSize,
+                                   $iScale,
+                                   $iPageStart,
+                                   $iFitWidth,
+                                   $iFitHeight,
+                                   $grbit,
+                                   $iRes,
+                                   $iVRes);
         $data2  = $numHdr.$numFtr;
         $data3  = pack("v", $iCopies);
-        $this->append($header . $data1 . $data2 . $data3);
+        $this->_append($header . $data1 . $data2 . $data3);
     }
 
     /**
      * Store the header caption BIFF record.
      */
-    private function writeHeader()
+    private function _writeHeader()
     {
         $record  = 0x0014;               // Record identifier
 
         /* removing for now
         // need to fix character count (multibyte!)
-        if (strlen($this->phpSheet->getHeaderFooter()->getOddHeader()) <= 255) {
-            $str      = $this->phpSheet->getHeaderFooter()->getOddHeader();       // header string
+        if (strlen($this->_phpSheet->getHeaderFooter()->getOddHeader()) <= 255) {
+            $str      = $this->_phpSheet->getHeaderFooter()->getOddHeader();       // header string
         } else {
             $str = '';
         }
         */
 
-        $recordData = PHPExcel_Shared_String::UTF8toBIFF8UnicodeLong($this->phpSheet->getHeaderFooter()->getOddHeader());
+        $recordData = Shared_String::UTF8toBIFF8UnicodeLong($this->_phpSheet->getHeaderFooter()->getOddHeader());
         $length = strlen($recordData);
 
         $header   = pack("vv", $record, $length);
 
-        $this->append($header . $recordData);
+        $this->_append($header . $recordData);
     }
 
     /**
      * Store the footer caption BIFF record.
      */
-    private function writeFooter()
+    private function _writeFooter()
     {
         $record  = 0x0015;               // Record identifier
 
         /* removing for now
         // need to fix character count (multibyte!)
-        if (strlen($this->phpSheet->getHeaderFooter()->getOddFooter()) <= 255) {
-            $str = $this->phpSheet->getHeaderFooter()->getOddFooter();
+        if (strlen($this->_phpSheet->getHeaderFooter()->getOddFooter()) <= 255) {
+            $str = $this->_phpSheet->getHeaderFooter()->getOddFooter();
         } else {
             $str = '';
         }
         */
 
-        $recordData = PHPExcel_Shared_String::UTF8toBIFF8UnicodeLong($this->phpSheet->getHeaderFooter()->getOddFooter());
+        $recordData = Shared_String::UTF8toBIFF8UnicodeLong($this->_phpSheet->getHeaderFooter()->getOddFooter());
         $length = strlen($recordData);
 
         $header    = pack("vv", $record, $length);
 
-        $this->append($header . $recordData);
+        $this->_append($header . $recordData);
     }
 
     /**
@@ -1881,114 +1929,114 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
      *
      * @access private
      */
-    private function writeHcenter()
+    private function _writeHcenter()
     {
         $record   = 0x0083;              // Record identifier
         $length   = 0x0002;              // Bytes to follow
 
-        $fHCenter = $this->phpSheet->getPageSetup()->getHorizontalCentered() ? 1 : 0;     // Horizontal centering
+        $fHCenter = $this->_phpSheet->getPageSetup()->getHorizontalCentered() ? 1 : 0;     // Horizontal centering
 
         $header    = pack("vv", $record, $length);
-        $data      = pack("v", $fHCenter);
+        $data      = pack("v",  $fHCenter);
 
-        $this->append($header.$data);
+        $this->_append($header.$data);
     }
 
     /**
      * Store the vertical centering VCENTER BIFF record.
      */
-    private function writeVcenter()
+    private function _writeVcenter()
     {
         $record   = 0x0084;              // Record identifier
         $length   = 0x0002;              // Bytes to follow
 
-        $fVCenter = $this->phpSheet->getPageSetup()->getVerticalCentered() ? 1 : 0;     // Horizontal centering
+        $fVCenter = $this->_phpSheet->getPageSetup()->getVerticalCentered() ? 1 : 0;     // Horizontal centering
 
         $header    = pack("vv", $record, $length);
-        $data      = pack("v", $fVCenter);
-        $this->append($header . $data);
+        $data      = pack("v",  $fVCenter);
+        $this->_append($header . $data);
     }
 
     /**
      * Store the LEFTMARGIN BIFF record.
      */
-    private function writeMarginLeft()
+    private function _writeMarginLeft()
     {
         $record  = 0x0026;                   // Record identifier
         $length  = 0x0008;                   // Bytes to follow
 
-        $margin  = $this->phpSheet->getPageMargins()->getLeft();     // Margin in inches
+        $margin  = $this->_phpSheet->getPageMargins()->getLeft();     // Margin in inches
 
-        $header    = pack("vv", $record, $length);
-        $data      = pack("d", $margin);
+        $header    = pack("vv",  $record, $length);
+        $data      = pack("d",   $margin);
         if (self::getByteOrder()) { // if it's Big Endian
             $data = strrev($data);
         }
 
-        $this->append($header . $data);
+        $this->_append($header . $data);
     }
 
     /**
      * Store the RIGHTMARGIN BIFF record.
      */
-    private function writeMarginRight()
+    private function _writeMarginRight()
     {
         $record  = 0x0027;                   // Record identifier
         $length  = 0x0008;                   // Bytes to follow
 
-        $margin  = $this->phpSheet->getPageMargins()->getRight();     // Margin in inches
+        $margin  = $this->_phpSheet->getPageMargins()->getRight();     // Margin in inches
 
-        $header    = pack("vv", $record, $length);
-        $data      = pack("d", $margin);
+        $header    = pack("vv",  $record, $length);
+        $data      = pack("d",   $margin);
         if (self::getByteOrder()) { // if it's Big Endian
             $data = strrev($data);
         }
 
-        $this->append($header . $data);
+        $this->_append($header . $data);
     }
 
     /**
      * Store the TOPMARGIN BIFF record.
      */
-    private function writeMarginTop()
+    private function _writeMarginTop()
     {
         $record  = 0x0028;                   // Record identifier
         $length  = 0x0008;                   // Bytes to follow
 
-        $margin  = $this->phpSheet->getPageMargins()->getTop();     // Margin in inches
+        $margin  = $this->_phpSheet->getPageMargins()->getTop();     // Margin in inches
 
-        $header    = pack("vv", $record, $length);
-        $data      = pack("d", $margin);
+        $header    = pack("vv",  $record, $length);
+        $data      = pack("d",   $margin);
         if (self::getByteOrder()) { // if it's Big Endian
             $data = strrev($data);
         }
 
-        $this->append($header . $data);
+        $this->_append($header . $data);
     }
 
     /**
      * Store the BOTTOMMARGIN BIFF record.
      */
-    private function writeMarginBottom()
+    private function _writeMarginBottom()
     {
         $record  = 0x0029;                   // Record identifier
         $length  = 0x0008;                   // Bytes to follow
 
-        $margin  = $this->phpSheet->getPageMargins()->getBottom();     // Margin in inches
+        $margin  = $this->_phpSheet->getPageMargins()->getBottom();     // Margin in inches
 
-        $header    = pack("vv", $record, $length);
-        $data      = pack("d", $margin);
+        $header    = pack("vv",  $record, $length);
+        $data      = pack("d",   $margin);
         if (self::getByteOrder()) { // if it's Big Endian
             $data = strrev($data);
         }
 
-        $this->append($header . $data);
+        $this->_append($header . $data);
     }
 
     /**
      * Write the PRINTHEADERS BIFF record.
      */
-    private function writePrintHeaders()
+    private function _writePrintHeaders()
     {
         $record      = 0x002a;                   // Record identifier
         $length      = 0x0002;                   // Bytes to follow
@@ -1997,55 +2045,54 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
 
         $header      = pack("vv", $record, $length);
         $data        = pack("v", $fPrintRwCol);
-        $this->append($header . $data);
+        $this->_append($header . $data);
     }
 
     /**
      * Write the PRINTGRIDLINES BIFF record. Must be used in conjunction with the
      * GRIDSET record.
      */
-    private function writePrintGridlines()
+    private function _writePrintGridlines()
     {
         $record      = 0x002b;                    // Record identifier
         $length      = 0x0002;                    // Bytes to follow
 
-        $fPrintGrid  = $this->phpSheet->getPrintGridlines() ? 1 : 0;    // Boolean flag
+        $fPrintGrid  = $this->_phpSheet->getPrintGridlines() ? 1 : 0;    // Boolean flag
 
         $header      = pack("vv", $record, $length);
         $data      = pack("v", $fPrintGrid);
-        $this->append($header . $data);
+        $this->_append($header . $data);
     }
 
     /**
      * Write the GRIDSET BIFF record. Must be used in conjunction with the
      * PRINTGRIDLINES record.
      */
-    private function writeGridset()
+    private function _writeGridset()
     {
         $record      = 0x0082;                        // Record identifier
         $length      = 0x0002;                        // Bytes to follow
 
-        $fGridSet    = !$this->phpSheet->getPrintGridlines();     // Boolean flag
+        $fGridSet    = !$this->_phpSheet->getPrintGridlines();     // Boolean flag
 
-        $header      = pack("vv", $record, $length);
-        $data        = pack("v", $fGridSet);
-        $this->append($header . $data);
+        $header      = pack("vv",  $record, $length);
+        $data        = pack("v",   $fGridSet);
+        $this->_append($header . $data);
     }
 
     /**
      * Write the AUTOFILTERINFO BIFF record. This is used to configure the number of autofilter select used in the sheet.
      */
-    private function writeAutoFilterInfo()
-    {
+    private function _writeAutoFilterInfo(){
         $record      = 0x009D;                        // Record identifier
         $length      = 0x0002;                        // Bytes to follow
 
-        $rangeBounds = PHPExcel_Cell::rangeBoundaries($this->phpSheet->getAutoFilter()->getRange());
+        $rangeBounds = Cell::rangeBoundaries($this->_phpSheet->getAutoFilter()->getRange());
         $iNumFilters = 1 + $rangeBounds[1][0] - $rangeBounds[0][0];
 
         $header   = pack("vv", $record, $length);
-        $data     = pack("v", $iNumFilters);
-        $this->append($header . $data);
+        $data     = pack("v",  $iNumFilters);
+        $this->_append($header . $data);
     }
 
     /**
@@ -2053,9 +2100,9 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
      * where Excel outline symbols are displayed. The visibility of the gutters is
      * controlled by a flag in WSBOOL.
      *
-     * @see writeWsbool()
+     * @see _writeWsbool()
      */
-    private function writeGuts()
+    private  function _writeGuts()
     {
         $record      = 0x0080;   // Record identifier
         $length      = 0x0008;   // Bytes to follow
@@ -2065,17 +2112,17 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
 
         // determine maximum row outline level
         $maxRowOutlineLevel = 0;
-        foreach ($this->phpSheet->getRowDimensions() as $rowDimension) {
+        foreach ($this->_phpSheet->getRowDimensions() as $rowDimension) {
             $maxRowOutlineLevel = max($maxRowOutlineLevel, $rowDimension->getOutlineLevel());
         }
 
         $col_level   = 0;
 
         // Calculate the maximum column outline level. The equivalent calculation
-        // for the row outline level is carried out in writeRow().
-        $colcount = count($this->columnInfo);
+        // for the row outline level is carried out in _writeRow().
+        $colcount = count($this->_colinfo);
         for ($i = 0; $i < $colcount; ++$i) {
-            $col_level = max($this->columnInfo[$i][5], $col_level);
+            $col_level = max($this->_colinfo[$i][5], $col_level);
         }
 
         // Set the limits for the outline levels (0 <= x <= 7).
@@ -2089,17 +2136,17 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
             ++$col_level;
         }
 
-        $header      = pack("vv", $record, $length);
+        $header      = pack("vv",   $record, $length);
         $data        = pack("vvvv", $dxRwGut, $dxColGut, $maxRowOutlineLevel, $col_level);
 
-        $this->append($header.$data);
+        $this->_append($header.$data);
     }
 
     /**
      * Write the WSBOOL BIFF record, mainly for fit-to-page. Used in conjunction
      * with the SETUP record.
      */
-    private function writeWsbool()
+    private function _writeWsbool()
     {
         $record      = 0x0081;   // Record identifier
         $length      = 0x0002;   // Bytes to follow
@@ -2110,51 +2157,53 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
         //
         // Set the option flags
         $grbit |= 0x0001;                           // Auto page breaks visible
-        if ($this->outlineStyle) {
+        if ($this->_outline_style) {
             $grbit |= 0x0020; // Auto outline styles
         }
-        if ($this->phpSheet->getShowSummaryBelow()) {
+        if ($this->_phpSheet->getShowSummaryBelow()) {
             $grbit |= 0x0040; // Outline summary below
         }
-        if ($this->phpSheet->getShowSummaryRight()) {
+        if ($this->_phpSheet->getShowSummaryRight()) {
             $grbit |= 0x0080; // Outline summary right
         }
-        if ($this->phpSheet->getPageSetup()->getFitToPage()) {
+        if ($this->_phpSheet->getPageSetup()->getFitToPage()) {
             $grbit |= 0x0100; // Page setup fit to page
         }
-        if ($this->outlineOn) {
+        if ($this->_outline_on) {
             $grbit |= 0x0400; // Outline symbols displayed
         }
 
         $header      = pack("vv", $record, $length);
-        $data        = pack("v", $grbit);
-        $this->append($header . $data);
+        $data        = pack("v",  $grbit);
+        $this->_append($header . $data);
     }
 
     /**
      * Write the HORIZONTALPAGEBREAKS and VERTICALPAGEBREAKS BIFF records.
      */
-    private function writeBreaks()
+    private function _writeBreaks()
     {
         // initialize
         $vbreaks = array();
         $hbreaks = array();
 
-        foreach ($this->phpSheet->getBreaks() as $cell => $breakType) {
+        foreach ($this->_phpSheet->getBreaks() as $cell => $breakType) {
             // Fetch coordinates
-            $coordinates = PHPExcel_Cell::coordinateFromString($cell);
+            $coordinates = Cell::coordinateFromString($cell);
 
             // Decide what to do by the type of break
             switch ($breakType) {
-                case PHPExcel_Worksheet::BREAK_COLUMN:
+                case Worksheet::BREAK_COLUMN:
                     // Add to list of vertical breaks
-                    $vbreaks[] = PHPExcel_Cell::columnIndexFromString($coordinates[0]) - 1;
+                    $vbreaks[] = Cell::columnIndexFromString($coordinates[0]) - 1;
                     break;
-                case PHPExcel_Worksheet::BREAK_ROW:
+
+                case Worksheet::BREAK_ROW:
                     // Add to list of horizontal breaks
                     $hbreaks[] = $coordinates[1];
                     break;
-                case PHPExcel_Worksheet::BREAK_NONE:
+
+                case Worksheet::BREAK_NONE:
                 default:
                     // Nothing to do
                     break;
@@ -2163,6 +2212,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
 
         //horizontal page breaks
         if (!empty($hbreaks)) {
+
             // Sort and filter array of page breaks
             sort($hbreaks, SORT_NUMERIC);
             if ($hbreaks[0] == 0) { // don't use first break if it's 0
@@ -2174,18 +2224,19 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
             $length  = 2 + 6 * $cbrk;      // Bytes to follow
 
             $header  = pack("vv", $record, $length);
-            $data    = pack("v", $cbrk);
+            $data    = pack("v",  $cbrk);
 
             // Append each page break
             foreach ($hbreaks as $hbreak) {
                 $data .= pack("vvv", $hbreak, 0x0000, 0x00ff);
             }
 
-            $this->append($header . $data);
+            $this->_append($header . $data);
         }
 
         // vertical page breaks
         if (!empty($vbreaks)) {
+
             // 1000 vertical pagebreaks appears to be an internal Excel 5 limit.
             // It is slightly higher in Excel 97/200, approx. 1026
             $vbreaks = array_slice($vbreaks, 0, 1000);
@@ -2200,25 +2251,25 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
             $cbrk    = count($vbreaks);       // Number of page breaks
             $length  = 2 + 6 * $cbrk;      // Bytes to follow
 
-            $header  = pack("vv", $record, $length);
-            $data    = pack("v", $cbrk);
+            $header  = pack("vv",  $record, $length);
+            $data    = pack("v",   $cbrk);
 
             // Append each page break
             foreach ($vbreaks as $vbreak) {
                 $data .= pack("vvv", $vbreak, 0x0000, 0xffff);
             }
 
-            $this->append($header . $data);
+            $this->_append($header . $data);
         }
     }
 
     /**
      * Set the Biff PROTECT record to indicate that the worksheet is protected.
      */
-    private function writeProtect()
+    private function _writeProtect()
     {
         // Exit unless sheet protection has been specified
-        if (!$this->phpSheet->getProtection()->getSheet()) {
+        if (!$this->_phpSheet->getProtection()->getSheet()) {
             return;
         }
 
@@ -2228,23 +2279,23 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
         $fLock      = 1;    // Worksheet is protected
 
         $header      = pack("vv", $record, $length);
-        $data      = pack("v", $fLock);
+        $data      = pack("v",  $fLock);
 
-        $this->append($header.$data);
+        $this->_append($header.$data);
     }
 
     /**
      * Write SCENPROTECT
      */
-    private function writeScenProtect()
+    private function _writeScenProtect()
     {
         // Exit if sheet protection is not active
-        if (!$this->phpSheet->getProtection()->getSheet()) {
+        if (!$this->_phpSheet->getProtection()->getSheet()) {
             return;
         }
 
         // Exit if scenarios are not protected
-        if (!$this->phpSheet->getProtection()->getScenarios()) {
+        if (!$this->_phpSheet->getProtection()->getScenarios()) {
             return;
         }
 
@@ -2254,21 +2305,21 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
         $header = pack('vv', $record, $length);
         $data = pack('v', 1);
 
-        $this->append($header . $data);
+        $this->_append($header . $data);
     }
 
     /**
      * Write OBJECTPROTECT
      */
-    private function writeObjectProtect()
+    private function _writeObjectProtect()
     {
         // Exit if sheet protection is not active
-        if (!$this->phpSheet->getProtection()->getSheet()) {
+        if (!$this->_phpSheet->getProtection()->getSheet()) {
             return;
         }
 
         // Exit if objects are not protected
-        if (!$this->phpSheet->getProtection()->getObjects()) {
+        if (!$this->_phpSheet->getProtection()->getObjects()) {
             return;
         }
 
@@ -2278,28 +2329,28 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
         $header = pack('vv', $record, $length);
         $data = pack('v', 1);
 
-        $this->append($header . $data);
+        $this->_append($header . $data);
     }
 
     /**
      * Write the worksheet PASSWORD record.
      */
-    private function writePassword()
+    private function _writePassword()
     {
         // Exit unless sheet protection and password have been specified
-        if (!$this->phpSheet->getProtection()->getSheet() || !$this->phpSheet->getProtection()->getPassword()) {
+        if (!$this->_phpSheet->getProtection()->getSheet() || !$this->_phpSheet->getProtection()->getPassword()) {
             return;
         }
 
         $record      = 0x0013;               // Record identifier
         $length      = 0x0002;               // Bytes to follow
 
-        $wPassword   = hexdec($this->phpSheet->getProtection()->getPassword());     // Encoded password
+        $wPassword   = hexdec($this->_phpSheet->getProtection()->getPassword());     // Encoded password
 
         $header      = pack("vv", $record, $length);
-        $data        = pack("v", $wPassword);
+        $data        = pack("v",  $wPassword);
 
-        $this->append($header . $data);
+        $this->_append($header . $data);
     }
 
     /**
@@ -2314,17 +2365,17 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
      * @param float   $scale_x The horizontal scale
      * @param float   $scale_y The vertical scale
      */
-    public function insertBitmap($row, $col, $bitmap, $x = 0, $y = 0, $scale_x = 1, $scale_y = 1)
+    function insertBitmap($row, $col, $bitmap, $x = 0, $y = 0, $scale_x = 1, $scale_y = 1)
     {
-        $bitmap_array = (is_resource($bitmap) ? $this->processBitmapGd($bitmap) : $this->processBitmap($bitmap));
-        list($width, $height, $size, $data) = $bitmap_array; //$this->processBitmap($bitmap);
+        $bitmap_array = (is_resource($bitmap) ? $this->_processBitmapGd($bitmap) : $this->_processBitmap($bitmap));
+        list($width, $height, $size, $data) = $bitmap_array; //$this->_processBitmap($bitmap);
 
         // Scale the frame of the image.
         $width  *= $scale_x;
         $height *= $scale_y;
 
         // Calculate the vertices of the image and write the OBJ record
-        $this->positionImage($col, $row, $x, $y, $width, $height);
+        $this->_positionImage($col, $row, $x, $y, $width, $height);
 
         // Write the IMDATA record to store the bitmap data
         $record      = 0x007f;
@@ -2334,7 +2385,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
         $lcb         = $size;
 
         $header      = pack("vvvvV", $record, $length, $cf, $env, $lcb);
-        $this->append($header.$data);
+        $this->_append($header.$data);
     }
 
     /**
@@ -2388,17 +2439,17 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
      * @param integer $width     Width of image frame
      * @param integer $height    Height of image frame
      */
-    public function positionImage($col_start, $row_start, $x1, $y1, $width, $height)
+    function _positionImage($col_start, $row_start, $x1, $y1, $width, $height)
     {
         // Initialise end cell to the same as the start cell
         $col_end    = $col_start;  // Col containing lower right corner of object
         $row_end    = $row_start;  // Row containing bottom right corner of object
 
         // Zero the specified offset if greater than the cell dimensions
-        if ($x1 >= PHPExcel_Shared_Excel5::sizeCol($this->phpSheet, PHPExcel_Cell::stringFromColumnIndex($col_start))) {
+        if ($x1 >= Shared_Excel5::sizeCol($this->_phpSheet, Cell::stringFromColumnIndex($col_start))) {
             $x1 = 0;
         }
-        if ($y1 >= PHPExcel_Shared_Excel5::sizeRow($this->phpSheet, $row_start + 1)) {
+        if ($y1 >= Shared_Excel5::sizeRow($this->_phpSheet, $row_start + 1)) {
             $y1 = 0;
         }
 
@@ -2406,40 +2457,43 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
         $height     = $height + $y1 -1;
 
         // Subtract the underlying cell widths to find the end cell of the image
-        while ($width >= PHPExcel_Shared_Excel5::sizeCol($this->phpSheet, PHPExcel_Cell::stringFromColumnIndex($col_end))) {
-            $width -= PHPExcel_Shared_Excel5::sizeCol($this->phpSheet, PHPExcel_Cell::stringFromColumnIndex($col_end));
+        while ($width >= Shared_Excel5::sizeCol($this->_phpSheet, Cell::stringFromColumnIndex($col_end))) {
+            $width -= Shared_Excel5::sizeCol($this->_phpSheet, Cell::stringFromColumnIndex($col_end));
             ++$col_end;
         }
 
         // Subtract the underlying cell heights to find the end cell of the image
-        while ($height >= PHPExcel_Shared_Excel5::sizeRow($this->phpSheet, $row_end + 1)) {
-            $height -= PHPExcel_Shared_Excel5::sizeRow($this->phpSheet, $row_end + 1);
+        while ($height >= Shared_Excel5::sizeRow($this->_phpSheet, $row_end + 1)) {
+            $height -= Shared_Excel5::sizeRow($this->_phpSheet, $row_end + 1);
             ++$row_end;
         }
 
         // Bitmap isn't allowed to start or finish in a hidden cell, i.e. a cell
         // with zero eight or width.
         //
-        if (PHPExcel_Shared_Excel5::sizeCol($this->phpSheet, PHPExcel_Cell::stringFromColumnIndex($col_start)) == 0) {
+        if (Shared_Excel5::sizeCol($this->_phpSheet, Cell::stringFromColumnIndex($col_start)) == 0) {
             return;
         }
-        if (PHPExcel_Shared_Excel5::sizeCol($this->phpSheet, PHPExcel_Cell::stringFromColumnIndex($col_end))   == 0) {
+        if (Shared_Excel5::sizeCol($this->_phpSheet, Cell::stringFromColumnIndex($col_end))   == 0) {
             return;
         }
-        if (PHPExcel_Shared_Excel5::sizeRow($this->phpSheet, $row_start + 1) == 0) {
+        if (Shared_Excel5::sizeRow($this->_phpSheet, $row_start + 1) == 0) {
             return;
         }
-        if (PHPExcel_Shared_Excel5::sizeRow($this->phpSheet, $row_end + 1)   == 0) {
+        if (Shared_Excel5::sizeRow($this->_phpSheet, $row_end + 1)   == 0) {
             return;
         }
 
         // Convert the pixel values to the percentage value expected by Excel
-        $x1 = $x1     / PHPExcel_Shared_Excel5::sizeCol($this->phpSheet, PHPExcel_Cell::stringFromColumnIndex($col_start))   * 1024;
-        $y1 = $y1     / PHPExcel_Shared_Excel5::sizeRow($this->phpSheet, $row_start + 1)   *  256;
-        $x2 = $width  / PHPExcel_Shared_Excel5::sizeCol($this->phpSheet, PHPExcel_Cell::stringFromColumnIndex($col_end))     * 1024; // Distance to right side of object
-        $y2 = $height / PHPExcel_Shared_Excel5::sizeRow($this->phpSheet, $row_end + 1)     *  256; // Distance to bottom of object
+        $x1 = $x1     / Shared_Excel5::sizeCol($this->_phpSheet, Cell::stringFromColumnIndex($col_start))   * 1024;
+        $y1 = $y1     / Shared_Excel5::sizeRow($this->_phpSheet, $row_start + 1)   *  256;
+        $x2 = $width  / Shared_Excel5::sizeCol($this->_phpSheet, Cell::stringFromColumnIndex($col_end))     * 1024; // Distance to right side of object
+        $y2 = $height / Shared_Excel5::sizeRow($this->_phpSheet, $row_end + 1)     *  256; // Distance to bottom of object
 
-        $this->writeObjPicture($col_start, $x1, $row_start, $y1, $col_end, $x2, $row_end, $y2);
+        $this->_writeObjPicture($col_start, $x1,
+                                 $row_start, $y1,
+                                 $col_end, $x2,
+                                 $row_end, $y2);
     }
 
     /**
@@ -2455,7 +2509,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
      * @param integer $rwB  Row containing bottom right corner of object
      * @param integer $dyB  Distance from bottom of cell
      */
-    private function writeObjPicture($colL, $dxL, $rwT, $dyT, $colR, $dxR, $rwB, $dyB)
+    private function _writeObjPicture($colL,$dxL,$rwT,$dyT,$colR,$dxR,$rwB,$dyB)
     {
         $record      = 0x005d;   // Record identifier
         $length      = 0x003c;   // Bytes to follow
@@ -2518,7 +2572,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
         $data       .= pack("v", $grbit2);
         $data       .= pack("V", $Reserved5);
 
-        $this->append($header . $data);
+        $this->_append($header . $data);
     }
 
     /**
@@ -2528,13 +2582,12 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
      * @param resource $image The image to process
      * @return array Array with data and properties of the bitmap
      */
-    public function processBitmapGd($image)
-    {
+    function _processBitmapGd($image) {
         $width = imagesx($image);
         $height = imagesy($image);
 
         $data = pack("Vvvvv", 0x000c, $width, $height, 0x01, 0x18);
-        for ($j=$height; $j--;) {
+        for ($j=$height; $j--; ) {
             for ($i=0; $i < $width; ++$i) {
                 $color = imagecolorsforindex($image, imagecolorat($image, $i, $j));
                 foreach (array("red", "green", "blue") as $key) {
@@ -2559,12 +2612,12 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
      * @param string $bitmap The bitmap to process
      * @return array Array with data and properties of the bitmap
      */
-    public function processBitmap($bitmap)
+    function _processBitmap($bitmap)
     {
         // Open file.
-        $bmp_fd = @fopen($bitmap, "rb");
+        $bmp_fd = @fopen($bitmap,"rb");
         if (!$bmp_fd) {
-            throw new PHPExcel_Writer_Exception("Couldn't import $bitmap");
+            throw new Writer_Exception("Couldn't import $bitmap");
         }
 
         // Slurp the file into a string.
@@ -2572,13 +2625,13 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
 
         // Check that the file is big enough to be a bitmap.
         if (strlen($data) <= 0x36) {
-            throw new PHPExcel_Writer_Exception("$bitmap doesn't contain enough data.\n");
+            throw new Writer_Exception("$bitmap doesn't contain enough data.\n");
         }
 
         // The first 2 bytes are used to identify the bitmap.
         $identity = unpack("A2ident", $data);
         if ($identity['ident'] != "BM") {
-            throw new PHPExcel_Writer_Exception("$bitmap doesn't appear to be a valid bitmap image.\n");
+            throw new Writer_Exception("$bitmap doesn't appear to be a valid bitmap image.\n");
         }
 
         // Remove bitmap data: ID.
@@ -2602,20 +2655,20 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
         $height = $width_and_height[2];
         $data   = substr($data, 8);
         if ($width > 0xFFFF) {
-            throw new PHPExcel_Writer_Exception("$bitmap: largest image width supported is 65k.\n");
+            throw new Writer_Exception("$bitmap: largest image width supported is 65k.\n");
         }
         if ($height > 0xFFFF) {
-            throw new PHPExcel_Writer_Exception("$bitmap: largest image height supported is 65k.\n");
+            throw new Writer_Exception("$bitmap: largest image height supported is 65k.\n");
         }
 
         // Read and remove the bitmap planes and bpp data. Verify them.
         $planes_and_bitcount = unpack("v2", substr($data, 0, 4));
         $data = substr($data, 4);
         if ($planes_and_bitcount[2] != 24) { // Bitcount
-            throw new PHPExcel_Writer_Exception("$bitmap isn't a 24bit true color bitmap.\n");
+            throw new Writer_Exception("$bitmap isn't a 24bit true color bitmap.\n");
         }
         if ($planes_and_bitcount[1] != 1) {
-            throw new PHPExcel_Writer_Exception("$bitmap: only 1 plane supported in bitmap image.\n");
+            throw new Writer_Exception("$bitmap: only 1 plane supported in bitmap image.\n");
         }
 
         // Read and remove the bitmap compression. Verify compression.
@@ -2624,7 +2677,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
 
         //$compression = 0;
         if ($compression['comp'] != 0) {
-            throw new PHPExcel_Writer_Exception("$bitmap: compression not supported in bitmap image.\n");
+            throw new Writer_Exception("$bitmap: compression not supported in bitmap image.\n");
         }
 
         // Remove bitmap data: data size, hres, vres, colours, imp. colours.
@@ -2641,10 +2694,10 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
      * Store the window zoom factor. This should be a reduced fraction but for
      * simplicity we will store all fractions with a numerator of 100.
      */
-    private function writeZoom()
+    private function _writeZoom()
     {
         // If scale is 100 we don't need to write a record
-        if ($this->phpSheet->getSheetView()->getZoomScale() == 100) {
+        if ($this->_phpSheet->getSheetView()->getZoomScale() == 100) {
             return;
         }
 
@@ -2652,38 +2705,38 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
         $length      = 0x0004;               // Bytes to follow
 
         $header      = pack("vv", $record, $length);
-        $data        = pack("vv", $this->phpSheet->getSheetView()->getZoomScale(), 100);
-        $this->append($header . $data);
+        $data        = pack("vv", $this->_phpSheet->getSheetView()->getZoomScale(), 100);
+        $this->_append($header . $data);
     }
 
     /**
      * Get Escher object
      *
-     * @return PHPExcel_Shared_Escher
+     * @return PHPExcel\Shared_Escher
      */
     public function getEscher()
     {
-        return $this->escher;
+        return $this->_escher;
     }
 
     /**
      * Set Escher object
      *
-     * @param PHPExcel_Shared_Escher $pValue
+     * @param PHPExcel\Shared_Escher $pValue
      */
-    public function setEscher(PHPExcel_Shared_Escher $pValue = null)
+    public function setEscher(Shared_Escher $pValue = null)
     {
-        $this->escher = $pValue;
+        $this->_escher = $pValue;
     }
 
     /**
      * Write MSODRAWING record
      */
-    private function writeMsoDrawing()
+    private function _writeMsoDrawing()
     {
         // write the Escher stream if necessary
-        if (isset($this->escher)) {
-            $writer = new PHPExcel_Writer_Excel5_Escher($this->escher);
+        if (isset($this->_escher)) {
+            $writer = new Writer_Excel5_Escher($this->_escher);
             $data = $writer->close();
             $spOffsets = $writer->getSpOffsets();
             $spTypes = $writer->getSpTypes();
@@ -2702,26 +2755,25 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
                 $length = strlen($dataChunk);
                 $header = pack("vv", $record, $length);
 
-                $this->append($header . $dataChunk);
+                $this->_append($header . $dataChunk);
 
                 // OBJ record
                 $record = 0x005D; // record identifier
                 $objData = '';
 
                 // ftCmo
-                if ($spTypes[$i] == 0x00C9) {
+                if($spTypes[$i] == 0x00C9){
                     // Add ftCmo (common object data) subobject
                     $objData .=
-                        pack(
-                            'vvvvvVVV',
-                            0x0015, // 0x0015 = ftCmo
-                            0x0012, // length of ftCmo data
-                            0x0014, // object type, 0x0014 = filter
-                            $i, // object id number, Excel seems to use 1-based index, local for the sheet
-                            0x2101, // option flags, 0x2001 is what OpenOffice.org uses
-                            0, // reserved
-                            0, // reserved
-                            0  // reserved
+                        pack('vvvvvVVV'
+                                , 0x0015    // 0x0015 = ftCmo
+                                , 0x0012    // length of ftCmo data
+                                , 0x0014    // object type, 0x0014 = filter
+                                , $i        // object id number, Excel seems to use 1-based index, local for the sheet
+                                , 0x2101    // option flags, 0x2001 is what OpenOffice.org uses
+                                , 0            // reserved
+                                , 0            // reserved
+                                , 0            // reserved
                         );
 
                     // Add ftSbs Scroll bar subobject
@@ -2730,33 +2782,32 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
                     // Add ftLbsData (List box data) subobject
                     $objData .= pack('vv', 0x0013, 0x1FEE);
                     $objData .= pack('H*', '00000000010001030000020008005700');
-                } else {
+                }
+                else {
                     // Add ftCmo (common object data) subobject
                     $objData .=
-                        pack(
-                            'vvvvvVVV',
-                            0x0015, // 0x0015 = ftCmo
-                            0x0012, // length of ftCmo data
-                            0x0008, // object type, 0x0008 = picture
-                            $i, // object id number, Excel seems to use 1-based index, local for the sheet
-                            0x6011, // option flags, 0x6011 is what OpenOffice.org uses
-                            0, // reserved
-                            0, // reserved
-                            0  // reserved
+                        pack('vvvvvVVV'
+                            , 0x0015    // 0x0015 = ftCmo
+                            , 0x0012    // length of ftCmo data
+                            , 0x0008    // object type, 0x0008 = picture
+                            , $i        // object id number, Excel seems to use 1-based index, local for the sheet
+                            , 0x6011    // option flags, 0x6011 is what OpenOffice.org uses
+                            , 0            // reserved
+                            , 0            // reserved
+                            , 0            // reserved
                         );
                 }
 
                 // ftEnd
                 $objData .=
-                    pack(
-                        'vv',
-                        0x0000, // 0x0000 = ftEnd
-                        0x0000  // length of ftEnd data
+                    pack('vv'
+                        , 0x0000    // 0x0000 = ftEnd
+                        , 0x0000    // length of ftEnd data
                     );
 
                 $length = strlen($objData);
                 $header = pack('vv', $record, $length);
-                $this->append($header . $objData);
+                $this->_append($header . $objData);
             }
         }
     }
@@ -2764,25 +2815,27 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
     /**
      * Store the DATAVALIDATIONS and DATAVALIDATION records.
      */
-    private function writeDataValidity()
+    private function _writeDataValidity()
     {
         // Datavalidation collection
-        $dataValidationCollection = $this->phpSheet->getDataValidationCollection();
+        $dataValidationCollection = $this->_phpSheet->getDataValidationCollection();
 
         // Write data validations?
         if (!empty($dataValidationCollection)) {
+
             // DATAVALIDATIONS record
             $record = 0x01B2;      // Record identifier
-            $length = 0x0012;      // Bytes to follow
+            $length      = 0x0012;      // Bytes to follow
 
             $grbit  = 0x0000;       // Prompt box at cell, no cached validity data at DV records
-            $horPos = 0x00000000;  // Horizontal position of prompt box, if fixed position
-            $verPos = 0x00000000;  // Vertical position of prompt box, if fixed position
+            $horPos      = 0x00000000;  // Horizontal position of prompt box, if fixed position
+            $verPos      = 0x00000000;  // Vertical position of prompt box, if fixed position
             $objId  = 0xFFFFFFFF;  // Object identifier of drop down arrow object, or -1 if not visible
 
-            $header = pack('vv', $record, $length);
-            $data   = pack('vVVVV', $grbit, $horPos, $verPos, $objId, count($dataValidationCollection));
-            $this->append($header.$data);
+            $header      = pack('vv', $record, $length);
+            $data        = pack('vVVVV', $grbit, $horPos, $verPos, $objId,
+                                         count($dataValidationCollection));
+            $this->_append($header.$data);
 
             // DATAVALIDATION records
             $record = 0x01BE;              // Record identifier
@@ -2797,51 +2850,29 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
                 // data type
                 $type = $dataValidation->getType();
                 switch ($type) {
-                    case PHPExcel_Cell_DataValidation::TYPE_NONE:
-                        $type = 0x00;
-                        break;
-                    case PHPExcel_Cell_DataValidation::TYPE_WHOLE:
-                        $type = 0x01;
-                        break;
-                    case PHPExcel_Cell_DataValidation::TYPE_DECIMAL:
-                        $type = 0x02;
-                        break;
-                    case PHPExcel_Cell_DataValidation::TYPE_LIST:
-                        $type = 0x03;
-                        break;
-                    case PHPExcel_Cell_DataValidation::TYPE_DATE:
-                        $type = 0x04;
-                        break;
-                    case PHPExcel_Cell_DataValidation::TYPE_TIME:
-                        $type = 0x05;
-                        break;
-                    case PHPExcel_Cell_DataValidation::TYPE_TEXTLENGTH:
-                        $type = 0x06;
-                        break;
-                    case PHPExcel_Cell_DataValidation::TYPE_CUSTOM:
-                        $type = 0x07;
-                        break;
+                    case Cell_DataValidation::TYPE_NONE:        $type = 0x00;    break;
+                    case Cell_DataValidation::TYPE_WHOLE:        $type = 0x01;    break;
+                    case Cell_DataValidation::TYPE_DECIMAL:    $type = 0x02;    break;
+                    case Cell_DataValidation::TYPE_LIST:        $type = 0x03;    break;
+                    case Cell_DataValidation::TYPE_DATE:        $type = 0x04;    break;
+                    case Cell_DataValidation::TYPE_TIME:        $type = 0x05;    break;
+                    case Cell_DataValidation::TYPE_TEXTLENGTH:    $type = 0x06;    break;
+                    case Cell_DataValidation::TYPE_CUSTOM:        $type = 0x07;    break;
                 }
                 $options |= $type << 0;
 
                 // error style
                 $errorStyle = $dataValidation->getType();
                 switch ($errorStyle) {
-                    case PHPExcel_Cell_DataValidation::STYLE_STOP:
-                        $errorStyle = 0x00;
-                        break;
-                    case PHPExcel_Cell_DataValidation::STYLE_WARNING:
-                        $errorStyle = 0x01;
-                        break;
-                    case PHPExcel_Cell_DataValidation::STYLE_INFORMATION:
-                        $errorStyle = 0x02;
-                        break;
+                    case Cell_DataValidation::STYLE_STOP:            $errorStyle = 0x00;        break;
+                    case Cell_DataValidation::STYLE_WARNING:        $errorStyle = 0x01;        break;
+                    case Cell_DataValidation::STYLE_INFORMATION:    $errorStyle = 0x02;        break;
                 }
                 $options |= $errorStyle << 4;
 
                 // explicit formula?
                 if ($type == 0x03 && preg_match('/^\".*\"$/', $dataValidation->getFormula1())) {
-                    $options |= 0x01 << 7;
+                    $options |= 0x01                << 7;
                 }
 
                 // empty cells allowed
@@ -2859,30 +2890,14 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
                 // condition operator
                 $operator = $dataValidation->getOperator();
                 switch ($operator) {
-                    case PHPExcel_Cell_DataValidation::OPERATOR_BETWEEN:
-                        $operator = 0x00;
-                        break;
-                    case PHPExcel_Cell_DataValidation::OPERATOR_NOTBETWEEN:
-                        $operator = 0x01;
-                        break;
-                    case PHPExcel_Cell_DataValidation::OPERATOR_EQUAL:
-                        $operator = 0x02;
-                        break;
-                    case PHPExcel_Cell_DataValidation::OPERATOR_NOTEQUAL:
-                        $operator = 0x03;
-                        break;
-                    case PHPExcel_Cell_DataValidation::OPERATOR_GREATERTHAN:
-                        $operator = 0x04;
-                        break;
-                    case PHPExcel_Cell_DataValidation::OPERATOR_LESSTHAN:
-                        $operator = 0x05;
-                        break;
-                    case PHPExcel_Cell_DataValidation::OPERATOR_GREATERTHANOREQUAL:
-                        $operator = 0x06;
-                        break;
-                    case PHPExcel_Cell_DataValidation::OPERATOR_LESSTHANOREQUAL:
-                        $operator = 0x07;
-                        break;
+                    case Cell_DataValidation::OPERATOR_BETWEEN: $operator = 0x00            ;    break;
+                    case Cell_DataValidation::OPERATOR_NOTBETWEEN: $operator = 0x01        ;    break;
+                    case Cell_DataValidation::OPERATOR_EQUAL: $operator = 0x02                ;    break;
+                    case Cell_DataValidation::OPERATOR_NOTEQUAL: $operator = 0x03            ;    break;
+                    case Cell_DataValidation::OPERATOR_GREATERTHAN: $operator = 0x04        ;    break;
+                    case Cell_DataValidation::OPERATOR_LESSTHAN: $operator = 0x05            ;    break;
+                    case Cell_DataValidation::OPERATOR_GREATERTHANOREQUAL: $operator = 0x06;    break;
+                    case Cell_DataValidation::OPERATOR_LESSTHANOREQUAL: $operator = 0x07    ;    break;
                 }
                 $options |= $operator << 20;
 
@@ -2891,22 +2906,22 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
                 // prompt title
                 $promptTitle = $dataValidation->getPromptTitle() !== '' ?
                     $dataValidation->getPromptTitle() : chr(0);
-                $data .= PHPExcel_Shared_String::UTF8toBIFF8UnicodeLong($promptTitle);
+                $data .= Shared_String::UTF8toBIFF8UnicodeLong($promptTitle);
 
                 // error title
                 $errorTitle = $dataValidation->getErrorTitle() !== '' ?
                     $dataValidation->getErrorTitle() : chr(0);
-                $data .= PHPExcel_Shared_String::UTF8toBIFF8UnicodeLong($errorTitle);
+                $data .= Shared_String::UTF8toBIFF8UnicodeLong($errorTitle);
 
                 // prompt text
                 $prompt = $dataValidation->getPrompt() !== '' ?
                     $dataValidation->getPrompt() : chr(0);
-                $data .= PHPExcel_Shared_String::UTF8toBIFF8UnicodeLong($prompt);
+                $data .= Shared_String::UTF8toBIFF8UnicodeLong($prompt);
 
                 // error text
                 $error = $dataValidation->getError() !== '' ?
                     $dataValidation->getError() : chr(0);
-                $data .= PHPExcel_Shared_String::UTF8toBIFF8UnicodeLong($error);
+                $data .= Shared_String::UTF8toBIFF8UnicodeLong($error);
 
                 // formula 1
                 try {
@@ -2914,10 +2929,11 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
                     if ($type == 0x03) { // list type
                         $formula1 = str_replace(',', chr(0), $formula1);
                     }
-                    $this->parser->parse($formula1);
-                    $formula1 = $this->parser->toReversePolish();
+                    $this->_parser->parse($formula1);
+                    $formula1 = $this->_parser->toReversePolish();
                     $sz1 = strlen($formula1);
-                } catch (PHPExcel_Exception $e) {
+
+                } catch(Exception $e) {
                     $sz1 = 0;
                     $formula1 = '';
                 }
@@ -2928,12 +2944,13 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
                 try {
                     $formula2 = $dataValidation->getFormula2();
                     if ($formula2 === '') {
-                        throw new PHPExcel_Writer_Exception('No formula2');
+                        throw new Writer_Exception('No formula2');
                     }
-                    $this->parser->parse($formula2);
-                    $formula2 = $this->parser->toReversePolish();
+                    $this->_parser->parse($formula2);
+                    $formula2 = $this->_parser->toReversePolish();
                     $sz2 = strlen($formula2);
-                } catch (PHPExcel_Exception $e) {
+
+                } catch(Exception $e) {
                     $sz2 = 0;
                     $formula2 = '';
                 }
@@ -2942,12 +2959,12 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
 
                 // cell range address list
                 $data .= pack('v', 0x0001);
-                $data .= $this->writeBIFF8CellRangeAddressFixed($cellCoordinate);
+                $data .= $this->_writeBIFF8CellRangeAddressFixed($cellCoordinate);
 
                 $length = strlen($data);
-                $header = pack("vv", $record, $length);
+            $header = pack("vv", $record, $length);
 
-                $this->append($header . $data);
+                $this->_append($header . $data);
             }
         }
     }
@@ -2958,23 +2975,15 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
      * @param string $errorCode
      * @return int
      */
-    private static function mapErrorCode($errorCode)
-    {
+    private static function _mapErrorCode($errorCode) {
         switch ($errorCode) {
-            case '#NULL!':
-                return 0x00;
-            case '#DIV/0!':
-                return 0x07;
-            case '#VALUE!':
-                return 0x0F;
-            case '#REF!':
-                return 0x17;
-            case '#NAME?':
-                return 0x1D;
-            case '#NUM!':
-                return 0x24;
-            case '#N/A':
-                return 0x2A;
+            case '#NULL!':    return 0x00;
+            case '#DIV/0!':    return 0x07;
+            case '#VALUE!':    return 0x0F;
+            case '#REF!':    return 0x17;
+            case '#NAME?':    return 0x1D;
+            case '#NUM!':    return 0x24;
+            case '#N/A':    return 0x2A;
         }
 
         return 0;
@@ -2983,18 +2992,17 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
     /**
      * Write PLV Record
      */
-    private function writePageLayoutView()
-    {
+    private function _writePageLayoutView(){
         $record      = 0x088B;               // Record identifier
         $length      = 0x0010;               // Bytes to follow
 
         $rt         = 0x088B; // 2
         $grbitFrt   = 0x0000; // 2
         $reserved   = 0x0000000000000000; // 8
-        $wScalvePLV = $this->phpSheet->getSheetView()->getZoomScale(); // 2
+        $wScalvePLV = $this->_phpSheet->getSheetView()->getZoomScale(); // 2
 
         // The options flags that comprise $grbit
-        if ($this->phpSheet->getSheetView()->getView() == PHPExcel_Worksheet_SheetView::SHEETVIEW_PAGE_LAYOUT) {
+        if($this->_phpSheet->getSheetView()->getView() == Worksheet_SheetView::SHEETVIEW_PAGE_LAYOUT){
             $fPageLayoutView   = 1;
         } else {
             $fPageLayoutView   = 0;
@@ -3008,48 +3016,47 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
 
         $header      = pack("vv", $record, $length);
         $data      = pack("vvVVvv", $rt, $grbitFrt, 0x00000000, 0x00000000, $wScalvePLV, $grbit);
-        $this->append($header . $data);
+        $this->_append($header . $data);
     }
 
     /**
      * Write CFRule Record
-     * @param PHPExcel_Style_Conditional $conditional
+     * @param PHPExcel\Style_Conditional $conditional
      */
-    private function writeCFRule(PHPExcel_Style_Conditional $conditional)
-    {
+    private function _writeCFRule(Style_Conditional $conditional){
         $record      = 0x01B1;               // Record identifier
 
         // $type : Type of the CF
         // $operatorType : Comparison operator
-        if ($conditional->getConditionType() == PHPExcel_Style_Conditional::CONDITION_EXPRESSION) {
+        if($conditional->getConditionType() == Style_Conditional::CONDITION_EXPRESSION){
             $type = 0x02;
             $operatorType = 0x00;
-        } elseif ($conditional->getConditionType() == PHPExcel_Style_Conditional::CONDITION_CELLIS) {
+        } else if($conditional->getConditionType() == Style_Conditional::CONDITION_CELLIS){
             $type = 0x01;
 
-            switch ($conditional->getOperatorType()) {
-                case PHPExcel_Style_Conditional::OPERATOR_NONE:
+            switch ($conditional->getOperatorType()){
+                case Style_Conditional::OPERATOR_NONE:
                     $operatorType = 0x00;
                     break;
-                case PHPExcel_Style_Conditional::OPERATOR_EQUAL:
+                case Style_Conditional::OPERATOR_EQUAL:
                     $operatorType = 0x03;
                     break;
-                case PHPExcel_Style_Conditional::OPERATOR_GREATERTHAN:
+                case Style_Conditional::OPERATOR_GREATERTHAN:
                     $operatorType = 0x05;
                     break;
-                case PHPExcel_Style_Conditional::OPERATOR_GREATERTHANOREQUAL:
+                case Style_Conditional::OPERATOR_GREATERTHANOREQUAL:
                     $operatorType = 0x07;
                     break;
-                case PHPExcel_Style_Conditional::OPERATOR_LESSTHAN:
+                case Style_Conditional::OPERATOR_LESSTHAN:
                     $operatorType = 0x06;
                     break;
-                case PHPExcel_Style_Conditional::OPERATOR_LESSTHANOREQUAL:
+                case Style_Conditional::OPERATOR_LESSTHANOREQUAL:
                     $operatorType = 0x08;
                     break;
-                case PHPExcel_Style_Conditional::OPERATOR_NOTEQUAL:
+                case Style_Conditional::OPERATOR_NOTEQUAL:
                     $operatorType = 0x04;
                     break;
-                case PHPExcel_Style_Conditional::OPERATOR_BETWEEN:
+                case Style_Conditional::OPERATOR_BETWEEN:
                     $operatorType = 0x01;
                     break;
                     // not OPERATOR_NOTBETWEEN 0x02
@@ -3060,12 +3067,12 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
         // $szValue2 : size of the formula data for second value or formula
         $arrConditions = $conditional->getConditions();
         $numConditions = sizeof($arrConditions);
-        if ($numConditions == 1) {
+        if($numConditions == 1){
             $szValue1 = ($arrConditions[0] <= 65535 ? 3 : 0x0000);
             $szValue2 = 0x0000;
             $operand1 = pack('Cv', 0x1E, $arrConditions[0]);
             $operand2 = null;
-        } elseif ($numConditions == 2 && ($conditional->getOperatorType() == PHPExcel_Style_Conditional::OPERATOR_BETWEEN)) {
+        } else if($numConditions == 2 && ($conditional->getOperatorType() == Style_Conditional::OPERATOR_BETWEEN)){
             $szValue1 = ($arrConditions[0] <= 65535 ? 3 : 0x0000);
             $szValue2 = ($arrConditions[1] <= 65535 ? 3 : 0x0000);
             $operand1 = pack('Cv', 0x1E, $arrConditions[0]);
@@ -3085,7 +3092,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
         $bTxRotation = ($conditional->getStyle()->getAlignment()->getTextRotation() == null ? 1 : 0);
         $bIndent = ($conditional->getStyle()->getAlignment()->getIndent() == 0 ? 1 : 0);
         $bShrinkToFit = ($conditional->getStyle()->getAlignment()->getShrinkToFit() == false ? 1 : 0);
-        if ($bAlignHz == 0 || $bAlignVt == 0 || $bAlignWrapTx == 0 || $bTxRotation == 0 || $bIndent == 0 || $bShrinkToFit == 0) {
+        if($bAlignHz == 0 || $bAlignVt == 0 || $bAlignWrapTx == 0 || $bTxRotation == 0 || $bIndent == 0 || $bShrinkToFit == 0){
             $bFormatAlign = 1;
         } else {
             $bFormatAlign = 0;
@@ -3093,21 +3100,21 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
         // Protection
         $bProtLocked = ($conditional->getStyle()->getProtection()->getLocked() == null ? 1 : 0);
         $bProtHidden = ($conditional->getStyle()->getProtection()->getHidden() == null ? 1 : 0);
-        if ($bProtLocked == 0 || $bProtHidden == 0) {
+        if($bProtLocked == 0 || $bProtHidden == 0){
             $bFormatProt = 1;
         } else {
             $bFormatProt = 0;
         }
         // Border
-        $bBorderLeft = ($conditional->getStyle()->getBorders()->getLeft()->getColor()->getARGB() == PHPExcel_Style_Color::COLOR_BLACK
-                        && $conditional->getStyle()->getBorders()->getLeft()->getBorderStyle() == PHPExcel_Style_Border::BORDER_NONE ? 1 : 0);
-        $bBorderRight = ($conditional->getStyle()->getBorders()->getRight()->getColor()->getARGB() == PHPExcel_Style_Color::COLOR_BLACK
-                        && $conditional->getStyle()->getBorders()->getRight()->getBorderStyle() == PHPExcel_Style_Border::BORDER_NONE ? 1 : 0);
-        $bBorderTop = ($conditional->getStyle()->getBorders()->getTop()->getColor()->getARGB() == PHPExcel_Style_Color::COLOR_BLACK
-                        && $conditional->getStyle()->getBorders()->getTop()->getBorderStyle() == PHPExcel_Style_Border::BORDER_NONE ? 1 : 0);
-        $bBorderBottom = ($conditional->getStyle()->getBorders()->getBottom()->getColor()->getARGB() == PHPExcel_Style_Color::COLOR_BLACK
-                        && $conditional->getStyle()->getBorders()->getBottom()->getBorderStyle() == PHPExcel_Style_Border::BORDER_NONE ? 1 : 0);
-        if ($bBorderLeft == 0 || $bBorderRight == 0 || $bBorderTop == 0 || $bBorderBottom == 0) {
+        $bBorderLeft = ($conditional->getStyle()->getBorders()->getLeft()->getColor()->getARGB() == Style_Color::COLOR_BLACK
+                        && $conditional->getStyle()->getBorders()->getLeft()->getBorderStyle() == Style_Border::BORDER_NONE ? 1 : 0);
+        $bBorderRight = ($conditional->getStyle()->getBorders()->getRight()->getColor()->getARGB() == Style_Color::COLOR_BLACK
+                        && $conditional->getStyle()->getBorders()->getRight()->getBorderStyle() == Style_Border::BORDER_NONE ? 1 : 0);
+        $bBorderTop = ($conditional->getStyle()->getBorders()->getTop()->getColor()->getARGB() == Style_Color::COLOR_BLACK
+                        && $conditional->getStyle()->getBorders()->getTop()->getBorderStyle() == Style_Border::BORDER_NONE ? 1 : 0);
+        $bBorderBottom = ($conditional->getStyle()->getBorders()->getBottom()->getColor()->getARGB() == Style_Color::COLOR_BLACK
+                        && $conditional->getStyle()->getBorders()->getBottom()->getBorderStyle() == Style_Border::BORDER_NONE ? 1 : 0);
+        if($bBorderLeft == 0 || $bBorderRight == 0 || $bBorderTop == 0 || $bBorderBottom == 0){
             $bFormatBorder = 1;
         } else {
             $bFormatBorder = 0;
@@ -3116,13 +3123,13 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
         $bFillStyle = ($conditional->getStyle()->getFill()->getFillType() == null ? 0 : 1);
         $bFillColor = ($conditional->getStyle()->getFill()->getStartColor()->getARGB() == null ? 0 : 1);
         $bFillColorBg = ($conditional->getStyle()->getFill()->getEndColor()->getARGB() == null ? 0 : 1);
-        if ($bFillStyle == 0 || $bFillColor == 0 || $bFillColorBg == 0) {
+        if($bFillStyle == 0 || $bFillColor == 0 || $bFillColorBg == 0){
             $bFormatFill = 1;
         } else {
             $bFormatFill = 0;
         }
         // Font
-        if ($conditional->getStyle()->getFont()->getName() != null
+        if($conditional->getStyle()->getFont()->getName() != null
             || $conditional->getStyle()->getFont()->getSize() != null
             || $conditional->getStyle()->getFont()->getBold() != null
             || $conditional->getStyle()->getFont()->getItalic() != null
@@ -3130,7 +3137,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
             || $conditional->getStyle()->getFont()->getSubScript() != null
             || $conditional->getStyle()->getFont()->getUnderline() != null
             || $conditional->getStyle()->getFont()->getStrikethrough() != null
-            || $conditional->getStyle()->getFont()->getColor()->getARGB() != null) {
+            || $conditional->getStyle()->getFont()->getColor()->getARGB() != null){
             $bFormatFont = 1;
         } else {
             $bFormatFont = 0;
@@ -3164,7 +3171,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
         $flags |= (1 == 1              ? 0x00380000 : 0);
         // Font
         $flags |= (1 == $bFormatFont   ? 0x04000000 : 0);
-        // Alignment:
+        // Alignment :
         $flags |= (1 == $bFormatAlign  ? 0x08000000 : 0);
         // Border
         $flags |= (1 == $bFormatBorder ? 0x10000000 : 0);
@@ -3176,16 +3183,16 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
         $flags |= (1 == 0              ? 0x80000000 : 0);
 
         // Data Blocks
-        if ($bFormatFont == 1) {
+        if($bFormatFont == 1){
             // Font Name
-            if ($conditional->getStyle()->getFont()->getName() == null) {
+            if($conditional->getStyle()->getFont()->getName() == null){
                 $dataBlockFont =  pack('VVVVVVVV', 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000);
                 $dataBlockFont .= pack('VVVVVVVV', 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000);
             } else {
-                $dataBlockFont = PHPExcel_Shared_String::UTF8toBIFF8UnicodeLong($conditional->getStyle()->getFont()->getName());
+                $dataBlockFont = Shared_String::UTF8toBIFF8UnicodeLong($conditional->getStyle()->getFont()->getName());
             }
             // Font Size
-            if ($conditional->getStyle()->getFont()->getSize() == null) {
+            if($conditional->getStyle()->getFont()->getSize() == null){
                 $dataBlockFont .= pack('V', 20 * 11);
             } else {
                 $dataBlockFont .= pack('V', 20 * $conditional->getStyle()->getFont()->getSize());
@@ -3193,16 +3200,16 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
             // Font Options
             $dataBlockFont .= pack('V', 0);
             // Font weight
-            if ($conditional->getStyle()->getFont()->getBold() == true) {
+            if($conditional->getStyle()->getFont()->getBold() == true){
                 $dataBlockFont .= pack('v', 0x02BC);
             } else {
                 $dataBlockFont .= pack('v', 0x0190);
             }
             // Escapement type
-            if ($conditional->getStyle()->getFont()->getSubScript() == true) {
+            if($conditional->getStyle()->getFont()->getSubScript() == true){
                 $dataBlockFont .= pack('v', 0x02);
                 $fontEscapement = 0;
-            } elseif ($conditional->getStyle()->getFont()->getSuperScript() == true) {
+            } else if($conditional->getStyle()->getFont()->getSuperScript() == true){
                 $dataBlockFont .= pack('v', 0x01);
                 $fontEscapement = 0;
             } else {
@@ -3210,206 +3217,75 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
                 $fontEscapement = 1;
             }
             // Underline type
-            switch ($conditional->getStyle()->getFont()->getUnderline()) {
-                case PHPExcel_Style_Font::UNDERLINE_NONE:
-                    $dataBlockFont .= pack('C', 0x00);
-                    $fontUnderline = 0;
-                    break;
-                case PHPExcel_Style_Font::UNDERLINE_DOUBLE:
-                    $dataBlockFont .= pack('C', 0x02);
-                    $fontUnderline = 0;
-                    break;
-                case PHPExcel_Style_Font::UNDERLINE_DOUBLEACCOUNTING:
-                    $dataBlockFont .= pack('C', 0x22);
-                    $fontUnderline = 0;
-                    break;
-                case PHPExcel_Style_Font::UNDERLINE_SINGLE:
-                    $dataBlockFont .= pack('C', 0x01);
-                    $fontUnderline = 0;
-                    break;
-                case PHPExcel_Style_Font::UNDERLINE_SINGLEACCOUNTING:
-                    $dataBlockFont .= pack('C', 0x21);
-                    $fontUnderline = 0;
-                    break;
-                default: $dataBlockFont .= pack('C', 0x00);
-                    $fontUnderline = 1;
-                    break;
+            switch ($conditional->getStyle()->getFont()->getUnderline()){
+                case Style_Font::UNDERLINE_NONE             : $dataBlockFont .= pack('C', 0x00); $fontUnderline = 0; break;
+                case Style_Font::UNDERLINE_DOUBLE           : $dataBlockFont .= pack('C', 0x02); $fontUnderline = 0; break;
+                case Style_Font::UNDERLINE_DOUBLEACCOUNTING : $dataBlockFont .= pack('C', 0x22); $fontUnderline = 0; break;
+                case Style_Font::UNDERLINE_SINGLE           : $dataBlockFont .= pack('C', 0x01); $fontUnderline = 0; break;
+                case Style_Font::UNDERLINE_SINGLEACCOUNTING : $dataBlockFont .= pack('C', 0x21); $fontUnderline = 0; break;
+                default                                              : $dataBlockFont .= pack('C', 0x00); $fontUnderline = 1; break;
             }
             // Not used (3)
             $dataBlockFont .= pack('vC', 0x0000, 0x00);
             // Font color index
             switch ($conditional->getStyle()->getFont()->getColor()->getRGB()) {
-                case '000000':
-                    $colorIdx = 0x08;
-                    break;
-                case 'FFFFFF':
-                    $colorIdx = 0x09;
-                    break;
-                case 'FF0000':
-                    $colorIdx = 0x0A;
-                    break;
-                case '00FF00':
-                    $colorIdx = 0x0B;
-                    break;
-                case '0000FF':
-                    $colorIdx = 0x0C;
-                    break;
-                case 'FFFF00':
-                    $colorIdx = 0x0D;
-                    break;
-                case 'FF00FF':
-                    $colorIdx = 0x0E;
-                    break;
-                case '00FFFF':
-                    $colorIdx = 0x0F;
-                    break;
-                case '800000':
-                    $colorIdx = 0x10;
-                    break;
-                case '008000':
-                    $colorIdx = 0x11;
-                    break;
-                case '000080':
-                    $colorIdx = 0x12;
-                    break;
-                case '808000':
-                    $colorIdx = 0x13;
-                    break;
-                case '800080':
-                    $colorIdx = 0x14;
-                    break;
-                case '008080':
-                    $colorIdx = 0x15;
-                    break;
-                case 'C0C0C0':
-                    $colorIdx = 0x16;
-                    break;
-                case '808080':
-                    $colorIdx = 0x17;
-                    break;
-                case '9999FF':
-                    $colorIdx = 0x18;
-                    break;
-                case '993366':
-                    $colorIdx = 0x19;
-                    break;
-                case 'FFFFCC':
-                    $colorIdx = 0x1A;
-                    break;
-                case 'CCFFFF':
-                    $colorIdx = 0x1B;
-                    break;
-                case '660066':
-                    $colorIdx = 0x1C;
-                    break;
-                case 'FF8080':
-                    $colorIdx = 0x1D;
-                    break;
-                case '0066CC':
-                    $colorIdx = 0x1E;
-                    break;
-                case 'CCCCFF':
-                    $colorIdx = 0x1F;
-                    break;
-                case '000080':
-                    $colorIdx = 0x20;
-                    break;
-                case 'FF00FF':
-                    $colorIdx = 0x21;
-                    break;
-                case 'FFFF00':
-                    $colorIdx = 0x22;
-                    break;
-                case '00FFFF':
-                    $colorIdx = 0x23;
-                    break;
-                case '800080':
-                    $colorIdx = 0x24;
-                    break;
-                case '800000':
-                    $colorIdx = 0x25;
-                    break;
-                case '008080':
-                    $colorIdx = 0x26;
-                    break;
-                case '0000FF':
-                    $colorIdx = 0x27;
-                    break;
-                case '00CCFF':
-                    $colorIdx = 0x28;
-                    break;
-                case 'CCFFFF':
-                    $colorIdx = 0x29;
-                    break;
-                case 'CCFFCC':
-                    $colorIdx = 0x2A;
-                    break;
-                case 'FFFF99':
-                    $colorIdx = 0x2B;
-                    break;
-                case '99CCFF':
-                    $colorIdx = 0x2C;
-                    break;
-                case 'FF99CC':
-                    $colorIdx = 0x2D;
-                    break;
-                case 'CC99FF':
-                    $colorIdx = 0x2E;
-                    break;
-                case 'FFCC99':
-                    $colorIdx = 0x2F;
-                    break;
-                case '3366FF':
-                    $colorIdx = 0x30;
-                    break;
-                case '33CCCC':
-                    $colorIdx = 0x31;
-                    break;
-                case '99CC00':
-                    $colorIdx = 0x32;
-                    break;
-                case 'FFCC00':
-                    $colorIdx = 0x33;
-                    break;
-                case 'FF9900':
-                    $colorIdx = 0x34;
-                    break;
-                case 'FF6600':
-                    $colorIdx = 0x35;
-                    break;
-                case '666699':
-                    $colorIdx = 0x36;
-                    break;
-                case '969696':
-                    $colorIdx = 0x37;
-                    break;
-                case '003366':
-                    $colorIdx = 0x38;
-                    break;
-                case '339966':
-                    $colorIdx = 0x39;
-                    break;
-                case '003300':
-                    $colorIdx = 0x3A;
-                    break;
-                case '333300':
-                    $colorIdx = 0x3B;
-                    break;
-                case '993300':
-                    $colorIdx = 0x3C;
-                    break;
-                case '993366':
-                    $colorIdx = 0x3D;
-                    break;
-                case '333399':
-                    $colorIdx = 0x3E;
-                    break;
-                case '333333':
-                    $colorIdx = 0x3F;
-                    break;
-                default:
-                    $colorIdx = 0x00;
-                    break;
+                case '000000': $colorIdx = 0x08; break;
+                case 'FFFFFF': $colorIdx = 0x09; break;
+                case 'FF0000': $colorIdx = 0x0A; break;
+                case '00FF00': $colorIdx = 0x0B; break;
+                case '0000FF': $colorIdx = 0x0C; break;
+                case 'FFFF00': $colorIdx = 0x0D; break;
+                case 'FF00FF': $colorIdx = 0x0E; break;
+                case '00FFFF': $colorIdx = 0x0F; break;
+                case '800000': $colorIdx = 0x10; break;
+                case '008000': $colorIdx = 0x11; break;
+                case '000080': $colorIdx = 0x12; break;
+                case '808000': $colorIdx = 0x13; break;
+                case '800080': $colorIdx = 0x14; break;
+                case '008080': $colorIdx = 0x15; break;
+                case 'C0C0C0': $colorIdx = 0x16; break;
+                case '808080': $colorIdx = 0x17; break;
+                case '9999FF': $colorIdx = 0x18; break;
+                case '993366': $colorIdx = 0x19; break;
+                case 'FFFFCC': $colorIdx = 0x1A; break;
+                case 'CCFFFF': $colorIdx = 0x1B; break;
+                case '660066': $colorIdx = 0x1C; break;
+                case 'FF8080': $colorIdx = 0x1D; break;
+                case '0066CC': $colorIdx = 0x1E; break;
+                case 'CCCCFF': $colorIdx = 0x1F; break;
+                case '000080': $colorIdx = 0x20; break;
+                case 'FF00FF': $colorIdx = 0x21; break;
+                case 'FFFF00': $colorIdx = 0x22; break;
+                case '00FFFF': $colorIdx = 0x23; break;
+                case '800080': $colorIdx = 0x24; break;
+                case '800000': $colorIdx = 0x25; break;
+                case '008080': $colorIdx = 0x26; break;
+                case '0000FF': $colorIdx = 0x27; break;
+                case '00CCFF': $colorIdx = 0x28; break;
+                case 'CCFFFF': $colorIdx = 0x29; break;
+                case 'CCFFCC': $colorIdx = 0x2A; break;
+                case 'FFFF99': $colorIdx = 0x2B; break;
+                case '99CCFF': $colorIdx = 0x2C; break;
+                case 'FF99CC': $colorIdx = 0x2D; break;
+                case 'CC99FF': $colorIdx = 0x2E; break;
+                case 'FFCC99': $colorIdx = 0x2F; break;
+                case '3366FF': $colorIdx = 0x30; break;
+                case '33CCCC': $colorIdx = 0x31; break;
+                case '99CC00': $colorIdx = 0x32; break;
+                case 'FFCC00': $colorIdx = 0x33; break;
+                case 'FF9900': $colorIdx = 0x34; break;
+                case 'FF6600': $colorIdx = 0x35; break;
+                case '666699': $colorIdx = 0x36; break;
+                case '969696': $colorIdx = 0x37; break;
+                case '003366': $colorIdx = 0x38; break;
+                case '339966': $colorIdx = 0x39; break;
+                case '003300': $colorIdx = 0x3A; break;
+                case '333300': $colorIdx = 0x3B; break;
+                case '993300': $colorIdx = 0x3C; break;
+                case '993366': $colorIdx = 0x3D; break;
+                case '333399': $colorIdx = 0x3E; break;
+                case '333333': $colorIdx = 0x3F; break;
+                default: $colorIdx = 0x00; break;
             }
             $dataBlockFont .= pack('V', $colorIdx);
             // Not used (4)
@@ -3436,47 +3312,27 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
             // Always
             $dataBlockFont .= pack('v', 0x0001);
         }
-        if ($bFormatAlign == 1) {
+        if($bFormatAlign == 1){
             $blockAlign = 0;
             // Alignment and text break
-            switch ($conditional->getStyle()->getAlignment()->getHorizontal()) {
-                case PHPExcel_Style_Alignment::HORIZONTAL_GENERAL:
-                    $blockAlign = 0;
-                    break;
-                case PHPExcel_Style_Alignment::HORIZONTAL_LEFT:
-                    $blockAlign = 1;
-                    break;
-                case PHPExcel_Style_Alignment::HORIZONTAL_RIGHT:
-                    $blockAlign = 3;
-                    break;
-                case PHPExcel_Style_Alignment::HORIZONTAL_CENTER:
-                    $blockAlign = 2;
-                    break;
-                case PHPExcel_Style_Alignment::HORIZONTAL_CENTER_CONTINUOUS:
-                    $blockAlign = 6;
-                    break;
-                case PHPExcel_Style_Alignment::HORIZONTAL_JUSTIFY:
-                    $blockAlign = 5;
-                    break;
+            switch ($conditional->getStyle()->getAlignment()->getHorizontal()){
+                case Style_Alignment::HORIZONTAL_GENERAL             : $blockAlign = 0; break;
+                case Style_Alignment::HORIZONTAL_LEFT                : $blockAlign = 1; break;
+                case Style_Alignment::HORIZONTAL_RIGHT                : $blockAlign = 3; break;
+                case Style_Alignment::HORIZONTAL_CENTER            : $blockAlign = 2; break;
+                case Style_Alignment::HORIZONTAL_CENTER_CONTINUOUS    : $blockAlign = 6; break;
+                case Style_Alignment::HORIZONTAL_JUSTIFY            : $blockAlign = 5; break;
             }
-            if ($conditional->getStyle()->getAlignment()->getWrapText() == true) {
+            if($conditional->getStyle()->getAlignment()->getWrapText() == true){
                 $blockAlign |= 1 << 3;
             } else {
                 $blockAlign |= 0 << 3;
             }
-            switch ($conditional->getStyle()->getAlignment()->getVertical()) {
-                case PHPExcel_Style_Alignment::VERTICAL_BOTTOM:
-                    $blockAlign = 2 << 4;
-                    break;
-                case PHPExcel_Style_Alignment::VERTICAL_TOP:
-                    $blockAlign = 0 << 4;
-                    break;
-                case PHPExcel_Style_Alignment::VERTICAL_CENTER:
-                    $blockAlign = 1 << 4;
-                    break;
-                case PHPExcel_Style_Alignment::VERTICAL_JUSTIFY:
-                    $blockAlign = 3 << 4;
-                    break;
+            switch ($conditional->getStyle()->getAlignment()->getVertical()){
+                case Style_Alignment::VERTICAL_BOTTOM                 : $blockAlign = 2 << 4; break;
+                case Style_Alignment::VERTICAL_TOP                    : $blockAlign = 0 << 4; break;
+                case Style_Alignment::VERTICAL_CENTER                : $blockAlign = 1 << 4; break;
+                case Style_Alignment::VERTICAL_JUSTIFY                : $blockAlign = 3 << 4; break;
             }
             $blockAlign |= 0 << 7;
 
@@ -3485,7 +3341,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
 
             // Indentation
             $blockIndent = $conditional->getStyle()->getAlignment()->getIndent();
-            if ($conditional->getStyle()->getAlignment()->getShrinkToFit() == true) {
+            if($conditional->getStyle()->getAlignment()->getShrinkToFit() == true){
                 $blockIndent |= 1 << 4;
             } else {
                 $blockIndent |= 0 << 4;
@@ -3497,701 +3353,288 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
 
             $dataBlockAlign = pack('CCvvv', $blockAlign, $blockRotation, $blockIndent, $blockIndentRelative, 0x0000);
         }
-        if ($bFormatBorder == 1) {
+        if($bFormatBorder == 1){
             $blockLineStyle = 0;
-            switch ($conditional->getStyle()->getBorders()->getLeft()->getBorderStyle()) {
-                case PHPExcel_Style_Border::BORDER_NONE:
-                    $blockLineStyle |= 0x00;
-                    break;
-                case PHPExcel_Style_Border::BORDER_THIN:
-                    $blockLineStyle |= 0x01;
-                    break;
-                case PHPExcel_Style_Border::BORDER_MEDIUM:
-                    $blockLineStyle |= 0x02;
-                    break;
-                case PHPExcel_Style_Border::BORDER_DASHED:
-                    $blockLineStyle |= 0x03;
-                    break;
-                case PHPExcel_Style_Border::BORDER_DOTTED:
-                    $blockLineStyle |= 0x04;
-                    break;
-                case PHPExcel_Style_Border::BORDER_THICK:
-                    $blockLineStyle |= 0x05;
-                    break;
-                case PHPExcel_Style_Border::BORDER_DOUBLE:
-                    $blockLineStyle |= 0x06;
-                    break;
-                case PHPExcel_Style_Border::BORDER_HAIR:
-                    $blockLineStyle |= 0x07;
-                    break;
-                case PHPExcel_Style_Border::BORDER_MEDIUMDASHED:
-                    $blockLineStyle |= 0x08;
-                    break;
-                case PHPExcel_Style_Border::BORDER_DASHDOT:
-                    $blockLineStyle |= 0x09;
-                    break;
-                case PHPExcel_Style_Border::BORDER_MEDIUMDASHDOT:
-                    $blockLineStyle |= 0x0A;
-                    break;
-                case PHPExcel_Style_Border::BORDER_DASHDOTDOT:
-                    $blockLineStyle |= 0x0B;
-                    break;
-                case PHPExcel_Style_Border::BORDER_MEDIUMDASHDOTDOT:
-                    $blockLineStyle |= 0x0C;
-                    break;
-                case PHPExcel_Style_Border::BORDER_SLANTDASHDOT:
-                    $blockLineStyle |= 0x0D;
-                    break;
+            switch ($conditional->getStyle()->getBorders()->getLeft()->getBorderStyle()){
+                case Style_Border::BORDER_NONE              : $blockLineStyle |= 0x00; break;
+                case Style_Border::BORDER_THIN              : $blockLineStyle |= 0x01; break;
+                case Style_Border::BORDER_MEDIUM            : $blockLineStyle |= 0x02; break;
+                case Style_Border::BORDER_DASHED            : $blockLineStyle |= 0x03; break;
+                case Style_Border::BORDER_DOTTED            : $blockLineStyle |= 0x04; break;
+                case Style_Border::BORDER_THICK             : $blockLineStyle |= 0x05; break;
+                case Style_Border::BORDER_DOUBLE            : $blockLineStyle |= 0x06; break;
+                case Style_Border::BORDER_HAIR              : $blockLineStyle |= 0x07; break;
+                case Style_Border::BORDER_MEDIUMDASHED      : $blockLineStyle |= 0x08; break;
+                case Style_Border::BORDER_DASHDOT           : $blockLineStyle |= 0x09; break;
+                case Style_Border::BORDER_MEDIUMDASHDOT     : $blockLineStyle |= 0x0A; break;
+                case Style_Border::BORDER_DASHDOTDOT        : $blockLineStyle |= 0x0B; break;
+                case Style_Border::BORDER_MEDIUMDASHDOTDOT  : $blockLineStyle |= 0x0C; break;
+                case Style_Border::BORDER_SLANTDASHDOT      : $blockLineStyle |= 0x0D; break;
             }
-            switch ($conditional->getStyle()->getBorders()->getRight()->getBorderStyle()) {
-                case PHPExcel_Style_Border::BORDER_NONE:
-                    $blockLineStyle |= 0x00 << 4;
-                    break;
-                case PHPExcel_Style_Border::BORDER_THIN:
-                    $blockLineStyle |= 0x01 << 4;
-                    break;
-                case PHPExcel_Style_Border::BORDER_MEDIUM:
-                    $blockLineStyle |= 0x02 << 4;
-                    break;
-                case PHPExcel_Style_Border::BORDER_DASHED:
-                    $blockLineStyle |= 0x03 << 4;
-                    break;
-                case PHPExcel_Style_Border::BORDER_DOTTED:
-                    $blockLineStyle |= 0x04 << 4;
-                    break;
-                case PHPExcel_Style_Border::BORDER_THICK:
-                    $blockLineStyle |= 0x05 << 4;
-                    break;
-                case PHPExcel_Style_Border::BORDER_DOUBLE:
-                    $blockLineStyle |= 0x06 << 4;
-                    break;
-                case PHPExcel_Style_Border::BORDER_HAIR:
-                    $blockLineStyle |= 0x07 << 4;
-                    break;
-                case PHPExcel_Style_Border::BORDER_MEDIUMDASHED:
-                    $blockLineStyle |= 0x08 << 4;
-                    break;
-                case PHPExcel_Style_Border::BORDER_DASHDOT:
-                    $blockLineStyle |= 0x09 << 4;
-                    break;
-                case PHPExcel_Style_Border::BORDER_MEDIUMDASHDOT:
-                    $blockLineStyle |= 0x0A << 4;
-                    break;
-                case PHPExcel_Style_Border::BORDER_DASHDOTDOT:
-                    $blockLineStyle |= 0x0B << 4;
-                    break;
-                case PHPExcel_Style_Border::BORDER_MEDIUMDASHDOTDOT:
-                    $blockLineStyle |= 0x0C << 4;
-                    break;
-                case PHPExcel_Style_Border::BORDER_SLANTDASHDOT:
-                    $blockLineStyle |= 0x0D << 4;
-                    break;
+            switch ($conditional->getStyle()->getBorders()->getRight()->getBorderStyle()){
+                case Style_Border::BORDER_NONE              : $blockLineStyle |= 0x00 << 4; break;
+                case Style_Border::BORDER_THIN              : $blockLineStyle |= 0x01 << 4; break;
+                case Style_Border::BORDER_MEDIUM            : $blockLineStyle |= 0x02 << 4; break;
+                case Style_Border::BORDER_DASHED            : $blockLineStyle |= 0x03 << 4; break;
+                case Style_Border::BORDER_DOTTED            : $blockLineStyle |= 0x04 << 4; break;
+                case Style_Border::BORDER_THICK             : $blockLineStyle |= 0x05 << 4; break;
+                case Style_Border::BORDER_DOUBLE            : $blockLineStyle |= 0x06 << 4; break;
+                case Style_Border::BORDER_HAIR              : $blockLineStyle |= 0x07 << 4; break;
+                case Style_Border::BORDER_MEDIUMDASHED      : $blockLineStyle |= 0x08 << 4; break;
+                case Style_Border::BORDER_DASHDOT           : $blockLineStyle |= 0x09 << 4; break;
+                case Style_Border::BORDER_MEDIUMDASHDOT     : $blockLineStyle |= 0x0A << 4; break;
+                case Style_Border::BORDER_DASHDOTDOT        : $blockLineStyle |= 0x0B << 4; break;
+                case Style_Border::BORDER_MEDIUMDASHDOTDOT  : $blockLineStyle |= 0x0C << 4; break;
+                case Style_Border::BORDER_SLANTDASHDOT      : $blockLineStyle |= 0x0D << 4; break;
             }
-            switch ($conditional->getStyle()->getBorders()->getTop()->getBorderStyle()) {
-                case PHPExcel_Style_Border::BORDER_NONE:
-                    $blockLineStyle |= 0x00 << 8;
-                    break;
-                case PHPExcel_Style_Border::BORDER_THIN:
-                    $blockLineStyle |= 0x01 << 8;
-                    break;
-                case PHPExcel_Style_Border::BORDER_MEDIUM:
-                    $blockLineStyle |= 0x02 << 8;
-                    break;
-                case PHPExcel_Style_Border::BORDER_DASHED:
-                    $blockLineStyle |= 0x03 << 8;
-                    break;
-                case PHPExcel_Style_Border::BORDER_DOTTED:
-                    $blockLineStyle |= 0x04 << 8;
-                    break;
-                case PHPExcel_Style_Border::BORDER_THICK:
-                    $blockLineStyle |= 0x05 << 8;
-                    break;
-                case PHPExcel_Style_Border::BORDER_DOUBLE:
-                    $blockLineStyle |= 0x06 << 8;
-                    break;
-                case PHPExcel_Style_Border::BORDER_HAIR:
-                    $blockLineStyle |= 0x07 << 8;
-                    break;
-                case PHPExcel_Style_Border::BORDER_MEDIUMDASHED:
-                    $blockLineStyle |= 0x08 << 8;
-                    break;
-                case PHPExcel_Style_Border::BORDER_DASHDOT:
-                    $blockLineStyle |= 0x09 << 8;
-                    break;
-                case PHPExcel_Style_Border::BORDER_MEDIUMDASHDOT:
-                    $blockLineStyle |= 0x0A << 8;
-                    break;
-                case PHPExcel_Style_Border::BORDER_DASHDOTDOT:
-                    $blockLineStyle |= 0x0B << 8;
-                    break;
-                case PHPExcel_Style_Border::BORDER_MEDIUMDASHDOTDOT:
-                    $blockLineStyle |= 0x0C << 8;
-                    break;
-                case PHPExcel_Style_Border::BORDER_SLANTDASHDOT:
-                    $blockLineStyle |= 0x0D << 8;
-                    break;
+            switch ($conditional->getStyle()->getBorders()->getTop()->getBorderStyle()){
+                case Style_Border::BORDER_NONE              : $blockLineStyle |= 0x00 << 8; break;
+                case Style_Border::BORDER_THIN              : $blockLineStyle |= 0x01 << 8; break;
+                case Style_Border::BORDER_MEDIUM            : $blockLineStyle |= 0x02 << 8; break;
+                case Style_Border::BORDER_DASHED            : $blockLineStyle |= 0x03 << 8; break;
+                case Style_Border::BORDER_DOTTED            : $blockLineStyle |= 0x04 << 8; break;
+                case Style_Border::BORDER_THICK             : $blockLineStyle |= 0x05 << 8; break;
+                case Style_Border::BORDER_DOUBLE            : $blockLineStyle |= 0x06 << 8; break;
+                case Style_Border::BORDER_HAIR              : $blockLineStyle |= 0x07 << 8; break;
+                case Style_Border::BORDER_MEDIUMDASHED      : $blockLineStyle |= 0x08 << 8; break;
+                case Style_Border::BORDER_DASHDOT           : $blockLineStyle |= 0x09 << 8; break;
+                case Style_Border::BORDER_MEDIUMDASHDOT     : $blockLineStyle |= 0x0A << 8; break;
+                case Style_Border::BORDER_DASHDOTDOT        : $blockLineStyle |= 0x0B << 8; break;
+                case Style_Border::BORDER_MEDIUMDASHDOTDOT  : $blockLineStyle |= 0x0C << 8; break;
+                case Style_Border::BORDER_SLANTDASHDOT      : $blockLineStyle |= 0x0D << 8; break;
             }
-            switch ($conditional->getStyle()->getBorders()->getBottom()->getBorderStyle()) {
-                case PHPExcel_Style_Border::BORDER_NONE:
-                    $blockLineStyle |= 0x00 << 12;
-                    break;
-                case PHPExcel_Style_Border::BORDER_THIN:
-                    $blockLineStyle |= 0x01 << 12;
-                    break;
-                case PHPExcel_Style_Border::BORDER_MEDIUM:
-                    $blockLineStyle |= 0x02 << 12;
-                    break;
-                case PHPExcel_Style_Border::BORDER_DASHED:
-                    $blockLineStyle |= 0x03 << 12;
-                    break;
-                case PHPExcel_Style_Border::BORDER_DOTTED:
-                    $blockLineStyle |= 0x04 << 12;
-                    break;
-                case PHPExcel_Style_Border::BORDER_THICK:
-                    $blockLineStyle |= 0x05 << 12;
-                    break;
-                case PHPExcel_Style_Border::BORDER_DOUBLE:
-                    $blockLineStyle |= 0x06 << 12;
-                    break;
-                case PHPExcel_Style_Border::BORDER_HAIR:
-                    $blockLineStyle |= 0x07 << 12;
-                    break;
-                case PHPExcel_Style_Border::BORDER_MEDIUMDASHED:
-                    $blockLineStyle |= 0x08 << 12;
-                    break;
-                case PHPExcel_Style_Border::BORDER_DASHDOT:
-                    $blockLineStyle |= 0x09 << 12;
-                    break;
-                case PHPExcel_Style_Border::BORDER_MEDIUMDASHDOT:
-                    $blockLineStyle |= 0x0A << 12;
-                    break;
-                case PHPExcel_Style_Border::BORDER_DASHDOTDOT:
-                    $blockLineStyle |= 0x0B << 12;
-                    break;
-                case PHPExcel_Style_Border::BORDER_MEDIUMDASHDOTDOT:
-                    $blockLineStyle |= 0x0C << 12;
-                    break;
-                case PHPExcel_Style_Border::BORDER_SLANTDASHDOT:
-                    $blockLineStyle |= 0x0D << 12;
-                    break;
+            switch ($conditional->getStyle()->getBorders()->getBottom()->getBorderStyle()){
+                case Style_Border::BORDER_NONE              : $blockLineStyle |= 0x00 << 12; break;
+                case Style_Border::BORDER_THIN              : $blockLineStyle |= 0x01 << 12; break;
+                case Style_Border::BORDER_MEDIUM            : $blockLineStyle |= 0x02 << 12; break;
+                case Style_Border::BORDER_DASHED            : $blockLineStyle |= 0x03 << 12; break;
+                case Style_Border::BORDER_DOTTED            : $blockLineStyle |= 0x04 << 12; break;
+                case Style_Border::BORDER_THICK             : $blockLineStyle |= 0x05 << 12; break;
+                case Style_Border::BORDER_DOUBLE            : $blockLineStyle |= 0x06 << 12; break;
+                case Style_Border::BORDER_HAIR              : $blockLineStyle |= 0x07 << 12; break;
+                case Style_Border::BORDER_MEDIUMDASHED      : $blockLineStyle |= 0x08 << 12; break;
+                case Style_Border::BORDER_DASHDOT           : $blockLineStyle |= 0x09 << 12; break;
+                case Style_Border::BORDER_MEDIUMDASHDOT     : $blockLineStyle |= 0x0A << 12; break;
+                case Style_Border::BORDER_DASHDOTDOT        : $blockLineStyle |= 0x0B << 12; break;
+                case Style_Border::BORDER_MEDIUMDASHDOTDOT  : $blockLineStyle |= 0x0C << 12; break;
+                case Style_Border::BORDER_SLANTDASHDOT      : $blockLineStyle |= 0x0D << 12; break;
             }
-            //@todo writeCFRule() => $blockLineStyle => Index Color for left line
-            //@todo writeCFRule() => $blockLineStyle => Index Color for right line
-            //@todo writeCFRule() => $blockLineStyle => Top-left to bottom-right on/off
-            //@todo writeCFRule() => $blockLineStyle => Bottom-left to top-right on/off
+            //@todo _writeCFRule() => $blockLineStyle => Index Color for left line
+            //@todo _writeCFRule() => $blockLineStyle => Index Color for right line
+            //@todo _writeCFRule() => $blockLineStyle => Top-left to bottom-right on/off
+            //@todo _writeCFRule() => $blockLineStyle => Bottom-left to top-right on/off
             $blockColor = 0;
-            //@todo writeCFRule() => $blockColor => Index Color for top line
-            //@todo writeCFRule() => $blockColor => Index Color for bottom line
-            //@todo writeCFRule() => $blockColor => Index Color for diagonal line
-            switch ($conditional->getStyle()->getBorders()->getDiagonal()->getBorderStyle()) {
-                case PHPExcel_Style_Border::BORDER_NONE:
-                    $blockColor |= 0x00 << 21;
-                    break;
-                case PHPExcel_Style_Border::BORDER_THIN:
-                    $blockColor |= 0x01 << 21;
-                    break;
-                case PHPExcel_Style_Border::BORDER_MEDIUM:
-                    $blockColor |= 0x02 << 21;
-                    break;
-                case PHPExcel_Style_Border::BORDER_DASHED:
-                    $blockColor |= 0x03 << 21;
-                    break;
-                case PHPExcel_Style_Border::BORDER_DOTTED:
-                    $blockColor |= 0x04 << 21;
-                    break;
-                case PHPExcel_Style_Border::BORDER_THICK:
-                    $blockColor |= 0x05 << 21;
-                    break;
-                case PHPExcel_Style_Border::BORDER_DOUBLE:
-                    $blockColor |= 0x06 << 21;
-                    break;
-                case PHPExcel_Style_Border::BORDER_HAIR:
-                    $blockColor |= 0x07 << 21;
-                    break;
-                case PHPExcel_Style_Border::BORDER_MEDIUMDASHED:
-                    $blockColor |= 0x08 << 21;
-                    break;
-                case PHPExcel_Style_Border::BORDER_DASHDOT:
-                    $blockColor |= 0x09 << 21;
-                    break;
-                case PHPExcel_Style_Border::BORDER_MEDIUMDASHDOT:
-                    $blockColor |= 0x0A << 21;
-                    break;
-                case PHPExcel_Style_Border::BORDER_DASHDOTDOT:
-                    $blockColor |= 0x0B << 21;
-                    break;
-                case PHPExcel_Style_Border::BORDER_MEDIUMDASHDOTDOT:
-                    $blockColor |= 0x0C << 21;
-                    break;
-                case PHPExcel_Style_Border::BORDER_SLANTDASHDOT:
-                    $blockColor |= 0x0D << 21;
-                    break;
+            //@todo _writeCFRule() => $blockColor => Index Color for top line
+            //@todo _writeCFRule() => $blockColor => Index Color for bottom line
+            //@todo _writeCFRule() => $blockColor => Index Color for diagonal line
+            switch ($conditional->getStyle()->getBorders()->getDiagonal()->getBorderStyle()){
+                case Style_Border::BORDER_NONE              : $blockColor |= 0x00 << 21; break;
+                case Style_Border::BORDER_THIN              : $blockColor |= 0x01 << 21; break;
+                case Style_Border::BORDER_MEDIUM            : $blockColor |= 0x02 << 21; break;
+                case Style_Border::BORDER_DASHED            : $blockColor |= 0x03 << 21; break;
+                case Style_Border::BORDER_DOTTED            : $blockColor |= 0x04 << 21; break;
+                case Style_Border::BORDER_THICK             : $blockColor |= 0x05 << 21; break;
+                case Style_Border::BORDER_DOUBLE            : $blockColor |= 0x06 << 21; break;
+                case Style_Border::BORDER_HAIR              : $blockColor |= 0x07 << 21; break;
+                case Style_Border::BORDER_MEDIUMDASHED      : $blockColor |= 0x08 << 21; break;
+                case Style_Border::BORDER_DASHDOT           : $blockColor |= 0x09 << 21; break;
+                case Style_Border::BORDER_MEDIUMDASHDOT     : $blockColor |= 0x0A << 21; break;
+                case Style_Border::BORDER_DASHDOTDOT        : $blockColor |= 0x0B << 21; break;
+                case Style_Border::BORDER_MEDIUMDASHDOTDOT  : $blockColor |= 0x0C << 21; break;
+                case Style_Border::BORDER_SLANTDASHDOT      : $blockColor |= 0x0D << 21; break;
             }
             $dataBlockBorder = pack('vv', $blockLineStyle, $blockColor);
         }
-        if ($bFormatFill == 1) {
+        if($bFormatFill == 1){
             // Fill Patern Style
             $blockFillPatternStyle = 0;
-            switch ($conditional->getStyle()->getFill()->getFillType()) {
-                case PHPExcel_Style_Fill::FILL_NONE:
-                    $blockFillPatternStyle = 0x00;
-                    break;
-                case PHPExcel_Style_Fill::FILL_SOLID:
-                    $blockFillPatternStyle = 0x01;
-                    break;
-                case PHPExcel_Style_Fill::FILL_PATTERN_MEDIUMGRAY:
-                    $blockFillPatternStyle = 0x02;
-                    break;
-                case PHPExcel_Style_Fill::FILL_PATTERN_DARKGRAY:
-                    $blockFillPatternStyle = 0x03;
-                    break;
-                case PHPExcel_Style_Fill::FILL_PATTERN_LIGHTGRAY:
-                    $blockFillPatternStyle = 0x04;
-                    break;
-                case PHPExcel_Style_Fill::FILL_PATTERN_DARKHORIZONTAL:
-                    $blockFillPatternStyle = 0x05;
-                    break;
-                case PHPExcel_Style_Fill::FILL_PATTERN_DARKVERTICAL:
-                    $blockFillPatternStyle = 0x06;
-                    break;
-                case PHPExcel_Style_Fill::FILL_PATTERN_DARKDOWN:
-                    $blockFillPatternStyle = 0x07;
-                    break;
-                case PHPExcel_Style_Fill::FILL_PATTERN_DARKUP:
-                    $blockFillPatternStyle = 0x08;
-                    break;
-                case PHPExcel_Style_Fill::FILL_PATTERN_DARKGRID:
-                    $blockFillPatternStyle = 0x09;
-                    break;
-                case PHPExcel_Style_Fill::FILL_PATTERN_DARKTRELLIS:
-                    $blockFillPatternStyle = 0x0A;
-                    break;
-                case PHPExcel_Style_Fill::FILL_PATTERN_LIGHTHORIZONTAL:
-                    $blockFillPatternStyle = 0x0B;
-                    break;
-                case PHPExcel_Style_Fill::FILL_PATTERN_LIGHTVERTICAL:
-                    $blockFillPatternStyle = 0x0C;
-                    break;
-                case PHPExcel_Style_Fill::FILL_PATTERN_LIGHTDOWN:
-                    $blockFillPatternStyle = 0x0D;
-                    break;
-                case PHPExcel_Style_Fill::FILL_PATTERN_LIGHTUP:
-                    $blockFillPatternStyle = 0x0E;
-                    break;
-                case PHPExcel_Style_Fill::FILL_PATTERN_LIGHTGRID:
-                    $blockFillPatternStyle = 0x0F;
-                    break;
-                case PHPExcel_Style_Fill::FILL_PATTERN_LIGHTTRELLIS:
-                    $blockFillPatternStyle = 0x10;
-                    break;
-                case PHPExcel_Style_Fill::FILL_PATTERN_GRAY125:
-                    $blockFillPatternStyle = 0x11;
-                    break;
-                case PHPExcel_Style_Fill::FILL_PATTERN_GRAY0625:
-                    $blockFillPatternStyle = 0x12;
-                    break;
-                case PHPExcel_Style_Fill::FILL_GRADIENT_LINEAR:
-                    $blockFillPatternStyle = 0x00;
-                    break;    // does not exist in BIFF8
-                case PHPExcel_Style_Fill::FILL_GRADIENT_PATH:
-                    $blockFillPatternStyle = 0x00;
-                    break;    // does not exist in BIFF8
-                default:
-                    $blockFillPatternStyle = 0x00;
-                    break;
+            switch ($conditional->getStyle()->getFill()->getFillType()){
+                case Style_Fill::FILL_NONE                        : $blockFillPatternStyle = 0x00; break;
+                case Style_Fill::FILL_SOLID                    : $blockFillPatternStyle = 0x01; break;
+                case Style_Fill::FILL_PATTERN_MEDIUMGRAY        : $blockFillPatternStyle = 0x02; break;
+                case Style_Fill::FILL_PATTERN_DARKGRAY            : $blockFillPatternStyle = 0x03; break;
+                case Style_Fill::FILL_PATTERN_LIGHTGRAY        : $blockFillPatternStyle = 0x04; break;
+                case Style_Fill::FILL_PATTERN_DARKHORIZONTAL    : $blockFillPatternStyle = 0x05; break;
+                case Style_Fill::FILL_PATTERN_DARKVERTICAL        : $blockFillPatternStyle = 0x06; break;
+                case Style_Fill::FILL_PATTERN_DARKDOWN            : $blockFillPatternStyle = 0x07; break;
+                case Style_Fill::FILL_PATTERN_DARKUP            : $blockFillPatternStyle = 0x08; break;
+                case Style_Fill::FILL_PATTERN_DARKGRID            : $blockFillPatternStyle = 0x09; break;
+                case Style_Fill::FILL_PATTERN_DARKTRELLIS        : $blockFillPatternStyle = 0x0A; break;
+                case Style_Fill::FILL_PATTERN_LIGHTHORIZONTAL    : $blockFillPatternStyle = 0x0B; break;
+                case Style_Fill::FILL_PATTERN_LIGHTVERTICAL    : $blockFillPatternStyle = 0x0C; break;
+                case Style_Fill::FILL_PATTERN_LIGHTDOWN        : $blockFillPatternStyle = 0x0D; break;
+                case Style_Fill::FILL_PATTERN_LIGHTUP            : $blockFillPatternStyle = 0x0E; break;
+                case Style_Fill::FILL_PATTERN_LIGHTGRID        : $blockFillPatternStyle = 0x0F; break;
+                case Style_Fill::FILL_PATTERN_LIGHTTRELLIS        : $blockFillPatternStyle = 0x10; break;
+                case Style_Fill::FILL_PATTERN_GRAY125            : $blockFillPatternStyle = 0x11; break;
+                case Style_Fill::FILL_PATTERN_GRAY0625            : $blockFillPatternStyle = 0x12; break;
+                case Style_Fill::FILL_GRADIENT_LINEAR            : $blockFillPatternStyle = 0x00; break;    // does not exist in BIFF8
+                case Style_Fill::FILL_GRADIENT_PATH            : $blockFillPatternStyle = 0x00; break;    // does not exist in BIFF8
+                default                                                 : $blockFillPatternStyle = 0x00; break;
             }
             // Color
             switch ($conditional->getStyle()->getFill()->getStartColor()->getRGB()) {
-                case '000000':
-                    $colorIdxBg = 0x08;
-                    break;
-                case 'FFFFFF':
-                    $colorIdxBg = 0x09;
-                    break;
-                case 'FF0000':
-                    $colorIdxBg = 0x0A;
-                    break;
-                case '00FF00':
-                    $colorIdxBg = 0x0B;
-                    break;
-                case '0000FF':
-                    $colorIdxBg = 0x0C;
-                    break;
-                case 'FFFF00':
-                    $colorIdxBg = 0x0D;
-                    break;
-                case 'FF00FF':
-                    $colorIdxBg = 0x0E;
-                    break;
-                case '00FFFF':
-                    $colorIdxBg = 0x0F;
-                    break;
-                case '800000':
-                    $colorIdxBg = 0x10;
-                    break;
-                case '008000':
-                    $colorIdxBg = 0x11;
-                    break;
-                case '000080':
-                    $colorIdxBg = 0x12;
-                    break;
-                case '808000':
-                    $colorIdxBg = 0x13;
-                    break;
-                case '800080':
-                    $colorIdxBg = 0x14;
-                    break;
-                case '008080':
-                    $colorIdxBg = 0x15;
-                    break;
-                case 'C0C0C0':
-                    $colorIdxBg = 0x16;
-                    break;
-                case '808080':
-                    $colorIdxBg = 0x17;
-                    break;
-                case '9999FF':
-                    $colorIdxBg = 0x18;
-                    break;
-                case '993366':
-                    $colorIdxBg = 0x19;
-                    break;
-                case 'FFFFCC':
-                    $colorIdxBg = 0x1A;
-                    break;
-                case 'CCFFFF':
-                    $colorIdxBg = 0x1B;
-                    break;
-                case '660066':
-                    $colorIdxBg = 0x1C;
-                    break;
-                case 'FF8080':
-                    $colorIdxBg = 0x1D;
-                    break;
-                case '0066CC':
-                    $colorIdxBg = 0x1E;
-                    break;
-                case 'CCCCFF':
-                    $colorIdxBg = 0x1F;
-                    break;
-                case '000080':
-                    $colorIdxBg = 0x20;
-                    break;
-                case 'FF00FF':
-                    $colorIdxBg = 0x21;
-                    break;
-                case 'FFFF00':
-                    $colorIdxBg = 0x22;
-                    break;
-                case '00FFFF':
-                    $colorIdxBg = 0x23;
-                    break;
-                case '800080':
-                    $colorIdxBg = 0x24;
-                    break;
-                case '800000':
-                    $colorIdxBg = 0x25;
-                    break;
-                case '008080':
-                    $colorIdxBg = 0x26;
-                    break;
-                case '0000FF':
-                    $colorIdxBg = 0x27;
-                    break;
-                case '00CCFF':
-                    $colorIdxBg = 0x28;
-                    break;
-                case 'CCFFFF':
-                    $colorIdxBg = 0x29;
-                    break;
-                case 'CCFFCC':
-                    $colorIdxBg = 0x2A;
-                    break;
-                case 'FFFF99':
-                    $colorIdxBg = 0x2B;
-                    break;
-                case '99CCFF':
-                    $colorIdxBg = 0x2C;
-                    break;
-                case 'FF99CC':
-                    $colorIdxBg = 0x2D;
-                    break;
-                case 'CC99FF':
-                    $colorIdxBg = 0x2E;
-                    break;
-                case 'FFCC99':
-                    $colorIdxBg = 0x2F;
-                    break;
-                case '3366FF':
-                    $colorIdxBg = 0x30;
-                    break;
-                case '33CCCC':
-                    $colorIdxBg = 0x31;
-                    break;
-                case '99CC00':
-                    $colorIdxBg = 0x32;
-                    break;
-                case 'FFCC00':
-                    $colorIdxBg = 0x33;
-                    break;
-                case 'FF9900':
-                    $colorIdxBg = 0x34;
-                    break;
-                case 'FF6600':
-                    $colorIdxBg = 0x35;
-                    break;
-                case '666699':
-                    $colorIdxBg = 0x36;
-                    break;
-                case '969696':
-                    $colorIdxBg = 0x37;
-                    break;
-                case '003366':
-                    $colorIdxBg = 0x38;
-                    break;
-                case '339966':
-                    $colorIdxBg = 0x39;
-                    break;
-                case '003300':
-                    $colorIdxBg = 0x3A;
-                    break;
-                case '333300':
-                    $colorIdxBg = 0x3B;
-                    break;
-                case '993300':
-                    $colorIdxBg = 0x3C;
-                    break;
-                case '993366':
-                    $colorIdxBg = 0x3D;
-                    break;
-                case '333399':
-                    $colorIdxBg = 0x3E;
-                    break;
-                case '333333':
-                    $colorIdxBg = 0x3F;
-                    break;
-                default:
-                          $colorIdxBg = 0x41;
-                    break;
+                case '000000': $colorIdxBg = 0x08; break;
+                case 'FFFFFF': $colorIdxBg = 0x09; break;
+                case 'FF0000': $colorIdxBg = 0x0A; break;
+                case '00FF00': $colorIdxBg = 0x0B; break;
+                case '0000FF': $colorIdxBg = 0x0C; break;
+                case 'FFFF00': $colorIdxBg = 0x0D; break;
+                case 'FF00FF': $colorIdxBg = 0x0E; break;
+                case '00FFFF': $colorIdxBg = 0x0F; break;
+                case '800000': $colorIdxBg = 0x10; break;
+                case '008000': $colorIdxBg = 0x11; break;
+                case '000080': $colorIdxBg = 0x12; break;
+                case '808000': $colorIdxBg = 0x13; break;
+                case '800080': $colorIdxBg = 0x14; break;
+                case '008080': $colorIdxBg = 0x15; break;
+                case 'C0C0C0': $colorIdxBg = 0x16; break;
+                case '808080': $colorIdxBg = 0x17; break;
+                case '9999FF': $colorIdxBg = 0x18; break;
+                case '993366': $colorIdxBg = 0x19; break;
+                case 'FFFFCC': $colorIdxBg = 0x1A; break;
+                case 'CCFFFF': $colorIdxBg = 0x1B; break;
+                case '660066': $colorIdxBg = 0x1C; break;
+                case 'FF8080': $colorIdxBg = 0x1D; break;
+                case '0066CC': $colorIdxBg = 0x1E; break;
+                case 'CCCCFF': $colorIdxBg = 0x1F; break;
+                case '000080': $colorIdxBg = 0x20; break;
+                case 'FF00FF': $colorIdxBg = 0x21; break;
+                case 'FFFF00': $colorIdxBg = 0x22; break;
+                case '00FFFF': $colorIdxBg = 0x23; break;
+                case '800080': $colorIdxBg = 0x24; break;
+                case '800000': $colorIdxBg = 0x25; break;
+                case '008080': $colorIdxBg = 0x26; break;
+                case '0000FF': $colorIdxBg = 0x27; break;
+                case '00CCFF': $colorIdxBg = 0x28; break;
+                case 'CCFFFF': $colorIdxBg = 0x29; break;
+                case 'CCFFCC': $colorIdxBg = 0x2A; break;
+                case 'FFFF99': $colorIdxBg = 0x2B; break;
+                case '99CCFF': $colorIdxBg = 0x2C; break;
+                case 'FF99CC': $colorIdxBg = 0x2D; break;
+                case 'CC99FF': $colorIdxBg = 0x2E; break;
+                case 'FFCC99': $colorIdxBg = 0x2F; break;
+                case '3366FF': $colorIdxBg = 0x30; break;
+                case '33CCCC': $colorIdxBg = 0x31; break;
+                case '99CC00': $colorIdxBg = 0x32; break;
+                case 'FFCC00': $colorIdxBg = 0x33; break;
+                case 'FF9900': $colorIdxBg = 0x34; break;
+                case 'FF6600': $colorIdxBg = 0x35; break;
+                case '666699': $colorIdxBg = 0x36; break;
+                case '969696': $colorIdxBg = 0x37; break;
+                case '003366': $colorIdxBg = 0x38; break;
+                case '339966': $colorIdxBg = 0x39; break;
+                case '003300': $colorIdxBg = 0x3A; break;
+                case '333300': $colorIdxBg = 0x3B; break;
+                case '993300': $colorIdxBg = 0x3C; break;
+                case '993366': $colorIdxBg = 0x3D; break;
+                case '333399': $colorIdxBg = 0x3E; break;
+                case '333333': $colorIdxBg = 0x3F; break;
+                default:       $colorIdxBg = 0x41; break;
             }
             // Fg Color
             switch ($conditional->getStyle()->getFill()->getEndColor()->getRGB()) {
-                case '000000':
-                    $colorIdxFg = 0x08;
-                    break;
-                case 'FFFFFF':
-                    $colorIdxFg = 0x09;
-                    break;
-                case 'FF0000':
-                    $colorIdxFg = 0x0A;
-                    break;
-                case '00FF00':
-                    $colorIdxFg = 0x0B;
-                    break;
-                case '0000FF':
-                    $colorIdxFg = 0x0C;
-                    break;
-                case 'FFFF00':
-                    $colorIdxFg = 0x0D;
-                    break;
-                case 'FF00FF':
-                    $colorIdxFg = 0x0E;
-                    break;
-                case '00FFFF':
-                    $colorIdxFg = 0x0F;
-                    break;
-                case '800000':
-                    $colorIdxFg = 0x10;
-                    break;
-                case '008000':
-                    $colorIdxFg = 0x11;
-                    break;
-                case '000080':
-                    $colorIdxFg = 0x12;
-                    break;
-                case '808000':
-                    $colorIdxFg = 0x13;
-                    break;
-                case '800080':
-                    $colorIdxFg = 0x14;
-                    break;
-                case '008080':
-                    $colorIdxFg = 0x15;
-                    break;
-                case 'C0C0C0':
-                    $colorIdxFg = 0x16;
-                    break;
-                case '808080':
-                    $colorIdxFg = 0x17;
-                    break;
-                case '9999FF':
-                    $colorIdxFg = 0x18;
-                    break;
-                case '993366':
-                    $colorIdxFg = 0x19;
-                    break;
-                case 'FFFFCC':
-                    $colorIdxFg = 0x1A;
-                    break;
-                case 'CCFFFF':
-                    $colorIdxFg = 0x1B;
-                    break;
-                case '660066':
-                    $colorIdxFg = 0x1C;
-                    break;
-                case 'FF8080':
-                    $colorIdxFg = 0x1D;
-                    break;
-                case '0066CC':
-                    $colorIdxFg = 0x1E;
-                    break;
-                case 'CCCCFF':
-                    $colorIdxFg = 0x1F;
-                    break;
-                case '000080':
-                    $colorIdxFg = 0x20;
-                    break;
-                case 'FF00FF':
-                    $colorIdxFg = 0x21;
-                    break;
-                case 'FFFF00':
-                    $colorIdxFg = 0x22;
-                    break;
-                case '00FFFF':
-                    $colorIdxFg = 0x23;
-                    break;
-                case '800080':
-                    $colorIdxFg = 0x24;
-                    break;
-                case '800000':
-                    $colorIdxFg = 0x25;
-                    break;
-                case '008080':
-                    $colorIdxFg = 0x26;
-                    break;
-                case '0000FF':
-                    $colorIdxFg = 0x27;
-                    break;
-                case '00CCFF':
-                    $colorIdxFg = 0x28;
-                    break;
-                case 'CCFFFF':
-                    $colorIdxFg = 0x29;
-                    break;
-                case 'CCFFCC':
-                    $colorIdxFg = 0x2A;
-                    break;
-                case 'FFFF99':
-                    $colorIdxFg = 0x2B;
-                    break;
-                case '99CCFF':
-                    $colorIdxFg = 0x2C;
-                    break;
-                case 'FF99CC':
-                    $colorIdxFg = 0x2D;
-                    break;
-                case 'CC99FF':
-                    $colorIdxFg = 0x2E;
-                    break;
-                case 'FFCC99':
-                    $colorIdxFg = 0x2F;
-                    break;
-                case '3366FF':
-                    $colorIdxFg = 0x30;
-                    break;
-                case '33CCCC':
-                    $colorIdxFg = 0x31;
-                    break;
-                case '99CC00':
-                    $colorIdxFg = 0x32;
-                    break;
-                case 'FFCC00':
-                    $colorIdxFg = 0x33;
-                    break;
-                case 'FF9900':
-                    $colorIdxFg = 0x34;
-                    break;
-                case 'FF6600':
-                    $colorIdxFg = 0x35;
-                    break;
-                case '666699':
-                    $colorIdxFg = 0x36;
-                    break;
-                case '969696':
-                    $colorIdxFg = 0x37;
-                    break;
-                case '003366':
-                    $colorIdxFg = 0x38;
-                    break;
-                case '339966':
-                    $colorIdxFg = 0x39;
-                    break;
-                case '003300':
-                    $colorIdxFg = 0x3A;
-                    break;
-                case '333300':
-                    $colorIdxFg = 0x3B;
-                    break;
-                case '993300':
-                    $colorIdxFg = 0x3C;
-                    break;
-                case '993366':
-                    $colorIdxFg = 0x3D;
-                    break;
-                case '333399':
-                    $colorIdxFg = 0x3E;
-                    break;
-                case '333333':
-                    $colorIdxFg = 0x3F;
-                    break;
-                default:
-                          $colorIdxFg = 0x40;
-                    break;
+                case '000000': $colorIdxFg = 0x08; break;
+                case 'FFFFFF': $colorIdxFg = 0x09; break;
+                case 'FF0000': $colorIdxFg = 0x0A; break;
+                case '00FF00': $colorIdxFg = 0x0B; break;
+                case '0000FF': $colorIdxFg = 0x0C; break;
+                case 'FFFF00': $colorIdxFg = 0x0D; break;
+                case 'FF00FF': $colorIdxFg = 0x0E; break;
+                case '00FFFF': $colorIdxFg = 0x0F; break;
+                case '800000': $colorIdxFg = 0x10; break;
+                case '008000': $colorIdxFg = 0x11; break;
+                case '000080': $colorIdxFg = 0x12; break;
+                case '808000': $colorIdxFg = 0x13; break;
+                case '800080': $colorIdxFg = 0x14; break;
+                case '008080': $colorIdxFg = 0x15; break;
+                case 'C0C0C0': $colorIdxFg = 0x16; break;
+                case '808080': $colorIdxFg = 0x17; break;
+                case '9999FF': $colorIdxFg = 0x18; break;
+                case '993366': $colorIdxFg = 0x19; break;
+                case 'FFFFCC': $colorIdxFg = 0x1A; break;
+                case 'CCFFFF': $colorIdxFg = 0x1B; break;
+                case '660066': $colorIdxFg = 0x1C; break;
+                case 'FF8080': $colorIdxFg = 0x1D; break;
+                case '0066CC': $colorIdxFg = 0x1E; break;
+                case 'CCCCFF': $colorIdxFg = 0x1F; break;
+                case '000080': $colorIdxFg = 0x20; break;
+                case 'FF00FF': $colorIdxFg = 0x21; break;
+                case 'FFFF00': $colorIdxFg = 0x22; break;
+                case '00FFFF': $colorIdxFg = 0x23; break;
+                case '800080': $colorIdxFg = 0x24; break;
+                case '800000': $colorIdxFg = 0x25; break;
+                case '008080': $colorIdxFg = 0x26; break;
+                case '0000FF': $colorIdxFg = 0x27; break;
+                case '00CCFF': $colorIdxFg = 0x28; break;
+                case 'CCFFFF': $colorIdxFg = 0x29; break;
+                case 'CCFFCC': $colorIdxFg = 0x2A; break;
+                case 'FFFF99': $colorIdxFg = 0x2B; break;
+                case '99CCFF': $colorIdxFg = 0x2C; break;
+                case 'FF99CC': $colorIdxFg = 0x2D; break;
+                case 'CC99FF': $colorIdxFg = 0x2E; break;
+                case 'FFCC99': $colorIdxFg = 0x2F; break;
+                case '3366FF': $colorIdxFg = 0x30; break;
+                case '33CCCC': $colorIdxFg = 0x31; break;
+                case '99CC00': $colorIdxFg = 0x32; break;
+                case 'FFCC00': $colorIdxFg = 0x33; break;
+                case 'FF9900': $colorIdxFg = 0x34; break;
+                case 'FF6600': $colorIdxFg = 0x35; break;
+                case '666699': $colorIdxFg = 0x36; break;
+                case '969696': $colorIdxFg = 0x37; break;
+                case '003366': $colorIdxFg = 0x38; break;
+                case '339966': $colorIdxFg = 0x39; break;
+                case '003300': $colorIdxFg = 0x3A; break;
+                case '333300': $colorIdxFg = 0x3B; break;
+                case '993300': $colorIdxFg = 0x3C; break;
+                case '993366': $colorIdxFg = 0x3D; break;
+                case '333399': $colorIdxFg = 0x3E; break;
+                case '333333': $colorIdxFg = 0x3F; break;
+                default:       $colorIdxFg = 0x40; break;
             }
             $dataBlockFill = pack('v', $blockFillPatternStyle);
             $dataBlockFill .= pack('v', $colorIdxFg | ($colorIdxBg << 7));
         }
-        if ($bFormatProt == 1) {
+        if($bFormatProt == 1){
             $dataBlockProtection = 0;
-            if ($conditional->getStyle()->getProtection()->getLocked() == PHPExcel_Style_Protection::PROTECTION_PROTECTED) {
+            if($conditional->getStyle()->getProtection()->getLocked() == Style_Protection::PROTECTION_PROTECTED){
                 $dataBlockProtection = 1;
             }
-            if ($conditional->getStyle()->getProtection()->getHidden() == PHPExcel_Style_Protection::PROTECTION_PROTECTED) {
+            if($conditional->getStyle()->getProtection()->getHidden() == Style_Protection::PROTECTION_PROTECTED){
                 $dataBlockProtection = 1 << 1;
             }
         }
 
         $data      = pack('CCvvVv', $type, $operatorType, $szValue1, $szValue2, $flags, 0x0000);
-        if ($bFormatFont == 1) { // Block Formatting : OK
+        if($bFormatFont == 1){ // Block Formatting : OK
             $data .= $dataBlockFont;
         }
-        if ($bFormatAlign == 1) {
+        if($bFormatAlign == 1){
             $data .= $dataBlockAlign;
         }
-        if ($bFormatBorder == 1) {
+        if($bFormatBorder == 1){
             $data .= $dataBlockBorder;
         }
-        if ($bFormatFill == 1) { // Block Formatting : OK
+        if($bFormatFill == 1){ // Block Formatting : OK
             $data .= $dataBlockFill;
         }
-        if ($bFormatProt == 1) {
+        if($bFormatProt == 1){
             $data .= $dataBlockProtection;
         }
-        if (!is_null($operand1)) {
+        if(!is_null($operand1)){
             $data .= $operand1;
         }
-        if (!is_null($operand2)) {
+        if(!is_null($operand2)){
             $data .= $operand2;
         }
         $header      = pack('vv', $record, strlen($data));
-        $this->append($header . $data);
+        $this->_append($header . $data);
     }
 
     /**
      * Write CFHeader record
      */
-    private function writeCFHeader()
-    {
+    private function _writeCFHeader(){
         $record      = 0x01B0;               // Record identifier
         $length      = 0x0016;               // Bytes to follow
 
@@ -4200,28 +3643,28 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
         $numRowMin = null;
         $numRowMax = null;
         $arrConditional = array();
-        foreach ($this->phpSheet->getConditionalStylesCollection() as $cellCoordinate => $conditionalStyles) {
+        foreach ($this->_phpSheet->getConditionalStylesCollection() as $cellCoordinate => $conditionalStyles) {
             foreach ($conditionalStyles as $conditional) {
-                if ($conditional->getConditionType() == PHPExcel_Style_Conditional::CONDITION_EXPRESSION
-                        || $conditional->getConditionType() == PHPExcel_Style_Conditional::CONDITION_CELLIS) {
-                    if (!in_array($conditional->getHashCode(), $arrConditional)) {
+                if($conditional->getConditionType() == Style_Conditional::CONDITION_EXPRESSION
+                        || $conditional->getConditionType() == Style_Conditional::CONDITION_CELLIS){
+                    if(!in_array($conditional->getHashCode(), $arrConditional)){
                         $arrConditional[] = $conditional->getHashCode();
                     }
                     // Cells
-                    $arrCoord = PHPExcel_Cell::coordinateFromString($cellCoordinate);
-                    if (!is_numeric($arrCoord[0])) {
-                        $arrCoord[0] = PHPExcel_Cell::columnIndexFromString($arrCoord[0]);
+                    $arrCoord = Cell::coordinateFromString($cellCoordinate);
+                    if(!is_numeric($arrCoord[0])){
+                        $arrCoord[0] = Cell::columnIndexFromString($arrCoord[0]);
                     }
-                    if (is_null($numColumnMin) || ($numColumnMin > $arrCoord[0])) {
+                    if(is_null($numColumnMin) || ($numColumnMin > $arrCoord[0])){
                         $numColumnMin = $arrCoord[0];
                     }
-                    if (is_null($numColumnMax) || ($numColumnMax < $arrCoord[0])) {
+                    if(is_null($numColumnMax) || ($numColumnMax < $arrCoord[0])){
                         $numColumnMax = $arrCoord[0];
                     }
-                    if (is_null($numRowMin) || ($numRowMin > $arrCoord[1])) {
+                    if(is_null($numRowMin) || ($numRowMin > $arrCoord[1])){
                         $numRowMin = $arrCoord[1];
                     }
-                    if (is_null($numRowMax) || ($numRowMax < $arrCoord[1])) {
+                    if(is_null($numRowMax) || ($numRowMax < $arrCoord[1])){
                         $numRowMax = $arrCoord[1];
                     }
                 }
@@ -4235,6 +3678,6 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
         $data     .= $cellRange;
         $data     .= pack('v', 0x0001);
         $data     .= $cellRange;
-        $this->append($header . $data);
+        $this->_append($header . $data);
     }
 }

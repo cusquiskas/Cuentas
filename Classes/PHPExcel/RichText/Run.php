@@ -1,7 +1,6 @@
 <?php
-
 /**
- * PHPExcel_RichText_Run
+ * PHPExcel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,22 +17,33 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category   PHPExcel
- * @package    PHPExcel_RichText
- * @copyright  Copyright (c) 2006 - 2015 PHPExcel (http://www.codeplex.com/PHPExcel)
+ * @package    PHPExcel\RichText
+ * @copyright  Copyright (c) 2006 - 2013 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  * @version    ##VERSION##, ##DATE##
  */
-class PHPExcel_RichText_Run extends PHPExcel_RichText_TextElement implements PHPExcel_RichText_ITextElement
+
+
+namespace PHPExcel;
+
+/**
+ * PHPExcel\RichText_Run
+ *
+ * @category   PHPExcel
+ * @package    PHPExcel\RichText
+ * @copyright  Copyright (c) 2006 - 2013 PHPExcel (http://www.codeplex.com/PHPExcel)
+ */
+class RichText_Run extends RichText_TextElement implements RichText_ITextElement
 {
     /**
      * Font
      *
-     * @var PHPExcel_Style_Font
+     * @var PHPExcel\Style_Font
      */
-    private $font;
+    protected $_font;
 
     /**
-     * Create a new PHPExcel_RichText_Run instance
+     * Create a new PHPExcel\RichText_Run instance
      *
      * @param     string        $pText        Text
      */
@@ -41,29 +51,27 @@ class PHPExcel_RichText_Run extends PHPExcel_RichText_TextElement implements PHP
     {
         // Initialise variables
         $this->setText($pText);
-        $this->font = new PHPExcel_Style_Font();
+        $this->_font = new Style_Font();
     }
 
     /**
      * Get font
      *
-     * @return PHPExcel_Style_Font
+     * @return PHPExcel\Style_Font
      */
-    public function getFont()
-    {
-        return $this->font;
+    public function getFont() {
+        return $this->_font;
     }
 
     /**
      * Set font
      *
-     * @param    PHPExcel_Style_Font        $pFont        Font
-     * @throws     PHPExcel_Exception
-     * @return PHPExcel_RichText_ITextElement
+     * @param    PHPExcel\Style_Font        $pFont        Font
+     * @throws     PHPExcel\Exception
+     * @return PHPExcel\RichText_ITextElement
      */
-    public function setFont(PHPExcel_Style_Font $pFont = null)
-    {
-        $this->font = $pFont;
+    public function setFont(Style_Font $pFont = null) {
+        $this->_font = $pFont;
         return $this;
     }
 
@@ -72,20 +80,18 @@ class PHPExcel_RichText_Run extends PHPExcel_RichText_TextElement implements PHP
      *
      * @return string    Hash code
      */
-    public function getHashCode()
-    {
+    public function getHashCode() {
         return md5(
-            $this->getText() .
-            $this->font->getHashCode() .
-            __CLASS__
+              $this->getText()
+            . $this->_font->getHashCode()
+            . __CLASS__
         );
     }
 
     /**
      * Implement PHP __clone to create a deep clone, not just a shallow copy.
      */
-    public function __clone()
-    {
+    public function __clone() {
         $vars = get_object_vars($this);
         foreach ($vars as $key => $value) {
             if (is_object($value)) {
