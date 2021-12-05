@@ -1,9 +1,9 @@
 <?php
- //require_once 'Classes/PHPExcel/IOFactory.php';
- require_once '../Classes/PHPExcel/IOFactory.php';
+ require_once 'Classes/PHPExcel/IOFactory.php';
+// require_once '../Classes/PHPExcel/IOFactory.php';
 
- //$fileType = PHPExcel_IOFactory::identify($fileName);
- $objReader = PHPExcel_IOFactory::createReader($fileType);
+ $fileType = PHPExcel_IOFactory::identify($fileName);
+ //$objReader = PHPExcel_IOFactory::createReader($fileType);
  $objPHPExcel = $objReader->load($fileName);
  $XLSheet = $objPHPExcel->getSheet();
 
@@ -21,7 +21,7 @@
      }
      //$importe = explode(' ',$importe);
      //for ($i=0;$i<count($importe);$i++) { if (is_float($importe[$i]+0)) { $importe = $importe[$i]; $i = 99; } }
-     $regCSV = array('fecha' => $XLSheet->getCell(strtoupper($dat['c_fecha'].$sheetRow))->getValue(),
+     $regCSV = ['fecha' => $XLSheet->getCell(strtoupper($dat['c_fecha'].$sheetRow))->getValue(),
                      'descripcion' => $XLSheet->getCell(strtoupper($dat['c_descripcion'].$sheetRow))->getValue(),
                      'importe' => $importe,
                      'visa' => $dat['id'],
@@ -32,7 +32,7 @@
                      'concepto5' => 'null', 'concepto6' => 'null',
                      'usuario' => $Usuario->getId(), 'usuario_id' => $Usuario->getId(), 'sistema' => 'S',
                      'recordatorio' => '',
-    );
+    ];
      if (@gettype((int) $regCSV['fecha']) == 'integer') {
          $dat['mascara'] = 'numero';
      }
@@ -47,6 +47,7 @@
              $regCSV['fecha'] = $cadenaFecha;
          }
      }
+     echo var_export($regCSV);
      if ($Movimiento->guardar($regCSV)) {
          $newFecha = $Visa->fechaRecordatorio($regCSV['fecha']);
          if ($newFecha != null) {
