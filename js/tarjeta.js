@@ -17,4 +17,5 @@ function muestraDatos(o) {
  f.c_separador_d.value=o.options[o.selectedIndex].getAttribute('c_separador_d');
  f.c_separador_c.value=o.options[o.selectedIndex].getAttribute('c_separador_c');
  f.mascara.value=o.options[o.selectedIndex].getAttribute('mascara');
+ f.inv_import.value=o.options[o.selectedIndex].getAttribute('inv_import');
 } 

@@ -17,6 +17,9 @@
      if ($dat['c_separador_d'] === ',') {
          $importe = preg_replace('/,/is', '.', $importe);
      }
+     if ($dat['inv_import'] === 'S') {
+         $importe *= -1;
+     }
      //$importe = explode(' ',$importe);
      //for ($i=0;$i<count($importe);$i++) { if (is_float($importe[$i]+0)) { $importe = $importe[$i]; $i = 99; } }
 
@@ -28,12 +31,15 @@
                      'concepto2' => ($dat['c_concepto2'] == '') ? '' : $XLSheet->getCell(strtoupper($dat['c_concepto2'].$sheetRow))->getValue(),
                      'concepto3' => ($dat['c_concepto3'] == '') ? '' : $XLSheet->getCell(strtoupper($dat['c_concepto3'].$sheetRow))->getValue(),
                      'concepto4' => ($dat['c_concepto4'] == '') ? '' : $XLSheet->getCell(strtoupper($dat['c_concepto4'].$sheetRow))->getValue(),
-                     'concepto5' => 'null', 'concepto6' => 'null',
-                     'usuario' => $Usuario->getId(), 'usuario_id' => $Usuario->getId(), 'sistema' => 'S',
+                     'concepto5' => 'null',
+                     'concepto6' => 'null',
+                     'usuario' => $Usuario->getId(),
+                     'usuario_id' => $Usuario->getId(),
+                     'sistema' => 'S',
                      'recordatorio' => '',
     ];
 
-     if (stripos($regCSV['fecha'], '/') === false) {
+     if ($dat['mascara'] == 'numero') {
          $cadenaFecha = date('d/m/Y', ((int) $regCSV['fecha'] - 25569) * 24 * 60 * 60);
          $regCSV['fecha'] = $cadenaFecha;
      } else {

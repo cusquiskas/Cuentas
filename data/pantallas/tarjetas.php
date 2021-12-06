@@ -93,6 +93,15 @@
       			<input type="text" class="form-control" id="txt10" name="mascara" maxlength="10" style="text-transform:uppercase">
       		</div>
     	</div>
+		<div class="col-sm-2" style="">
+	    	<div class="form-group">
+      			<label for="txt11">Invertir Importe:</label>
+      			<select class="form-control" name="inv_import" id="txt11">
+				  <option value="N">No</option>
+				  <option value="S">Sí</option>
+				</select>
+      		</div>
+    	</div>
     </div>
     <div class="row">
     	<div class="col-sm-1" style="">
@@ -114,12 +123,14 @@
       <div class="form-group">
 	<label for="sel1">Lista de tarjetas:</label>
 	<select class="form-control" size="15" id="sel1" onClick="muestraDatos(this)" onChange="muestraDatos(this)">
-	  <?php 
-    	$Visa = new Visa();
-    	$Visa->setUsuario($Usuario->getId());
-    	$data = $Visa->listado();
-    	foreach ($data as $reg) echo '<option value="'.$reg["id"].'" texto="'.$reg["descripcion"].'" fila="'.$reg["fila"].'" c_fecha="'.$reg["c_fecha"].'" c_descripcion="'.$reg["c_descripcion"].'" c_importe="'.$reg["c_importe"].'" c_concepto1="'.$reg["c_concepto1"].'" c_concepto2="'.$reg["c_concepto2"].'" c_concepto3="'.$reg["c_concepto3"].'" c_concepto4="'.$reg["c_concepto4"].'" d_corte="'.$reg["d_corte"].'" d_recordatorio="'.$reg["d_recordatorio"].'" c_separador_d="'.$reg["c_separador_d"].'" c_separador_c="'.$reg["c_separador_c"].'" mascara="'.$reg["mascara"].'">'.$reg["descripcion"].'</option>'; 
-	  ?>
+	  <?php
+        $Visa = new Visa();
+        $Visa->setUsuario($Usuario->getId());
+        $data = $Visa->listado();
+        foreach ($data as $reg) {
+            echo '<option value="'.$reg['id'].'" texto="'.$reg['descripcion'].'" fila="'.$reg['fila'].'" c_fecha="'.$reg['c_fecha'].'" c_descripcion="'.$reg['c_descripcion'].'" c_importe="'.$reg['c_importe'].'" c_concepto1="'.$reg['c_concepto1'].'" c_concepto2="'.$reg['c_concepto2'].'" c_concepto3="'.$reg['c_concepto3'].'" c_concepto4="'.$reg['c_concepto4'].'" d_corte="'.$reg['d_corte'].'" d_recordatorio="'.$reg['d_recordatorio'].'" c_separador_d="'.$reg['c_separador_d'].'" c_separador_c="'.$reg['c_separador_c'].'" mascara="'.$reg['mascara'].'" inv_import="'.$reg['inv_import'].'">'.$reg['descripcion'].'</option>';
+        }
+      ?>
 	</select>
       </div>
     </div>

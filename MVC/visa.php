@@ -16,6 +16,7 @@ class Visa {
 	private	$c_separador_d;
 	private	$c_separador_c;
 	private	$mascara;
+	private $inv_import;
 	
 	function setUsuario      ($valor) { $this->usuario        = (string)$valor; }
 	function setId           ($valor) { $this->id             =    (int)$valor; }
@@ -33,7 +34,8 @@ class Visa {
 	function setCSeparadorD  ($valor) { $this->c_separador_d =  (string)$valor; }
 	function setCSeparadorC  ($valor) { $this->c_separador_c =  (string)$valor; }
 	function setMascara      ($valor) { $this->mascara       =  (string)$valor; }
-	
+	function setInvImport    ($valor) { if (strtoupper((string)$valor) === 'S') $this->inv_import = 'S'; else $this->inv_import = 'N'; }
+		
 	function getUsuario      () { return $this->usuario;        }
 	function getId           () { return $this->id;             }
 	function getDescripcion  () { return $this->descripcion;    }
@@ -49,7 +51,8 @@ class Visa {
 	function getDRecordatorio() { return $this->d_recordatorio; }
 	function getCSeparadorD  () { return $this->c_separador_d;  }
 	function getCSeparadorC  () { return $this->c_separador_c;  }
-	function getMascara      () { return $this->mascara;  }
+	function getMascara      () { return $this->mascara;        }
+	function getInvImport    () { return $this->inv_import;     }
 	
 	function setDatos($valor) {
 		$this->setUsuario      ($valor['usuario']       );
@@ -68,6 +71,7 @@ class Visa {
 		$this->setCSeparadorD  ($valor['c_separador_d'] );
 		$this->setCSeparadorC  ($valor['c_separador_c'] );
 		$this->setMascara      ($valor['mascara']       );
+		$this->setInvImport    ($valor['inv_import']    );
 	}
 	
 	private function insert() {
@@ -86,7 +90,8 @@ class Visa {
 				    array("tipo"=>"i", "dato"=>$this->getDRecordatorio()),
 					array("tipo"=>"s", "dato"=>$this->getCSeparadorD()),
 					array("tipo"=>"s", "dato"=>$this->getCSeparadorC()),
-					array("tipo"=>"s", "dato"=>$this->getMascara())
+					array("tipo"=>"s", "dato"=>$this->getMascara()),
+					array("tipo"=>"s", "dato"=>$this->getInvImport())
 		         );
 		$query = "insert
 				    into visa
@@ -104,9 +109,10 @@ class Visa {
 						  d_recordatorio,
 						  c_separador_d,
 						  c_separador_c,
-						  mascara
+						  mascara,
+						  inv_import
 				         )
-				  values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				  values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		$link = new Conexion();
 		$link->ejecuta($query, $datos);
 		$link->close();
@@ -129,8 +135,10 @@ class Visa {
 					array("tipo"=>"s", "dato"=>$this->getCSeparadorD()),
 					array("tipo"=>"s", "dato"=>$this->getCSeparadorC()),
 					array("tipo"=>"s", "dato"=>$this->getMascara()),
+					array("tipo"=>"s", "dato"=>$this->getInvImport()),
 					array("tipo"=>"s", "dato"=>$this->getUsuario()),
 					array("tipo"=>"i", "dato"=>$this->getId())
+					
 		);
 		$query = "update visa
 				     set descripcion = ?,
@@ -146,7 +154,8 @@ class Visa {
 						 d_recordatorio = ?,
 						 c_separador_d = ?,
 						 c_separador_c = ?,
-						 mascara = ?
+						 mascara = ?,
+						 inv_import = ?
 				   where usuario = ?
 				     and id = ?";
 		$link = new Conexion();
