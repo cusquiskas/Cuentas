@@ -1,5 +1,18 @@
-    <nav class="navbar navbar-light bg-light">
-        <a class="navbar-brand" href="#">
-          <img src="css/img/imagen.gif" width="45px" height="45px" alt="">
-        </a>
-      </nav>
+<nav class="navbar navbar-light bg-light">
+  <a class="navbar-brand" href="#">
+    <img src="css/img/imagen.gif" width="45px" height="45px" alt="" />
+  </a>
+
+  <ul class="botonDeSalir nav navbar-nav navbar-right" style="display: none">
+    <form
+      name="salir"
+      method="post"
+      frC-CallBack="salir"
+      action="backend/login/cierreSesion.php"
+    >
+      <button class="btn btn-info btn-lg" type="submit">
+        <span class="glyphicon glyphicon-log-out"></span> Salir
+      </button>
+    </form>
+  </ul>
+</nav>

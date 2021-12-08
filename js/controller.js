@@ -265,7 +265,7 @@ class FormController {
         let errores = this.validate();
         if (errores.length > 0) {
             let funcion;
-            funcion = this.formulario.getAttribute('frC-CallBack') && this.modul.script[this.formulario.getAttribute('frC-CallBack')]
+            funcion = this.formulario.getAttribute('frC-CallBack') && this.modul.script && this.modul.script[this.formulario.getAttribute('frC-CallBack')]
             if (!funcion) funcion = this.formulario.getAttribute('frC-CallBack') && window[this.formulario.getAttribute('frC-CallBack')];
             if (funcion) funcion(false, errores, { form: this, status: 'validation' });
         } else {

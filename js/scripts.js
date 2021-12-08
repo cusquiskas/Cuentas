@@ -19,8 +19,8 @@ function iniciarApp() {
     Moduls.getFooter().load({ url: 'content/footer.html', script: false });
     Moduls.getHeader().load({ url: 'content/header.html', script: true });
     //Moduls.getBody().load({ url: 'content/blanco.html', script: false });
-    //Moduls.getAlertbox().load({ url: 'content/alerta.html', script: false });
-    //Moduls.getModal().load({ url: 'content/modal.html', script: false });
+    Moduls.getAlertbox().load({ url: 'content/alerta.html', script: false });
+    Moduls.getModal().load({ url: 'content/modal.html', script: false });
 }
 
 function validaErroresCBK(obj) {
