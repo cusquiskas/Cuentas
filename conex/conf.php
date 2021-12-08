@@ -3,11 +3,11 @@
 class ConfiguracionSistema
 {
     private $host = 'localhost';
-    private $user = 'super';
-    private $pass = 'còmprame';
-    private $apli = 'super';
+    private $user = 'contador';
+    private $pass = 'FhbqsXsGqfqLcSRW';
+    private $apli = 'cuentas';
 
-    private $home = '/opt/lampp/htdocs/supermercado/';
+    private $home = '/opt/lampp/htdocs/Cuentas/';
 
     public function getHost()
     {

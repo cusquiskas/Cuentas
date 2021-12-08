@@ -1,16 +1,14 @@
-<?php 
-    $manejador = ControladorDinamicoTabla::set('ADM_SESION');
+<?php
 
-    class ctrlSesion extends Tabla_ADM_SESION
+    $manejador = ControladorDinamicoTabla::set('usuario');
+
+    class ctrlSesion extends Tabla_usuario
     {
-        public function login ($token) {
+        public function login($token)
+        {
             $link = new ConexionSistema();
-            $login = $link->consulta("select usr_id 
-                                        from ADM_USUARIO
+            $login = $link->consulta("select id 
+                                        from usuario
                                     where usr_id+usr_passw = '$token'", []);
-            
         }
-        
     }
-    
-?>
