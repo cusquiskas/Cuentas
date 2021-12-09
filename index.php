@@ -7,7 +7,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Arquetipo para nuevos proyectos</title>
+    <title>Gestión Bancos</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon"       href="css/img/imagen.gif" type="image/png" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">

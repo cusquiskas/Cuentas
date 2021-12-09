@@ -1,0 +1,120 @@
+<h1>Tarjetas</h1>
+ <form name="frmTarjeta" method="post">
+ 	<input type="hidden" name="id" value="">
+ 	<div class="row">
+    	<div class="col-sm-3" style="">
+    		<div class="form-group">
+      			<label for="txt1">Nombre de la Tarjeta:</label>
+      			<input type="text" class="form-control" id="txt1" name="descripcion" value="" required>
+      		</div>
+    	</div>
+    	<div class="col-sm-2" style="">
+	    	<div class="form-group">
+      			<label for="txt3">Día de corte:</label>
+      			<input type="number" class="form-control" id="txt3" min="0" name="d_corte" required>
+      		</div>
+    	</div>
+    	<div class="col-sm-2" style="">
+    		<div class="form-group">
+      			<label for="txt4">Día recordatorio:</label>
+      			<input type="number" class="form-control" id="txt4" min="0" name="d_recordatorio" value="" required>
+      		</div>
+    	</div>
+    	
+  	</div>
+  	<div class="row">
+    	<div class="col-sm-2" style="">
+    		<div class="form-group">
+      			<label for="txt2">Primera Fila (CSV):</label>
+      			<input type="number" class="form-control" id="txt2" min="0" name="fila" required>
+      		</div>
+    	</div>
+    	<div class="col-sm-2" style="">
+    		<div class="form-group">
+      			<label for="txt5">Col. Fecha:</label>
+      			<input type="text" class="form-control" id="txt5" name="c_fecha" maxlength="1" style="text-transform:uppercase" >
+      		</div>
+    	</div>
+    	<div class="col-sm-2" style="">
+    		<div class="form-group">
+      			<label for="txt6">Col. Descripción:</label>
+      			<input type="text" class="form-control" id="txt6" name="c_descripcion" maxlength="1" style="text-transform:uppercase" >
+      		</div>
+    	</div>
+    	<div class="col-sm-2" style="">
+	    	<div class="form-group">
+      			<label for="txt7">Col. Importe:</label>
+      			<input type="text" class="form-control" id="txt7" name="c_importe" maxlength="1" style="text-transform:uppercase" >
+      		</div>
+    	</div>
+    </div>
+  	<div class="row">
+    	<div class="col-sm-2" style="">
+	    	<div class="form-group">
+      			<label for="txt8">Col. Concepto (1):</label>
+      			<input type="text" class="form-control" id="txt8" name="c_concepto1" maxlength="1" style="text-transform:uppercase">
+      		</div>
+    	</div>
+    	<div class="col-sm-2" style="">
+	    	<div class="form-group">
+      			<label for="txt9">Col. Concepto (2):</label>
+      			<input type="text" class="form-control" id="txt9" name="c_concepto2" maxlength="1" style="text-transform:uppercase">
+      		</div>
+    	</div>
+    	<div class="col-sm-2" style="">
+	    	<div class="form-group">
+      			<label for="txt9">Col. Concepto (3):</label>
+      			<input type="text" class="form-control" id="txt9" name="c_concepto3" maxlength="1" style="text-transform:uppercase">
+      		</div>
+    	</div>
+    	<div class="col-sm-2" style="">
+	    	<div class="form-group">
+      			<label for="txt9">Col. Concepto (4):</label>
+      			<input type="text" class="form-control" id="txt9" name="c_concepto4" maxlength="1" style="text-transform:uppercase">
+      		</div>
+    	</div>
+    </div>
+    <div class="row">
+    	<div class="col-sm-2" style="">
+	    	<div class="form-group">
+      			<label for="txt9">Sep. Decimal:</label>
+      			<input type="text" class="form-control" id="txt9" name="c_separador_d" maxlength="1" style="text-transform:uppercase">
+      		</div>
+    	</div>
+    	<div class="col-sm-2" style="">
+	    	<div class="form-group">
+      			<label for="txt9">Sep. Columnas:</label>
+      			<input type="text" class="form-control" id="txt9" name="c_separador_c" maxlength="1" style="text-transform:uppercase">
+      		</div>
+    	</div>
+    	<div class="col-sm-2" style="">
+	    	<div class="form-group">
+      			<label for="txt10">Máscara de fecha:</label>
+      			<input type="text" class="form-control" id="txt10" name="mascara" maxlength="10" style="text-transform:uppercase">
+      		</div>
+    	</div>
+		<div class="col-sm-2" style="">
+	    	<div class="form-group">
+      			<label for="txt11">Invertir Importe:</label>
+      			<select class="form-control" name="inv_import" id="txt11">
+				  <option value="N">No</option>
+				  <option value="S">Sí</option>
+				</select>
+      		</div>
+    	</div>
+    </div>
+    <div class="row">
+    	<div class="col-sm-1" style="">
+	    	<div class="form-group">
+      			&nbsp;
+      		</div>
+    	</div>
+    	<div class="col-sm-3" style="">
+	    	<div class="form-group">
+      			<br>
+      			<button class="btn btn-default" type="submit" name="accion" value="GuardarVisa">Guardar</button>
+			    <button class="btn btn-default" type="button" onClick="form.submit()" >Limpiar</button>
+      		</div>
+    	</div>
+  	</div>
+</form>
