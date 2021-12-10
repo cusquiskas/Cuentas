@@ -1,7 +1,8 @@
 <h1>Tarjetas</h1>
  <form name="frmTarjeta" method="post">
  	<input type="hidden" name="id" value="">
- 	<div class="row">
+ 	<select name="id" frC-Store="backend/tarjeta/listaTarjeta.php" frC-indexResponse="root.Detalle:descripcion,id" frC-saveObj="true"></select>
+	 <div class="row">
     	<div class="col-sm-3" style="">
     		<div class="form-group">
       			<label for="txt1">Nombre de la Tarjeta:</label>

@@ -98,6 +98,7 @@ class FormController {
                     //me.loading(Select.name, false);
                     if (s) {
                         let root = Select.getAttribute('frC-indexResponse').split('$');
+                        let save = Select.getAttribute('frC-saveObj');
                         let raiz = root[0].split(':');
                         let atrb = root[1] ? root[1].split(',') : [];
                         let masRaiz = raiz[0].split('.');
@@ -130,8 +131,8 @@ class FormController {
                                 populate = true;
                             } else Select.selectedIndex = -1;
                             if (populate || me.parametros[Select.name].preValue != '') {
-                                let event = document.createEvent("Event"); event.initEvent('change', false, true);
-                                Select.dispatchEvent(event);
+                                if (save==="true") Select.setAttribute('obj',JSON.stringify(opciones));
+                                $(Select).trigger('ajaxSuccess');
                             }
                         } else {
                             // hay dependencia, tengo que mover las opciones del primero al segundo
@@ -144,16 +145,10 @@ class FormController {
                                 }
                             }
                         }
-                        let event = document.createEvent("Event"); event.initEvent('ajaxSuccess', false, true);
-                        Select.dispatchEvent(event);
+                        if (save==="true") Select.setAttribute('obj',JSON.stringify(opciones));
+                        $(Select).trigger('ajaxSuccess');
                     } else {
-                        if (!Moduls.relogin.lanzado) {
-                            if (((d.type === 'getSesion' || d.type === 'getSession' || d.type === 'getSessionException') && (d.code === 3 || d.code === 3.0 || d.code === '3'))) {
-                                me.relogin(me.modul);
-                            } else {
-                                throw d;
-                            }
-                        }
+                        throw d;
                     }
                 }
             });
