@@ -227,13 +227,13 @@ class FormController {
                         chklist[i].checked = (chkval[i] == 'S');
                     }
                 } else {
-                    this.parametros[chd].value = (objeto[chd] || '');
+                    this.parametros[chd].value = (typeof objeto[chd] === 'undefined'? '' : objeto[chd]);
                     if (this.parametros[chd].label) {
                         while (this.parametros[chd].object.childNodes.length > 0) this.parametros[chd].object.removeChild(this.parametros[chd].object.childNodes[0]);
-                        this.parametros[chd].object.appendChild(document.createTextNode((objeto[chd] || '')));
+                        this.parametros[chd].object.appendChild(document.createTextNode((typeof objeto[chd] === 'undefined'? '' : objeto[chd])));
                     } else {
-                        this.parametros[chd].object.value = (objeto[chd] || '');
-                        if (this.parametros[chd].select) this.parametros[chd].preValue = (objeto[chd] || '');
+                        this.parametros[chd].object.value = (typeof objeto[chd] === 'undefined'? '' : objeto[chd]);
+                        if (this.parametros[chd].select) this.parametros[chd].preValue = (typeof objeto[chd] === 'undefined'? '' : objeto[chd]);
                     }
                     let event = document.createEvent("Event"); event.initEvent('change', false, true);
                     this.parametros[chd].object.dispatchEvent(event);

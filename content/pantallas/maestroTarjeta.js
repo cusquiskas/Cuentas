@@ -7,12 +7,16 @@ var maestroTarjeta = class {
         this.addEventos();
     };
 
+    limpiaFormulario () {
+        let select = $('select[name=id]');
+        select[0].value = "";
+        select.trigger('change');
+    };
+    
     addEventos() {
         let me = this;
         $('button[name=limpiar]').click(function () {
-            let select = $('select[name=id]');
-            select[0].value = "";
-            select.trigger('change');
+            me.limpiaFormulario();
         });
         $('select[name=id]').ajaxSuccess(function (eve) {
             let option=document.createElement("option");
@@ -32,10 +36,12 @@ var maestroTarjeta = class {
     };
 
     guardar (s, d, e) {
+        validaErroresCBK(d.root||d);
         if (s) {
-            debugger
-        } else {
-            validaErroresCBK(d.root||d);
+            e.form.modul.script.limpiaFormulario();
+            let Select = e.form.parametros.id.object;
+            Select.options.length = 0;
+            e.form.invocaStore(Select);
         }
     };
 

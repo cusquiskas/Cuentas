@@ -18,7 +18,9 @@
     $registro = $_POST;
     $registro['usuario'] = $_SESSION['data']['user']['id'];
 
-    if ($manTarjeta->save($registro)) {
+    //die(var_export($registro, true));
+
+    if ($manTarjeta->save($registro)==0) {
         echo json_encode(['success' => true, 'root' => ['tipo' => 'Respuesta', 'Detalle' => 'Registro modificado correctamente']]);
     } else {
         $reg = $manTarjeta->getListaErrores();
