@@ -13,21 +13,19 @@
     require_once '../../conex/dao.php';   //control de comunicación con la base de datos MySQL
     require_once '../../tabla/controller.php';
 
-    $manetiqueta = ControladorDinamicoTabla::set('etiqueta');
+    $manEtiqueta = ControladorDinamicoTabla::set('etiqueta');
 
-    $parametros = $_POST;
-    $parametros['usuario'] = $_SESSION['data']['user']['id'];
-    if (strlen($parametros['activo']) == 0) {
-        unset($parametros['activo']);
+    $registro = $_POST;
+    $registro['usuario'] = $_SESSION['data']['user']['id'];
+
+    if ($manEtiqueta->save($registro) == 0) {
+        echo json_encode(['success' => true, 'root' => ['tipo' => 'Respuesta', 'Detalle' => 'Registro modificado correctamente']]);
+    } else {
+        $reg = $manEtiqueta->getListaErrores();
+        echo json_encode(['success' => false, 'root' => ['tipo' => 'Respuesta', 'Detalle' => $reg]]);
     }
 
-    $manetiqueta->give($parametros);
-    $reg = $manetiqueta->getArray();
-
-    echo json_encode(['success' => true, 'root' => ['tipo' => 'Respuesta', 'Detalle' => $reg], 'extra' => json_encode($parametros)]);
-
-    unset($parametros);
+    unset($_POST);
+    unset($registro);
     unset($reg);
-    unset($manetiqueta);
-?>
-
+    unset($manEtiqueta);

@@ -1,5 +1,42 @@
 <h1>Etiquetas</h1>
 <form name="frmEtiqueta" method="post" action="backend/etiqueta/listaEtiqueta.php" frC-CallBack="listar" frC-AutoLoad="true">
+    <div class="row">
+		<div class="col-2">
+			<div class="form-group">
+				<select class="form-control" name="activo">
+                    <option value="">Ver Todas</option>
+                    <option value="1" selected>Ver Activas</option>
+                    <option value="0">Ver Inactivas</option>
+                </select>
+                
+			</div>
+		</div>
+	</div> 
+    <!-- <div class="row">
+        <div class="col-12">
+            <hr/>
+        </div>
+    </div> -->
+    <div class="row">
+        <div class="col-12">
+            <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Estado</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  
+                </tbody>
+              </table>
+        </div>
+    </div>
 
+</form>
 
+<form name="cambiaEstado" method="post" action="backend/etiqueta/cambiaEstadoEtiqueta.php" frC-CallBack="cambiaEstado" class="xx">
+    <input name="id" value="">
+    <input name="activo" value="">
 </form>
