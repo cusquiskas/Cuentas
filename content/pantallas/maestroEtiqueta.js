@@ -3,7 +3,7 @@ var maestroEtiqueta = class {
         console.log('maestroEtiqueta.js -> constructor');
         this.modulo = mod;
         this.objeto = obj;
-        this.tabla  = '<tr><th scope="row">{{id}}</th><td>{{descripcion}}</td><td class="upperSwitch"><label class="switch"><input idE="{{id}}" type="checkbox" {{estado}}><span class="slider round"></span></label></td></tr>';
+        this.tabla  = '<tr><th scope="row">{{id}}</th><td>{{descripcion}}</td><td><label class="switch"><input idE="{{id}}" type="checkbox" {{estado}}><span class="slider round"></span></label></td><td><button type="button" class="btn material-icons">edit</button></td></tr>';
         this.addEventos();
     };
 
