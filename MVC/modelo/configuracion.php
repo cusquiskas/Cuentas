@@ -20,15 +20,20 @@ class configuracion {
             $config = json_decode(file_get_contents('/opt/lampp/htdocs/claves.json'), true);
             $config = $config["Cuentas"];
             
-            $this->host        = $config["host"       ];
-            $this->user        = $config["user"       ];
-            $this->pass        = $config["pass"       ];
-            $this->apli        = $config["apli"       ];
+            $this->host        = $config["host"];
+            $this->user        = $config["user"];
+            $this->pass        = $config["pass"];
+            $this->apli        = $config["apli"];
 
-            $this->home        = $config["home"       ];
+            $this->home        = $config["home"];
 
         } elseif (getenv('DB_HOST')) {
-            echo "estoy en excelsiu\n";
+            $this->host        = getenv('DB_HOST');
+            $this->user        = getenv('DB_USER');
+            $this->pass        = getenv('DB_PASS');
+            $this->apli        = getenv('DB_APLI');
+
+            $this->home        = getenv('FL_HOME');
         }
     
     }
