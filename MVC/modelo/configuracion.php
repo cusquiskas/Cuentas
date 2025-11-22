@@ -1,10 +1,10 @@
 <?php
 
 class configuracion {
-   private $host = 'localhost';
-   private $user = 'contador';
-   private $pass = 'FhbqsXsGqfqLcSRW';
-   private $apli = 'cuentas';
+   private $host = '';
+   private $user = '';
+   private $pass = '';
+   private $apli = '';
    
    private $home = '/opt/lampp/htdocs/Cuentas/';
    
