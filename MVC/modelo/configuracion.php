@@ -35,7 +35,6 @@ class configuracion {
 
             $this->home        = getenv('FL_HOME');
         }
-        echo var_export($this, true);
     }
 }
 

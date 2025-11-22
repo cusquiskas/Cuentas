@@ -32,7 +32,6 @@
  
  	public function mbind_param_do() {
  		$params = array_merge($this->mbind_types, $this->mbind_params);
- 		echo var_export($params, true) ."<br>";
 		return call_user_func_array(array($this, 'bind_param'), $this->makeValuesReferenced($params));
  	}
  
