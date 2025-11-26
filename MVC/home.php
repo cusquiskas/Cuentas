@@ -22,7 +22,6 @@ require_once 'MVC/piso.php';
 /* restos de la antigua estructura */
 require_once('MVC/servicio/estructura.php');
 
-
  if (isset($_POST['irA'])) { $Enlace->setEnlace($_POST['irA'],$_POST["scroll"],$_POST["extra"]); }
  
  if (isset($_POST['muestraMes'])) {
@@ -213,7 +212,7 @@ require_once('MVC/servicio/estructura.php');
     if ($controlError->hayError() == 0) {
      #if (strtolower(substr($_FILES['userfile']['name'],-4)) != '.csv') new Excepcion('La extensión del archivo no es CSV', 1);
      	$fileExtension = strtolower(substr($_FILES['userfile']['name'], strrpos($_FILES['userfile']['name'],".")));
-     	$fileName = $modeloConfiguracion->getHome().session_id().$fileExtension;
+     	$fileName = $modeloConfiguracion->getHome().$modeloConfiguracion->getTemp().session_id().$fileExtension;
      	if ($fileExtension!='.xls' && $fileExtension!='.xlsx' && $fileExtension!='.pdf') new Excepcion('No tiene extensión válida [Excel, PDF]', 1);
     }
     if ($controlError->hayError() == 0) {

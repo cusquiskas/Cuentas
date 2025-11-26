@@ -6,7 +6,8 @@ class configuracion {
    private $pass = '';
    private $apli = '';
    
-   private $home = '/opt/lampp/htdocs/Cuentas/';
+   private $home = '';
+   private $temp = '';
    
    public function getHost() { return $this->host; }
    public function getUser() { return $this->user; }
@@ -14,6 +15,7 @@ class configuracion {
    public function getApli() { return $this->apli; }
    
    public function getHome() { return $this->home; }
+   public function getTemp() { return $this->temp; }
 
    public function __construct   () {
         if (file_exists('/opt/lampp/htdocs/claves.json')) {
@@ -26,6 +28,7 @@ class configuracion {
             $this->apli        = $config["apli"];
 
             $this->home        = $config["home"];
+            $this->temp        = $config["temp"];
 
         } elseif (getenv('DB_HOST')) {
             $this->host        = getenv('DB_HOST');
@@ -34,6 +37,7 @@ class configuracion {
             $this->apli        = getenv('DB_APLI');
 
             $this->home        = getenv('FL_HOME');
+            $this->temp        = getEnv('FL_TEMP');
         }
     }
 }

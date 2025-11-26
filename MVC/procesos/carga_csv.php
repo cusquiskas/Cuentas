@@ -38,8 +38,8 @@
                      'sistema' => 'S',
                      'recordatorio' => '',
     ];
-
-     if ($dat['mascara'] == 'numero') {
+    
+    if ($dat['mascara'] == 'numero') {
          $cadenaFecha = date('d/m/Y', ((int) $regCSV['fecha'] - 25569) * 24 * 60 * 60);
          $regCSV['fecha'] = $cadenaFecha;
      } else {
@@ -50,6 +50,7 @@
              $regCSV['fecha'] = $cadenaFecha;
          }
      }
+    
      if ($Movimiento->guardar($regCSV)) {
          $newFecha = $Visa->fechaRecordatorio($regCSV['fecha']);
          if ($newFecha != null) {
