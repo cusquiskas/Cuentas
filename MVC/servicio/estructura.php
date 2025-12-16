@@ -5,7 +5,8 @@
   * for you aportation in http://php.net/manual/es/mysqli-stmt.bind-param.php
   */
  class stmt extends mysqli_stmt {
- 	public function __construct($link, $query) {
+
+	public function __construct($link, $query) {
  		$this->mbind_reset();
  		parent::__construct($link, $query);
  	}
@@ -14,7 +15,7 @@
  		unset($this->mbind_params);
  		unset($this->mbind_types);
  		$this->mbind_params = array();
- 		$this->mbind_types = array();
+ 		$this->mbind_types[0] = '';
  	}
  
  	//use this one to bind params by reference
