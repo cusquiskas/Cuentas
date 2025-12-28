@@ -4,7 +4,7 @@
   * Very Special Thanks to Guido
   * for you aportation in http://php.net/manual/es/mysqli-stmt.bind-param.php
   */
- class stmt extends mysqli_stmt {
+ class stmt extends mysqli_stmt { 
  	public function __construct($link, $query) {
  		$this->mbind_reset();
  		parent::__construct($link, $query);
