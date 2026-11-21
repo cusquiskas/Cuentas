@@ -44,12 +44,15 @@
  
  	}
  
- 	public function execute() {
- 		if(count($this->mbind_params))
- 			$this->mbind_param_do();
- 
- 			return parent::execute();
- 	}
+	public function execute(?array $params = null): bool {
+		if(count($this->mbind_params))
+			$this->mbind_param_do();
+
+		if ($params !== null)
+			return parent::execute($params);
+
+		return parent::execute();
+	}
  
  	private $mbind_types = array();
  	private $mbind_params = array();
