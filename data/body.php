@@ -2,6 +2,7 @@
       <?php 
 	switch ($Enlace->getEnlace()) {
 	case 'GestionaEtiqueta': 
+	case 'GestionaEtiquetasAutomaticas':
 	case 'GestionaTarjetas':
 	case 'EliminaMovimiento':
 	case 'GestionaPiso':
@@ -31,6 +32,9 @@
       switch ($Enlace->getEnlace()) {
        case 'GestionaEtiqueta': 
        	require_once('pantallas/etiquetas.php');
+        break;
+       case 'GestionaEtiquetasAutomaticas':
+        require_once('pantallas/etiquetas_automaticas.php');
         break;
        case 'GestionaTarjetas': 
        	require_once('pantallas/tarjetas.php');

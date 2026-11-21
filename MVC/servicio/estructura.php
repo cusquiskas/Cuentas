@@ -4,8 +4,9 @@
   * Very Special Thanks to Guido
   * for you aportation in http://php.net/manual/es/mysqli-stmt.bind-param.php
   */
- class stmt extends mysqli_stmt { 
- 	public function __construct($link, $query) {
+ class stmt extends mysqli_stmt {
+
+	public function __construct($link, $query) {
  		$this->mbind_reset();
  		parent::__construct($link, $query);
  	}
@@ -14,7 +15,7 @@
  		unset($this->mbind_params);
  		unset($this->mbind_types);
  		$this->mbind_params = array();
- 		$this->mbind_types = array();
+		$this->mbind_types[0] = '';
  	}
  
  	//use this one to bind params by reference
@@ -43,12 +44,15 @@
  
  	}
  
- 	public function execute() {
- 		if(count($this->mbind_params))
- 			$this->mbind_param_do();
- 
- 			return parent::execute();
- 	}
+	public function execute(?array $params = null): bool {
+		if(count($this->mbind_params))
+			$this->mbind_param_do();
+
+		if ($params !== null)
+			return parent::execute($params);
+
+		return parent::execute();
+	}
  
  	private $mbind_types = array();
  	private $mbind_params = array();
@@ -62,11 +66,15 @@
    
    private $lista_errores = [];
    private $filas_afectadas;
+   private $id_insertado = 0;
    
    private $conex;
    
    public function filasAfectadas() {
    	return $this->filas_afectadas;
+   }
+   public function idInsertado() {
+    return $this->id_insertado;
    }
    public function hayError() {
    	return (count($this->lista_errores)>0);
@@ -117,6 +125,7 @@
    	foreach ($array as $param) $stmt->mbind_value($param["tipo"], $param["dato"]);
    	$stmt->execute();
    	$this->filas_afectadas = $stmt->affected_rows;
+    $this->id_insertado = $stmt->insert_id;
    	if (count($stmt->error_list)>0) {
    		$this->lista_errores = $stmt->error_list;
    		foreach ($stmt->error_list as $detalle) new Excepcion($detalle['error'],1);

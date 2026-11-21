@@ -32,8 +32,9 @@
     		case 'GestionaMovimiento':
     			$this->menu = 'Carga';
     			break;
-    		case 'GestionaEtiqueta':
-    		case 'GestionaTarjetas':
+            case 'GestionaEtiqueta':
+            case 'GestionaEtiquetasAutomaticas':
+            case 'GestionaTarjetas':
     		case 'EliminaMovimiento':
     			$this->menu = 'Maestro';
     			break;

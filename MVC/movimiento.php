@@ -249,8 +249,21 @@ class servicioMovimiento {
                   VALUES (?, STR_TO_DATE(?, '%d/%m/%Y'), ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		$link = new Conexion();
 		$link->ejecuta($query, $filtro);
+		$sinError = !$link->hayError();
+		$movimientoId = $link->idInsertado();
 		$link->close();
-		return (!$link->hayError());
+
+		if ($sinError && $movimientoId > 0) {
+			$EtiquetaAutomatica = new EtiquetaAutomatica();
+			$EtiquetaAutomatica->aplicar(
+				$movimiento["usuario"],
+				$movimientoId,
+				$movimiento
+			);
+			unset($EtiquetaAutomatica);
+		}
+
+		return $sinError;
 	}	
 	
 	private function duplicado ($movimiento) {
