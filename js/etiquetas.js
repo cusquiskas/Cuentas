@@ -12,3 +12,33 @@ function muestraDatos(o) {
  }
   
 }
+
+function editaEtiquetaAutomatica(id, nombre, patron, etiqueta) {
+ var f = getForm("frmEtiquetaAutomatica");
+ f.elements["id"].value = id;
+ f.elements["nombre"].value = nombre;
+ f.elements["patron"].value = patron;
+ f.elements["idetiqueta"].value = etiqueta;
+}
+
+function limpiaEtiquetaAutomatica() {
+ var f = getForm("frmEtiquetaAutomatica");
+ f.elements["id"].value = "";
+ f.elements["nombre"].value = "";
+ f.elements["patron"].value = "";
+ f.elements["idetiqueta"].value = "";
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+ var botones = document.querySelectorAll("[data-edita-automatico]");
+ for (var i = 0; i < botones.length; i++) {
+  botones[i].addEventListener("click", function () {
+   editaEtiquetaAutomatica(
+    this.getAttribute("data-id"),
+    this.getAttribute("data-nombre"),
+    this.getAttribute("data-patron"),
+    this.getAttribute("data-etiqueta")
+   );
+  });
+ }
+});

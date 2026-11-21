@@ -26,6 +26,7 @@
    if ($Enlace->getEnlace()=='NuevoRegistro')       echo '<script src="js/registro.js" type="text/javascript"></script>';
    if ($Enlace->getEnlace()=='EliminaMovimiento')   echo '<script src="js/registro.js" type="text/javascript"></script>';
    if ($Enlace->getEnlace()=='GestionaEtiqueta')    echo '<script src="js/etiquetas.js" type="text/javascript"></script>';
+   if ($Enlace->getEnlace()=='GestionaEtiquetasAutomaticas') echo '<script src="js/etiquetas.js" type="text/javascript"></script>';
    if ($Enlace->getEnlace()=='GestionaTarjetas')    echo '<script src="js/tarjeta.js" type="text/javascript"></script>';
    if ($Enlace->getEnlace()=='GestionaPropietario') echo '<script src="js/propietario.js" type="text/javascript"></script>';
    if ($Enlace->getEnlace()=='GestionaPiso')        echo '<script src="js/piso.js" type="text/javascript"></script>';

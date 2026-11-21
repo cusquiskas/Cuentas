@@ -66,11 +66,15 @@
    
    private $lista_errores = [];
    private $filas_afectadas;
+   private $id_insertado = 0;
    
    private $conex;
    
    public function filasAfectadas() {
    	return $this->filas_afectadas;
+   }
+   public function idInsertado() {
+    return $this->id_insertado;
    }
    public function hayError() {
    	return (count($this->lista_errores)>0);
@@ -121,6 +125,7 @@
    	foreach ($array as $param) $stmt->mbind_value($param["tipo"], $param["dato"]);
    	$stmt->execute();
    	$this->filas_afectadas = $stmt->affected_rows;
+    $this->id_insertado = $stmt->insert_id;
    	if (count($stmt->error_list)>0) {
    		$this->lista_errores = $stmt->error_list;
    		foreach ($stmt->error_list as $detalle) new Excepcion($detalle['error'],1);

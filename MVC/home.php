@@ -8,6 +8,7 @@ require_once 'MVC/enlace.php';
 require_once 'MVC/busqueda.php';
 require_once 'MVC/recordatorio.php';
 require_once 'MVC/etiqueta.php';
+require_once 'MVC/etiqueta_automatica.php';
 #require_once 'MVC/tarjeta.php';
 require_once 'MVC/visa.php';
 require_once 'MVC/movimiento.php';
@@ -134,6 +135,23 @@ require_once('MVC/servicio/estructura.php');
     $Eti->setDescripcion($_POST['descripcion']);
    	$Eti->guardaEtiqueta();
    	unset($Eti);
+    break;
+   case 'GuardarEtiquetaAutomatica':
+    $EtiquetaAutomatica = new EtiquetaAutomatica();
+    $EtiquetaAutomatica->setUsuario($Usuario->getId());
+    $EtiquetaAutomatica->setId($_POST['id']);
+    $EtiquetaAutomatica->setNombre($_POST['nombre']);
+    $EtiquetaAutomatica->setPatron($_POST['patron']);
+    $EtiquetaAutomatica->setIdEtiqueta($_POST['idetiqueta']);
+    $EtiquetaAutomatica->guardar();
+    unset($EtiquetaAutomatica);
+    break;
+   case 'EliminarEtiquetaAutomatica':
+    $EtiquetaAutomatica = new EtiquetaAutomatica();
+    $EtiquetaAutomatica->setUsuario($Usuario->getId());
+    $EtiquetaAutomatica->setId($_POST['id']);
+    $EtiquetaAutomatica->eliminar();
+    unset($EtiquetaAutomatica);
     break;
    case 'GuardarPropietario':
    	$Propi = new Propietario();
