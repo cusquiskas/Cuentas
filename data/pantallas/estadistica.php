@@ -18,6 +18,8 @@
 	$datosEti = $Estadistica->listaEtiquetas();
 	
 	$datos = array();
+	$cabecera = '';
+	$meses = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');
 	foreach ($datosEti as $datEti) {
 		$datos[$datEti["etiqueta"]]["des"] = $datEti["descripcion"];
 		$datos[$datEti["etiqueta"]]["val"] = $datEti["etiqueta"];
@@ -26,6 +28,8 @@
 	$i = 1;
 	
 	foreach ($datos as $dat) {
+		$total = 0;
+		foreach ($meses as $mes) $total += $dat[$mes] ?? 0;
 		if ($Estadistica->getEtiqueta1() != $dat["val"]
 		 && $Estadistica->getEtiqueta2() != $dat["val"]
 		 && $Estadistica->getEtiqueta3() != $dat["val"]
@@ -34,7 +38,7 @@
 ?>
       <div class="row" style="background-color:<?php echo $color; ?>;">
 		<div class="col-sm-2"><button onClick="addEtiqueta(value);" type="button" class="btn btn-primary" value="<?php echo $dat["val"]; ?>"><?php echo $dat["des"]; ?></button></div>
-		<div class="col-sm-1" style="color: red;text-align: right;"><p><?php echo number_format(($dat["01"]+$dat["02"]+$dat["03"]+$dat["04"]+$dat["05"]+$dat["06"]+$dat["07"]+$dat["08"]+$dat["09"]+$dat["10"]+$dat["11"]+$dat["12"]),2,',','.'); ?></p></div>
+		<div class="col-sm-1" style="color: red;text-align: right;"><p><?php echo number_format($total,2,',','.'); ?></p></div>
 	  </div>
       <div class="row" style="background-color:<?php echo $color; ?>;text-align: right;">
 	    <div class="col-sm-1"><p><?php echo (isset($dat["01"])?number_format($dat["01"],2,',','.'):''); ?></p></div>
@@ -55,7 +59,7 @@
 			if ($cabecera == "") {
 					     
 			$cabecera.= '<div class="row" style="background-color:#f5cccc">
-						 	<div class="col-sm-3" style="color: red;text-align: right;"><p>'.number_format(($dat["01"]+$dat["02"]+$dat["03"]+$dat["04"]+$dat["05"]+$dat["06"]+$dat["07"]+$dat["08"]+$dat["09"]+$dat["10"]+$dat["11"]+$dat["12"]),2,',','.').'</p></div>
+                        <div class="col-sm-3" style="color: red;text-align: right;"><p>'.number_format($total,2,',','.').'</p></div>
 						 </div>
 	    				 <div class="row" style="background-color:#f5cccc;text-align: right;">
 						    <div class="col-sm-1"><p>'.(isset($dat["01"])?number_format($dat["01"],2,',','.'):'').'</p></div>

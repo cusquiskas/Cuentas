@@ -32,9 +32,9 @@ class modeloEstadistica {
 	private $etiqueta3;
 	
 	function setAño($año) { $_SESSION['data']['estadistica']['año'] = $año; $this->año = $año; }
-	function setEtiqueta1 ($etq) { if ($etq=="")$etq=NULL; $_SESSION['data']['estadistica']['etiqueta1'] = $año; $this->etiqueta1 = $etq; }
-	function setEtiqueta2 ($etq) { if ($etq=="")$etq=NULL; $_SESSION['data']['estadistica']['etiqueta2'] = $año; $this->etiqueta2 = $etq; }
-	function setEtiqueta3 ($etq) { if ($etq=="")$etq=NULL; $_SESSION['data']['estadistica']['etiqueta3'] = $año; $this->etiqueta3 = $etq; }
+	function setEtiqueta1 ($etq) { if ($etq=="")$etq=NULL; $_SESSION['data']['estadistica']['etiqueta1'] = $etq; $this->etiqueta1 = $etq; }
+	function setEtiqueta2 ($etq) { if ($etq=="")$etq=NULL; $_SESSION['data']['estadistica']['etiqueta2'] = $etq; $this->etiqueta2 = $etq; }
+	function setEtiqueta3 ($etq) { if ($etq=="")$etq=NULL; $_SESSION['data']['estadistica']['etiqueta3'] = $etq; $this->etiqueta3 = $etq; }
 
 
 	function getAño() { return $this->año; }

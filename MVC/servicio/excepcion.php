@@ -27,7 +27,7 @@ class Excepcion extends Exception implements IExcepcion {
 	public function __construct($message = null, $code = 0) {
 		$this->setTipo($code);
 		$GLOBALS['__listaExcepciones'][] = $this;
-		parent::__construct($message, $code, $previous);
+		parent::__construct($message, $code);
 	}
 
 }
