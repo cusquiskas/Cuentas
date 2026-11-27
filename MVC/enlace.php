@@ -51,7 +51,7 @@
     }
     
     function __construct() {
-    	if ($_SESSION['data']['enlace']['enlace']) {
+        if (isset($_SESSION['data']['enlace']['enlace'])) {
     		$this->enlace = $_SESSION['data']['enlace']['enlace'];
     		$this->anterior = $_SESSION['data']['enlace']['anterior'];
     		$this->menu = $_SESSION['data']['enlace']['menu'];
