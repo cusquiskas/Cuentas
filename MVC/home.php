@@ -23,7 +23,7 @@ require_once 'MVC/piso.php';
 /* restos de la antigua estructura */
 require_once('MVC/servicio/estructura.php');
 
- if (isset($_POST['irA'])) { $Enlace->setEnlace($_POST['irA'],$_POST["scroll"],$_POST["extra"]); }
+ if (isset($_POST['irA'])) { $Enlace->setEnlace($_POST['irA'], $_POST['scroll'] ?? 0, $_POST['extra'] ?? null); }
  
  if (isset($_POST['muestraMes'])) {
   $Buscar->setMes($_POST['muestraMes']);
